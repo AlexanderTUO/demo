@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.scbd.ocp.basic.dao.DriverInfoDao">
+    <sql id="offsetAndLimit">
+        <if test="orderBy != null">
+            order by ${orderBy} DESC
+        </if>
+        <if test="orderBy == null">
+            order by driver.updateTime DESC
+        </if>
+        <if test="limit != null">
+            limit #{limit}
+            <if test="offset != null">
+                offset #{offset}
+            </if>
+        </if>
+
+    </sql>
+    <sql id="getDriverSnippet">
+        <where>
+        driver.dataStatus = 1
+        <if test="driverId != null">
+            and driver.driverid= #{driverId}
+        </if>
+        <if test="driverName!= null and driverName != '' ">
+            and driver.driverName like '%' #{driverName} '%'
+        </if>
+        <if test="deptId != null and deptId != '' ">
+            and driver.deptId = #{deptId}
+        </if>
+        <if test="queryUserDeptCode != null">
+            and dept.DEPT_CODE like #{queryUserDeptCode} '%'
+        </if>
+        <if test="mobile != null and mobile != '' ">
+            and driver.mobile like #{mobile} '%'
+        </if>
+        <if test="carType != null">
+            and driver.carType = #{carType}
+        </if>
+        <if test="status != null">
+            and driver.status = #{status}
+        </if>
+        <if test="driverIds != null and driverIds.size > 0">
+            and driver.driverid in
+            <foreach item="item" collection="driverIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        </where>
+    </sql>
+    <insert id="saveDriverInfo">
+        insert into driver (driverid,drivername,driverNumber,deptId,sex,mobile,
+        birthdate,firstGetLiceseDate,carType,driverLicenseStartDate,driverLicenseEndDate,hireDate,status,mark,totalScore,
+        scoreCount,picPath,createUser,createTime,updateUser,updateTime,dataStatus)
+        values (#{driverId},#{driverName},#{driverNumber},#{deptId},#{sex},#{mobile},#{birthDate},
+        #{firstGetLiceseDate},#{carType},#{driverLicenseStartDate},#{driverLicenseEndDate},#{hireDate},#{status},
+        #{mark},#{totalScore},
+        #{scoreCount},#{picPath},#{createUser},#{createTime},#{updateUser},#{updateTime},#{dataStatus})
+    </insert>
+    <update id="updateDriverInfo">
+        update driver set drivername=#{driverName},driverNumber=#{driverNumber},deptId=#{deptId},sex=#{sex},
+        mobile=#{mobile},birthdate=#{birthDate},
+        firstGetLiceseDate=#{firstGetLiceseDate},carType=#{carType},driverLicenseStartDate=#{driverLicenseStartDate},
+        driverLicenseEndDate=#{driverLicenseEndDate},hireDate=#{hireDate},status=#{status},
+        mark=#{mark},picPath=#{picPath},updateTime=#{updateTime},updateUser=#{updateUser}
+        where driverid=#{driverId}
+    </update>
+    <!--软删除-->
+    <update id="deleteDriverInfos">
+        update driver set dataStatus=0 where driverid in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </update>
+    <update id="updateStatus">
+        update driver set status=#{status} where driverid=#{driverId}
+    </update>
+
+    <select id="driverInfoList" resultType="com.scbd.ocp.basic.model.DriverInfoEntity">
+        select
+        driver.driverid driverId,
+        driver.drivername driverName,
+        driver.driverNumber driverNumber,
+        driver.deptId deptId,
+        driver.sex sex,
+        driver.mobile mobile,
+        driver.birthdate birthdate,
+        driver.firstGetLiceseDate firstGetLiceseDate,
+        driver.carType carType,
+        driver.driverLicenseStartDate driverLicenseStartDate,
+        driver.driverLicenseEndDate driverLicenseEndDate,
+        driver.hireDate hireDate,
+        driver.status status,
+        driver.mark mark,
+        driver.picPath picPath,
+        driver.createUser createUser,
+        driver.createTime createTime,
+        driver.updateUser updateUser,
+        driver.updateTime updateTime,
+        driver.dataStatus dataStatus,
+        dept.NAME deptName
+        from driver inner join sys_dept dept on driver.deptId=dept.DEPT_ID
+        <include refid="getDriverSnippet"></include>
+        <include refid="offsetAndLimit"/>
+    </select>
+    <select id="driverCount" resultType="java.lang.Integer">
+        select count(1) from driver inner join sys_dept dept on driver.deptId=dept.DEPT_ID
+        <include refid="getDriverSnippet"></include>
+    </select>
+    <select id="selectById" resultType="com.scbd.ocp.basic.model.DriverInfoEntity">
+     select
+         driver.driverid driverId,
+         driver.drivername driverName,
+         driver.driverNumber driverNumber,
+         driver.deptId deptId,
+         dept.Name deptName,
+         driver.sex sex,
+         driver.mobile mobile,
+         driver.birthdate birthdate,
+         driver.firstGetLiceseDate firstGetLiceseDate,
+         driver.carType carType,
+         driver.driverLicenseStartDate driverLicenseStartDate,
+         driver.driverLicenseEndDate driverLicenseEndDate,
+         driver.hireDate hireDate,
+         driver.status status,
+         driver.mark mark,
+         driver.picPath picPath,
+         driver.createUser createUser,
+         driver.createTime createTime,
+         driver.updateUser updateUser,
+         driver.updateTime updateTime,
+         driver.scoreCount scoreCount,
+        driver.totalScore totalScore,
+         driver.dataStatus dataStatus
+         from driver driver inner join sys_dept dept on driver.deptId=dept.DEPT_ID
+         where driver.driverid=#{driverId}
+    </select>
+
+    <!--分页查询记录-->
+    <select id="warningList" parameterType="com.scbd.ocp.basic.model.DriverInfoEntity" resultType="com.scbd.ocp.basic.model.DriverInfoEntity">
+        select
+            d.drivername,
+            d.driverLicenseStartDate,
+            d.driverLicenseEndDate,
+            d.mobile,
+            if ((driverLicenseEndDate - CURRENT_DATE) &gt;= 0,0,1) warnNum,
+          s.NAME deptName
+        from driver d inner join sys_dept s on d.deptId = s.DEPT_ID
+        where
+        d.dataStatus = 1 and s.status = 1
+        and (d.driverLicenseEndDate - CURRENT_DATE) &lt;= 90
+        <if test="driverName != null" > and d.drivername like '%' #{driverName} '%'</if>
+        <if test="queryUserDeptCode != null">
+            and s.DEPT_CODE like #{queryUserDeptCode} '%'
+        </if>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="orderBy == null">
+            order by d.driverLicenseEndDate desc
+        </if>
+        <if test="limit != null">
+            limit ${limit}
+            <if test="offset != null">
+                offset ${offset}
+            </if>
+        </if>
+
+    </select>
+
+    <!--查询所有记录数-->
+    <select id="warningTotal" parameterType="com.scbd.ocp.basic.model.DriverInfoEntity" resultType="int">
+        select count(1) from driver d inner join sys_dept s on d.deptId = s.DEPT_ID
+        where
+        d.dataStatus = 1 and s.status = 1
+        and (d.driverLicenseEndDate - CURRENT_DATE) &lt;= 90
+        <if test="driverName != null" > and d.drivername like '%' #{driverName} '%'</if>
+    </select>
+
+
+    <!--查询驾驶员出车记录-->
+    <sql id="dVehiclestatics">
+        <where>
+            driver.dataStatus = 1 and v.dataStatus = 1
+            <if test="realStartTime != null">
+                and (v.realStartTime &gt;= #{realStartTime} or v.realEndTime &gt;= #{realStartTime})
+            </if>
+            <if test="realEndTime != null">
+                and (v.realStartTime &lt;= #{realEndTime} or v.realEndTime &lt;= #{realEndTime})
+            </if>
+            <if test="orderNumber != null" > and v.orderNumber like '%' #{orderNumber} '%'</if>
+            <if test="driverId != null" >and driver.driverid = #{driverId} </if>
+        </where>
+    </sql>
+    <select id="dVehiclestaticsCount" resultType="java.lang.Integer">
+        select count(driver.driverid)  from vehiclestatics v inner join driver driver on v.driverId = driver.driverid
+        inner join carinfo c on v.carId=c.carId
+        <include refid="dVehiclestatics"></include>
+    </select>
+    <select id="driverInfoVehiclestatics" parameterType="com.scbd.ocp.basic.model.DriverVehiclestaticsQuery" resultType="com.scbd.ocp.basic.model.DriverVehiclestatics">
+        select
+        v.orderNumber orderNumber,
+        v.carNumber carNumber,
+        c.carType `carTypeD.dictCode`,
+        'car_type' `carTypeD.type.typeCode`,
+        v.startPlace startPlace,
+        v.endPlace endPlace,
+        v.realStartTime realStartTime,
+        v.realEndTime realEndTime
+        from vehiclestatics v inner join driver driver on v.driverId = driver.driverid
+        inner join carinfo c on v.carId=c.carId
+        <include refid="dVehiclestatics"></include>
+        <include refid="offsetAndLimit"></include>
+    </select>
+
+    <update id="updateDriverStatus">
+        UPDATE driver SET status = #{status} WHERE driverId = #{driverId}
+    </update>
+
+
+    <select id="findWorkDriver" resultType="java.util.Map">
+        select
+            sum(CASE WHEN d.`status` =2  THEN 1 ELSE 0 END) as workNum,
+            sum(CASE WHEN d.`status` =0  THEN 1 ELSE 0 END) as waitNum
+            from driver d  left join sys_dept s on d.deptId = s.dept_id where
+            d.dataStatus = 1 and s.DEPT_CODE like concat(#{deptCode},'%');
+    </select>
+
+
+    <update id="setDriverScore" parameterType="com.scbd.ocp.basic.model.DriverInfoEntity">
+        update driver set totalScore = #{totalScore}+totalScore,scoreCount=scoreCount+1 where driverid = #{driverId}
+    </update>
+
+</mapper>
