@@ -22,6 +22,7 @@ public class UserApi {
         System.out.println("试试git");
         System.out.println("试试push");
         System.out.println("再来");
+        System.out.println("再来2");
 
         if (userService.findByName(user.getName())!=null){
             JSONObject jsonObject = new JSONObject();
