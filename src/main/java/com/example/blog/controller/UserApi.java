@@ -21,6 +21,7 @@ public class UserApi {
     public Object add(@RequestBody User user){
         System.out.println("试试git");
         System.out.println("试试push");
+        System.out.println("再来");
 
         if (userService.findByName(user.getName())!=null){
             JSONObject jsonObject = new JSONObject();
