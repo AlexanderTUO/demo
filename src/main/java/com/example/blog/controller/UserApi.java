@@ -19,7 +19,8 @@ public class UserApi {
 
     @RequestMapping(path = "/add")
     public Object add(@RequestBody User user){
-        System.out.println("sdfsdfsdf");
+        System.out.println("试试git");
+
         if (userService.findByName(user.getName())!=null){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("message","用户名已被使用");
