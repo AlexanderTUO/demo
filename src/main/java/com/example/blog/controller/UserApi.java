@@ -20,6 +20,7 @@ public class UserApi {
     @RequestMapping(path = "/add")
     public Object add(@RequestBody User user){
         System.out.println("试试git");
+        System.out.println("试试push");
 
         if (userService.findByName(user.getName())!=null){
             JSONObject jsonObject = new JSONObject();
