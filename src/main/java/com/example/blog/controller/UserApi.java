@@ -23,6 +23,7 @@ public class UserApi {
         System.out.println("试试push");
         System.out.println("再来");
         System.out.println("再来2");
+        System.out.println("试试冲突");
 
         if (userService.findByName(user.getName())!=null){
             JSONObject jsonObject = new JSONObject();
