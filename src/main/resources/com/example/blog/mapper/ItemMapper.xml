@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.blog.mapper.ItemMapper">
-    <select id="findItems" resultType="Item">
+    <select id="findItems" resultType="com.example.blog.model.Item">
         select * from driver limit #{limit},#{offset}
         <where>
             <!-- 重复说一下，id 不能是 int，int 默认是 0，不可能是 null, 而 Integer 可以是 null-->
