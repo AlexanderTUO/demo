@@ -37,6 +37,6 @@
         <%--})--%>
     <%--});--%>
 <%--</script>--%>
-    <script type="text/javascript" src="js/openLayers2.js"></script>
+    <script type="text/javascript" src="js/openLayers3.js"></script>
 </body>
 </html>

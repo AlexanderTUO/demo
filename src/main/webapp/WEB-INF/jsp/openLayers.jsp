@@ -25,6 +25,7 @@
             var osm = new OpenLayers.Layer.OSM();
             map.addLayer(osm);
             map.zoomToMaxExtent();
+
         }
     </script>
 </head>
