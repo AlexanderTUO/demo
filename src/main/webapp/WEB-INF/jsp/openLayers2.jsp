@@ -18,11 +18,19 @@
     </style>
     <%--<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>--%>
         <script type="text/javascript" src="openLayers-5.3.0/ol.js"></script>
-    <title>OpenLayers example</title>
+        <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+        <title>OpenLayers example</title>
 </head>
 <body>
 <h2>My Map</h2>
 <div id="map" class="map"></div>
+<label for="speed">
+    speed:
+    <input id="speed" type="range" min="10" max="999" step="10" value="60">
+</label>
+<button id="start-animation">开始</button>
+
+
 <%--<script type="text/javascript">--%>
     <%--var map = new ol.Map({--%>
         <%--target: 'map',--%>

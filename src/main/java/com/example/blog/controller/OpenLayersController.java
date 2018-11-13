@@ -24,4 +24,9 @@ public class OpenLayersController {
     public String ol_gaode() {
         return "ol_gaode";
     }
+
+    @RequestMapping("track")
+    public String track() {
+        return "track";
+    }
 }
