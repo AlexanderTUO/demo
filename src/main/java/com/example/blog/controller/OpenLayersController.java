@@ -14,4 +14,14 @@ public class OpenLayersController {
     public String toOpenLayers2() {
         return "openLayers2";
     }
+
+    @RequestMapping("toOpenLayers3")
+    public String toOpenLayers3() {
+        return "openLayers3";
+    }
+
+    @RequestMapping("ol_gaode")
+    public String ol_gaode() {
+        return "ol_gaode";
+    }
 }
