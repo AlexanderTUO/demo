@@ -23,7 +23,7 @@
 </head>
 <body>
 <h2>My Map</h2>
-<div id="map" class="map"></div>
+<div id="map" class="map" style="width: 100%;height: 700px;"></div>
 <label for="speed">
     speed:
     <input id="speed" type="range" min="10" max="999" step="10" value="60">

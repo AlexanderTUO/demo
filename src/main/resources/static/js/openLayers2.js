@@ -2,7 +2,7 @@
     var view = new ol.View({
         // center: [0, 0],
         // zoom:2
-        projection: 'EPSG4326',
+        projection: 'EPSG:4326',
         center: [115, 37],
         zoom: 6
     });
@@ -41,9 +41,9 @@
     var london = new ol.proj.fromLonLat([-0.12755, 51.507222]);//伦敦的坐标
 
     //移动到伦敦，移动时是有动画的
-    view.animate({
-        center:london
-    })
+    // view.animate({
+    //     center:london
+    // })
 
     //3秒后隐藏 layer2 显示 layer1
     setTimeout(function () {
@@ -110,7 +110,7 @@
     // });
 
     // var routeCoords = route.getCoordinates();
-    var routeLength = route.getLength;
+    var routeLength = routeCoords.length;
 
     var routeFeature = new ol.Feature({
         type: 'route',
@@ -140,14 +140,15 @@
         'icon':new ol.style.Style({
             image: new ol.style.Icon({
                 anchor: [0.5, 1],
-                src: 'data/icon.png'
+                scale: 0.3,
+                src: 'images/circle.png'
             })
         }),
-        'geoMaker':new ol.style.Style({
-            image:new ol.Style.Icon({
+        'geoMarker':new ol.style.Style({
+            image:new ol.style.Icon({
                 anchor: [0.5, 0.5],
                 scale: 0.2,
-                src: 'data/taxi.png'
+                src: 'images/air.png'
             })
         })
     }
@@ -197,7 +198,6 @@
         // layer: [layer1, layer2],//必应地图
         // layers: [vectorLayer],//矢量图层
 
-        loadTileWhileAnimating:true,//默认false
         view:view,
 
         controls: [attribution, FullScreen],//如果不设置 controls ，地图会默认设置(没有看到效果喃)
@@ -212,7 +212,7 @@
     });
 
     $('#speed').on('change', function () {
-        speed = $('speed').val();
+        speed = $('#speed').val();
     });
 
     var traversed = 0; //走过的路程

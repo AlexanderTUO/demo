@@ -29,4 +29,9 @@ public class OpenLayersController {
     public String track() {
         return "track";
     }
+
+    @RequestMapping("track2")
+    public String track2() {
+        return "track2";
+    }
 }

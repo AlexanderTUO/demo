@@ -679,9 +679,7 @@
         _history_set: function() {
           $('#tool')
             .show()
-            .html(`
-              <div class="item his_s" id="his_s">开始</div>
-            `)
+            .html("<div class='item his_s' id='his_s'>开始</div>")
             .off()
             .on('click', '#his_s', function() {
               // 隐藏
@@ -984,11 +982,11 @@
 
             $('#tool')
               .show()
-              .html(`
-                <div class="item mode_2" id="f_edit_ing">开启编辑</div>
-                <div class="item mode_2" id="f_edit_done">编辑完成</div>
-                <div class="item mode_2" id="f_edit_out">退出编辑</div>
-                `)
+              .html(
+                "<div class='item mode_2' id='f_edit_ing'>开启编辑</div>"+
+                  "<div class='item mode_2' id='f_edit_done'>编辑完成</div>"+
+                  "<div class='item mode_2' id='f_edit_out'>退出编辑</div>"
+              )
               .off()
               // 开启编辑
               .on('click', '#f_edit_ing', function() {
@@ -1012,16 +1010,16 @@
 
             $('#tool')
               .show()
-              .html(`
-                <div class="item mode_1" id="f_sel">选择样式</div>
-                <div class="item mode_1" id="f_draw_done">绘画完成</div>
-                <div class="item mode_1" id="f_in_edit">进入编辑</div>
+              .html(
+                  "<div class='item mode_1' id='f_sel'>选择样式</div>"+
+                  "<div class='item mode_1' id='f_draw_done'>绘画完成</div>"+
+                  "<div class='item mode_1' id='f_in_edit'>进入编辑</div>"+
 
-                <div class="item mode_place" >**</div>
+                  "<div class='item mode_place' >**</div>"+
 
-                <div class="item mode_red" id="f_clear">清除画布</div>
-                <div class="item mode_green" id="f_save">保存画布</div>
-                `)
+                  "<div class='item mode_red' id='f_clear'>清除画布</div>"+
+                  "<div class='item mode_greenv id='f_save'>保存画布</div>"
+                )
               .off()
               // 选择样式
               .on('click', '#f_sel', function() {
@@ -1102,30 +1100,30 @@
             shade: 0.6,
             closeBtn: 0,
             btn: false,
-            content: `
-            <div class='layer_core' id="layer_core_page">
+            content:
+            "<div class='layer_core' id='layer_core_page'>"+
 
-              <div class="title">
-                选择样式
-              </div>
+              "<div class='title'>选择样式"+
 
-              <div class="box">
-                
-                <div class="main_box" id="sel_box">
+              "</div>"+
+
+              "<div class='box'>"+
+
+                "<div class='main_box' id='sel_box'>"+
 
 
-                </div>
+                "</div>"+
 
-                <div class="tool">
-                  <div class="box">
-                    <span class="cancel" id="cancel">cancel</span>
-                    <span class="save" id="save">save</span>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-            `,
+                "<div class='tool'>"+
+                  "<div class='box'>"+
+                    "<span class='cancel' id='cancel'>cancel</span>"+
+                    "<span class='save' id='save'>save</span>"+
+                  "</div>"+
+                "</div>"+
+
+              "</div>"+
+            "</div>"
+            ,
             success: function(layero, index) {
 
               // 取消事件
@@ -1500,7 +1498,7 @@
           p_data.setStyle(new ol.style.Style({
             // 设置一个标识
             image: new ol.style.Icon({
-              src: `./img/icon_${ele.state}.png`,
+              src: './img/icon_${ele.state}.png',
 
               // 这个是相当于是进行切图了
               // size: [50,50],

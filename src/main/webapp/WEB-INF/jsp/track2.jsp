@@ -12,8 +12,8 @@
     <meta charset="UTF-8">
     <title>demo-01</title>
     <link rel="stylesheet" href="../script/lib/layer/skin/layer.css">
-    <link href="../script/lib/ol-v5.0.2-dist/ol.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="./index.css">
+    <link href="openLayers-5.3.0/ol.css" rel="stylesheet" type="text/css" />
+    <%--<link rel="stylesheet" href="./index.css">--%>
 </head>
 
 <body>
@@ -32,18 +32,12 @@
     <div id="map"></div>
 
 
-
-
-
-
-
-
 </div>
 </body>
 <!-- JQ -->
 <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
 <!-- layer -->
-<script src="../script/lib/layer/layer.js" type="text/javascript"></script>
+<script src="lib/layer.js" type="text/javascript"></script>
 <!-- ol -->
 <script src="openLayers-5.3.0/ol.js" type="text/javascript"></script>
 <!-- test -->
