@@ -116,7 +116,9 @@ $(function () {
 
     // 保存修改的元素
     function onSave() {
-        
+        if (modifiledFeatures && modifiledFeatures.getLength() > 0) {
+
+        }
     }
 
 })
