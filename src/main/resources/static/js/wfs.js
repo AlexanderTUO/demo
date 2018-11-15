@@ -58,8 +58,9 @@ $(function () {
     });
 
     // 绑定查询按钮
-    $("#query").click(queryWfs());
-
+    $("#query").click(function () {
+        queryWfs();
+    });
     function queryWfs() {
         if (wfsVectorLayer) {
             map.removeLayer(wfsVectorLayer);
@@ -80,7 +81,7 @@ $(function () {
         map.addLayer(wfsVectorLayer);
     }
 
-
+    queryWfs();
     $('#select').change(function () {
         if (this.checked) {
             // 勾选选择复选框时，添加选择器到地图
@@ -116,9 +117,45 @@ $(function () {
 
     // 保存修改的元素
     function onSave() {
+        alert("save")
         if (modifiledFeatures && modifiledFeatures.getLength() > 0) {
+            //转换坐标
+            var modifiledFeature = modifiledFeatures.item(0).clone();
+            modifiledFeature.setId(modifiledFeatures.item(0).getId());
 
+            //调换经纬度坐标，以符合wfs中经纬度的位置
+            modifiledFeature.getGeometry().applyTransform(function (flatCoordinates, flatCoordinates2, stride) {
+                for (var i = 0; i < flatCoordinates.length; i+=stride) {
+                    var y = flatCoordinates[i];
+                    var x = flatCoordinates[i + 1];
+
+                    flatCoordinates[i] = x;
+                    flatCoordinates[i + 1] = y;
+                }
+            })
+            modifyWfs([modifiledFeature]);
         }
+    }
+
+    $("#save").click(function () {
+        onSave();
+    });
+    
+    function modifyWfs(features) {
+        var WFSTSerializer = new ol.format.WFS();
+        var featObject = WFSTSerializer.writeTransaction(null, features, null, null, {
+            featureType: "nyc_roads",
+            featureNS: 'http://geoserver.org/nyc_roads',
+            srsName: 'EPSG:4326'
+        });
+
+        //转换为xml发送到服务端
+        var xmlSerializer = new XMLSerializer();
+        var featString = xmlSerializer.serializeToString(featObject);
+        var request = new XMLHttpRequest();
+        request.open("http://localhost:8080/geoserver/wfs?service=wfs");
+        request.setRequestHeader("Content-Type", "text/xml");
+        request.send(featString);
     }
 
 })
