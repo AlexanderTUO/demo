@@ -10,6 +10,8 @@
 <head>
     <link type="text/css" rel="stylesheet" href="openLayers-5.3.0/ol.css" >
     <script type="text/javascript" src="openLayers-5.3.0/ol.js"></script>
+    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="lib/zepto.js"></script>
 
     <style>
         .map {
@@ -23,6 +25,11 @@
 <%--<h2>My Map</h2>--%>
     <input type="button" value="回到原点-带动画" id="withAnim">
     <input type="button" value="回到原点-不带动画" id="noAnim">
+    绘制点的坐标为：
+    <span id="Points"></span>
+    <input type="button" value="查询" id="query">
+    <input type="checkbox" value="新增" id="add">
+    <input type="button" value="保存" id="save">
     <div id="map" class="map">
     </div>
     <script type="text/javascript" src="js/ol_gaode.js"></script>

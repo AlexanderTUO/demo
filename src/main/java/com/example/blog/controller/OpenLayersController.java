@@ -34,4 +34,9 @@ public class OpenLayersController {
     public String track2() {
         return "track2";
     }
+
+    @RequestMapping("wfs")
+    public String wfs() {
+        return "wfs";
+    }
 }
