@@ -258,6 +258,38 @@ $(function () {
         request.send(featString);
     }
 
+    function onDeleteFeature() {
+        // 删选择器选中的feature
+        if (selectInteraction.getFeatures().getLength() > 0) {
+            deleteWfs([selectInteraction.getFeatures().item(0)]);
+            // 3秒后自动更新features
+            setTimeout(function() {
+                selectInteraction.getFeatures().clear();
+                queryWfs();
+            }, 3000);
+        }
+    }
+
+    // 在服务器端删除feature
+    function deleteWfs(features) {
+        var WFSTSerializer = new ol.format.WFS();
+        var featObject = WFSTSerializer.writeTransaction(null,
+            null, features, {
+                featureType: 'nyc_roads',
+                featureNS: 'http://geoserver.org/nyc_roads',
+                srsName: 'EPSG:4326'
+            });
+        var serializer = new XMLSerializer();
+        var featString = serializer.serializeToString(featObject);
+        var request = new XMLHttpRequest();
+        request.open('POST', 'http://localhost:8080/geoserver/wfs?service=wfs');
+        request.setRequestHeader('Content-Type', 'text/xml');
+        request.send(featString);
+    }
+
+    $('#delete').click(function () {
+        onDeleteFeature();
+    })
 
 })
 
