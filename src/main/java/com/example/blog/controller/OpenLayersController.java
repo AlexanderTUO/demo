@@ -39,4 +39,9 @@ public class OpenLayersController {
     public String wfs() {
         return "wfs";
     }
+
+    @RequestMapping("wfs2")
+    public String wfs2() {
+        return "wfs2";
+    }
 }
