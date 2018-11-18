@@ -30,6 +30,11 @@ public class OpenLayersController {
         return "track";
     }
 
+    @RequestMapping("track_ex")
+    public String track_ex() {
+        return "track_ex";
+    }
+
     @RequestMapping("track2")
     public String track2() {
         return "track2";

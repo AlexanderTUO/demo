@@ -1,7 +1,7 @@
 <%--
   Created by IntelliJ IDEA.
   User: TYK
-  Date: 2018/11/15
+  Date: 2018/11/15var geometry = drawedFeature.getGeometry().clone();
   Time: 15:16
   To change this template use File | Settings | File Templates.
 --%>

@@ -45,28 +45,28 @@
 
         // 图标数据
         icon: {
-          icon_1: { type: 'icon', src: './img/1.png' },
-          icon_2: { type: 'icon', src: './img/2.png' },
-          icon_3: { type: 'icon', src: './img/3.png' },
-          icon_4: { type: 'icon', src: './img/4.png' },
-          icon_5: { type: 'icon', src: './img/5.png' },
-          icon_6: { type: 'icon', src: './img/6.png' },
-          icon_7: { type: 'icon', src: './img/7.png' },
-          icon_8: { type: 'icon', src: './img/8.png' },
-          icon_9: { type: 'icon', src: './img/9.png' },
-          icon_10: { type: 'icon', src: './img/10.png' },
-          icon_11: { type: 'icon', src: './img/11.png' },
-          icon_12: { type: 'icon', src: './img/12.png' },
-          icon_13: { type: 'icon', src: './img/13.png' },
-          icon_14: { type: 'icon', src: './img/14.png' },
-          icon_15: { type: 'icon', src: './img/15.png' },
-          icon_16: { type: 'icon', src: './img/16.png' },
-          car: { type: 'icon', src: './img/car.png' },
-          user: { type: 'icon', src: './img/user.png' },
-          Point: { type: 'Point', src: './img/Point.png' },
-          LineString: { type: 'LineString', src: './img/LineString.png' },
-          Circle: { type: 'Circle', src: './img/Circle.png' },
-          Polygon: { type: 'Polygon', src: './img/Polygon.png' },
+          icon_1: { type: 'icon', src: 'track2/img/1.png' },
+          icon_2: { type: 'icon', src: 'track2/img/2.png' },
+          icon_3: { type: 'icon', src: 'track2/img/3.png' },
+          icon_4: { type: 'icon', src: 'track2/img/4.png' },
+          icon_5: { type: 'icon', src: 'track2/img/5.png' },
+          icon_6: { type: 'icon', src: 'track2/img/6.png' },
+          icon_7: { type: 'icon', src: 'track2/img/7.png' },
+          icon_8: { type: 'icon', src: 'track2/img/8.png' },
+          icon_9: { type: 'icon', src: 'track2/img/9.png' },
+          icon_10: { type: 'icon', src: 'track2/img/10.png' },
+          icon_11: { type: 'icon', src: 'track2/img/11.png' },
+          icon_12: { type: 'icon', src: 'track2/img/12.png' },
+          icon_13: { type: 'icon', src: 'track2/img/13.png' },
+          icon_14: { type: 'icon', src: 'track2/img/14.png' },
+          icon_15: { type: 'icon', src: 'track2/img/15.png' },
+          icon_16: { type: 'icon', src: 'track2/img/16.png' },
+          car: { type: 'icon', src: 'track2/img/car.png' },
+          user: { type: 'icon', src: 'track2/img/user.png' },
+          Point: { type: 'Point', src: 'track2/img/Point.png' },
+          LineString: { type: 'LineString', src: 'track2/img/LineString.png' },
+          Circle: { type: 'Circle', src: 'track2/img/Circle.png' },
+          Polygon: { type: 'Polygon', src: 'track2/img/Polygon.png' },
         },
         // 选择的绘制模式的ID
         type_id: '',
@@ -541,7 +541,7 @@
           p_data.setStyle(new ol.style.Style({
             // 设置一个标识
             image: new ol.style.Icon({
-              src: './img/user.png',
+              src: 'track2/img/user.png',
 
               // 这个是相当于是进行切图了
               // size: [50,50],
@@ -720,7 +720,7 @@
             new ol.style.Style({
               // 设置一个标识
               image: new ol.style.Icon({
-                src: './img/user.png',
+                src: 'track2/img/user.png',
 
                 // 这个是相当于是进行切图了
                 // size: [50,50],
@@ -1151,14 +1151,14 @@
           var str = '';
           // 加载图标
           for (var name in me.conf.fence.icon) {
-            str += `
-                <div class="normal">
-                  <div class="box" type=${me.conf.fence.icon[name].type} type_id=${name}>
-                    <div class="title">${name}</div>
-                    <img src=${me.conf.fence.icon[name].src} alt="">
-                  </div>
-                </div>
-                `;
+            str +=
+                "<div class='normal'>"+
+                  "<div class='box' type=${me.conf.fence.icon[name].type} type_id=${name}>"+
+                    "<div class='title'>${name}</div>"+
+                    "<img src=${me.conf.fence.icon[name].src} alt=''>"+
+                  "</div>"+
+                "</div>"
+                ;
           }
 
           $('#sel_box').html(str);
@@ -1498,7 +1498,7 @@
           p_data.setStyle(new ol.style.Style({
             // 设置一个标识
             image: new ol.style.Icon({
-              src: './img/icon_${ele.state}.png',
+              src: 'track2/img/icon_${ele.state}.png',
 
               // 这个是相当于是进行切图了
               // size: [50,50],
@@ -1577,7 +1577,7 @@
               })
             }),
 
-            logo: { src: './img/1.png', href: 'http://www.baidu.com' },
+            logo: { src: 'track2/img/1.png', href: 'http://www.baidu.com' },
 
             // ol.View 设置显示地图的视图
             view: new ol.View({

@@ -11,9 +11,9 @@
 <head>
     <meta charset="UTF-8">
     <title>demo-01</title>
-    <link rel="stylesheet" href="../script/lib/layer/skin/layer.css">
+    <link rel="stylesheet" href="lib/theme/default/layer.css">
     <link href="openLayers-5.3.0/ol.css" rel="stylesheet" type="text/css" />
-    <%--<link rel="stylesheet" href="./index.css">--%>
+    <link rel="stylesheet" href="css/index.less">
 </head>
 
 <body>
@@ -44,6 +44,7 @@
 <script src="track2/test_data.js" type="text/javascript"></script>
 <!-- main -->
 <script src="track2/index.js" type="text/javascript"></script>
+
 <script type="text/javascript">
     $(function() {
         new CC().init();
