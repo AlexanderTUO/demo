@@ -1498,7 +1498,8 @@
           p_data.setStyle(new ol.style.Style({
             // 设置一个标识
             image: new ol.style.Icon({
-              src: 'track2/img/icon_${ele.state}.png',
+              src: 'track2/img/${ele.state}.png',
+              // src: 'track2/img/icon_${ele.state}.png',
 
               // 这个是相当于是进行切图了
               // size: [50,50],

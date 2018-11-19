@@ -49,4 +49,9 @@ public class OpenLayersController {
     public String wfs2() {
         return "wfs2";
     }
+
+    @RequestMapping("markerAnimation")
+    public String markerAnimation() {
+        return "markerAnimation";
+    }
 }
