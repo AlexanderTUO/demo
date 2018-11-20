@@ -35,7 +35,32 @@ $(function () {
 
     //根据选择类型进行交互绘制
     function addInteraction() {
-
+        var value = typeSelect.value;
+        if (value !== null) {
+            if (source == null) {
+                source = new ol.source.Vector({
+                    wrapX:false
+                });
+                vectorLayer.setSource(source);
+            }
+            var geometryFunction, maxPoints;
+            if (value == 'Square') {
+                value = 'Circle';
+                geometryFunction = new ol.interaction.Draw.createRegularPolygon(4);
+            }else if (value == 'Box') {
+                value = 'LineString';
+                geometryFunction = function (coordinates, geometry) {
+                    if (!geometry) {
+                        geometry = new ol.geom.Polygon(null);
+                    }
+                    var start = coordinates[0];
+                    var end = coordinates[1];
+                    geometry.setCoordinates([
+                        start,[]
+                    ])
+                }
+            }
+        }
     }
 
     typeSelect.onchange = function (ev) {
