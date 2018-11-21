@@ -13,11 +13,12 @@
     <script src="openLayers-5.3.0/ol.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="js/interaction.js"></script>
+
 </head>
 <body>
-    <label>几何图形类型：$nbsp</label>
-    <div id="type">
-        <select>
+    <div id="menu">
+        <label>几何图形类型：&nbsp;</label>
+        <select id="type">
             <option value="None">无</option>
             <option value="Point">点</option>
             <option value="LineString">线</option>

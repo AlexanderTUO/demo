@@ -54,4 +54,14 @@ public class OpenLayersController {
     public String markerAnimation() {
         return "markerAnimation";
     }
+
+    @RequestMapping("interaction")
+    public String interaction() {
+        return "interaction";
+    }
+
+    @RequestMapping("modifyFeatures")
+    public String modifyFeatures() {
+        return "modifyFeatures";
+    }
 }
