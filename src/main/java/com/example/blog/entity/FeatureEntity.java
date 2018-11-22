@@ -1,4 +1,4 @@
-package com.example.blog.model;
+package com.example.blog.entity;
 
 import lombok.Data;
 
@@ -8,8 +8,10 @@ import lombok.Data;
  * @Description:
  */
 @Data
-public class Feature {
+public class FeatureEntity {
+    private Integer id;
+    private String name;
+    private String city;
     private String type;
-    private String attr;
     private String geometry;
 }

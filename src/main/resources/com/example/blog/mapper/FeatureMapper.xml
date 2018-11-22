@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.mapper.FeatureMapper">
+    <select id="listFeatures" resultType="com.example.blog.entity.FeatureEntity">
+        select * from feature
+    </select>
+
+    <select id="getTotalRows" resultType="Integer">
+        select count(*) from driver
+        <!--<where>-->
+        <!--&lt;!&ndash; 重复说一下，id 不能是 int，int 默认是 0，不可能是 null, 而 Integer 可以是 null&ndash;&gt;-->
+        <!--<if test="id!=null">-->
+        <!--id=#{id}-->
+        <!--</if>-->
+        <!--<if test="name!=null">-->
+        <!--and name=#{name}-->
+        <!--</if>-->
+        <!--</where>-->
+    </select>
+
+    <insert id="saveFeature">
+        insert into feature(
+          `type`,`name`,city,geometry
+        )values(
+          #{type},#{name},#{city},#{geometry}
+        )
+    </insert>
+</mapper>
+

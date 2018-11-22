@@ -14,6 +14,7 @@ $(document).ready(function () {
     var OSM = new ol.layer.Tile({
         source: new ol.source.OSM()
     })
+
     map.addLayer(OSM);
 
     var style = new ol.style.Style({
@@ -48,7 +49,7 @@ $(document).ready(function () {
 
 
     var typeSelect = document.getElementById('type');
-    var draw;
+    var draw = null;
     /**
      * 用户更改绘制类型触发的事件
      * @param ev 更改事件
@@ -57,7 +58,7 @@ $(document).ready(function () {
         map.removeInteraction(draw);
         addInteraction();
     }
-
+    addInteraction();
 
     var geoStr = null;
     var currentFeature = null;
@@ -70,26 +71,8 @@ $(document).ready(function () {
             type: type,
             source: vectorLayer.getSource()
         });
-
         map.addInteraction(draw);
-        draw.on('drawend',drawAndCallBack,this)
-    }
-
-    /**
-     * 绘制结束后的回调函数
-     * @param e
-     */
-    function drawAndCallBack(e) {
-        var geoType = document.getElementById('geoType');
-        currentFeature = e.features;
-        var geometry = currentFeature.getGeometry();
-        var coordinates = geometry.getCoordinates();
-
-        if (geoType == 'Polygon') {
-            geoStr = coordinates[0].join(';');
-        } else {
-            geoStr = coordinates.join(';')
-        }
+        draw.on('drawend', drawAndCallBack,this);
     }
 
 
@@ -112,7 +95,6 @@ $(document).ready(function () {
                     $('#geoType,#infoType').val('Polygon');
                     break;
                 default:
-
             }
         },
         buttons:{
@@ -130,18 +112,80 @@ $(document).ready(function () {
 
     })
 
+    /**
+     * 绘制结束后的回调函数
+     * @param e
+     */
+    function drawAndCallBack(e) {
+        var geoType = $("#type option:selected").val();
+        currentFeature = e.feature;
+        $("#dialog-confirm").dialog("open");
+        var geometry = currentFeature.getGeometry();
+        var coordinates = geometry.getCoordinates();
+
+        if (geoType == 'Polygon') {
+            geoStr = coordinates[0].join(';');
+        } else {
+            geoStr = coordinates.join(';')
+        }
+    }
+
+
+
+
+
+
     function submitData() {
         var geoType = $('#type option:selected').val();
         var name = $('#name').val();
         var city = $('#city').val();
-        var attrData = name + city;
+        var attrData = name + "," + city;
         if (geoStr != null) {
             saveData(geoType, attrData, geoStr);
             currentFeature = null;
             geoStr = null;
         } else {
-            alert()
+            alert('未得到任何绘制图形信息！');
             vectorLayer.getSource().removeFeature(currentFeature);
         }
     };
+
+    /**
+     * 提交数据到后台保存
+     * @param geoType
+     * @param attrData
+     * @param geoStr
+     */
+    function saveData(geoType, attrData, geoStr) {
+
+        var data = {
+            type: geoType,
+            attr: attrData,
+            geometry: geoStr
+        };
+
+        $.ajax({
+            url: '/Feature/save',
+            type: "POST",
+            data: JSON.stringify(data),//必要
+            dataType:"json",
+            contentType:"application/json",
+            success:function(response){
+                alert(response);
+            },
+            error:function (err) {
+                alert('执行失败')
+            }
+        });
+    }
+    
+    $("#query").click(function () {
+        $.ajax({
+            url: '/Feature/query',
+            type: "get",
+            success:function (data) {
+                
+            }
+        })
+    })
 })

@@ -64,4 +64,9 @@ public class OpenLayersController {
     public String modifyFeatures() {
         return "modifyFeatures";
     }
+
+    @RequestMapping("saveFeatures")
+    public String saveFeatures() {
+        return "saveFeatures";
+    }
 }

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="openLayers-5.3.0/ol.css" type="text/css" />
     <script src="openLayers-5.3.0/ol.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui.js"></script>
     <script type="text/javascript" src="js/saveFeatures.js"></script>
     <link rel="stylesheet" href="css/saveFeatures.css">
 </head>
@@ -23,6 +24,8 @@
         <option value="LineString">线</option>
         <option value="Polygon">面</option>
     </select>
+    <input type="button" value="清空" id="empty">
+    <input type="button" value="查询" id="query">
 </div>
 <div id="dialog-confirm" title="图形属性信息设置">
     <label >图形类型（GeoType）：</label>
@@ -30,14 +33,14 @@
         <option value="Point" selected="selected" disabled="disabled">点</option>
         <option value="LineString" disabled="disabled">线</option>
         <option value="Polygon" disabled="disabled">多边形</option>
-    </select>
+    </select><br/>
     <label >信息类别（infoType）：</label>
     <select id="infoType">
         <option value="Point" selected="selected" disabled="disabled">兴趣点</option>
         <option value="LineString" disabled="disabled">道路线</option>
         <option value="Polygon" disabled="disabled">高校区域</option>
-    </select>
-    <label>名称（name）：<input id='name' type="text" value=""></label>
+    </select><br/>
+    <label>名称（name）：<input id='name' type="text" value=""></label><br/>
     <label>省市（city）：<input id='city' type="text" value=""></label>
 </div>
 <div id="map"></div>
