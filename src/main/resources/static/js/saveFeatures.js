@@ -122,7 +122,7 @@ $(document).ready(function () {
         $("#dialog-confirm").dialog("open");
         var geometry = currentFeature.getGeometry();
         var coordinates = geometry.getCoordinates();
-
+        debugger
         if (geoType == 'Polygon') {
             geoStr = coordinates[0].join(';');
         } else {
