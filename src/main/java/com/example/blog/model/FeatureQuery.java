@@ -8,7 +8,7 @@ import lombok.Data;
  * @Description:
  */
 @Data
-public class Feature {
+public class FeatureQuery {
     private String type;
     private String attr;
     private String geometry;

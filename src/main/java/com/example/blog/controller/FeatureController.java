@@ -1,7 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.entity.FeatureEntity;
-import com.example.blog.model.Feature;
+import com.example.blog.model.FeatureQuery;
 import com.example.blog.service.FeatureService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ public class FeatureController {
 
     @RequestMapping(value = {"save", "save"}, method = RequestMethod.POST)
     @ResponseBody
-    public String saveFeature(@RequestBody Feature feature) {
+    public String saveFeature(@RequestBody FeatureQuery featureQuery) {
         FeatureEntity featureEntity = new FeatureEntity();
-        BeanUtils.copyProperties(feature,featureEntity);
-        String attrData = feature.getAttr();
+        BeanUtils.copyProperties(featureQuery,featureEntity);
+        String attrData = featureQuery.getAttr();
         String attr[] = attrData.split(",");
         String name = attr[0];
         String city = attr[1];

@@ -82,12 +82,12 @@
         source: new ol.source.Vector({
             features: [routeFeature, geoMarker, startMarker, endMarker]
         }),
-        style: function(feature) {
+        style: function(featureQuery) {
             // hide geoMarker if animation is active
-            if (animating && feature.get('type') === 'geoMarker') {
+            if (animating && featureQuery.get('type') === 'geoMarker') {
                 return null;
             }
-            return styles[feature.get('type')];
+            return styles[featureQuery.get('type')];
         }
     });
 

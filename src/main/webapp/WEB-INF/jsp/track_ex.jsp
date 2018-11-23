@@ -80,8 +80,8 @@
     // map.addInteraction(drawInteraction);
     drawInteraction.on('drawend', function(e) {
         // 绘制结束时暂存绘制的feature
-        drawedFeature = e.feature;
-        routeCoords = e.feature.getGeometry().getCoordinates();
+        drawedFeature = e.featureQuery;
+        routeCoords = e.featureQuery.getGeometry().getCoordinates();
         animation();
     });
 
@@ -177,12 +177,12 @@
             source: new ol.source.Vector({
                 features: [routeFeature, geoMarker, startMarker, endMarker]
             }),
-            style: function(feature) {
+            style: function(featureQuery) {
                 // hide geoMarker if animation is active
-                if (animating && feature.get('type') === 'geoMarker') {
+                if (animating && featureQuery.get('type') === 'geoMarker') {
                     return null;
                 }
-                return styles[feature.get('type')];
+                return styles[featureQuery.get('type')];
             }
         });
 
@@ -220,8 +220,8 @@
                 }
                 //设置车的位置
                 var currentPoint = new ol.geom.Point(routeCoords[traversed]);
-                var feature = new Feature(currentPoint);
-                vectorContext.drawFeature(feature, styles.geoMarker);
+                var featureQuery = new Feature(currentPoint);
+                vectorContext.drawFeature(featureQuery, styles.geoMarker);
                 geoMarker.setGeometry(currentPoint);
             }
             map.render();
