@@ -237,9 +237,8 @@ $(document).ready(function () {
     // 地图点击事件
     map.on('click',function (ev) {
         var element = popup.getElement();
-        var popCoordinate = ev.coordinates;
-        var hdms = ol.coordinate.toStringHDMS(toLonLat(popCoordinate));
-
+        var popCoordinate = ev.coordinate;
+        var hdms = ol.coordinate.toStringHDMS(popCoordinate);
         $(element).popover('destroy');
         popup.setPosition(popCoordinate);
         $(element).popover({
