@@ -245,7 +245,7 @@ $(document).ready(function () {
             placement: 'top',
             animation: false,
             html: true,
-            content: '<p>您当前位置为</p><code>' + hdms + '</code>'
+            content: '<p>您当前位置为：</p><code>' + hdms + '</code>'
         })
         $(element).popover('show');
     });
