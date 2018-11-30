@@ -73,7 +73,8 @@ $(document).ready(function () {
 
     // 矢量图层
     var vectorLayer = new ol.layer.Vector({
-        style: style
+        style: style,
+        opacity: 0.5
     })
     vectorLayer.setSource(VectorSource);
     map.addLayer(vectorLayer);
@@ -100,7 +101,7 @@ $(document).ready(function () {
         map.removeInteraction(draw);
         addInteraction();
     }
-    addInteraction();
+    // addInteraction();
 
     var geoStr = null;
     var currentFeature = null;
