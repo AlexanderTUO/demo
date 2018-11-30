@@ -74,4 +74,14 @@ public class OpenLayersController {
     public String hotSpots() {
         return "hotSpots";
     }
+
+    @RequestMapping("hotSpots1")
+    public String hotSpots1() {
+        return "hotSpots1";
+    }
+
+    @RequestMapping("date")
+    public String date() {
+        return "date";
+    }
 }

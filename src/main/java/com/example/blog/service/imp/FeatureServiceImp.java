@@ -29,4 +29,9 @@ public class FeatureServiceImp implements FeatureService {
         List<FeatureEntity> list = featureMapper.listFeatures();
         return list;
     }
+
+    @Override
+    public void deleteFeature(String regId) {
+        featureMapper.deleteFeature(regId);
+    }
 }

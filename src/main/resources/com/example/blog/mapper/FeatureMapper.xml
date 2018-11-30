@@ -25,5 +25,9 @@
           #{type},#{name},#{city},#{geometry}
         )
     </insert>
+
+    <delete id="deleteFeature">
+        delete from feature where id= #{regId};
+    </delete>
 </mapper>
 

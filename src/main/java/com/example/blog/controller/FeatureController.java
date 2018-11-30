@@ -6,10 +6,7 @@ import com.example.blog.service.FeatureService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,5 +44,14 @@ public class FeatureController {
         List<FeatureEntity> list = featureService.list();
         return list;
     }
+
+    @RequestMapping("delete/{regId}")
+    @ResponseBody
+    public String deleteFeature(@PathVariable String regId) {
+        List<FeatureEntity> list = featureService.list();
+        return "删除成功";
+    }
+
+
 
 }

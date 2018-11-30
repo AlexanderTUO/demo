@@ -166,18 +166,27 @@ $(document).ready(function () {
         var geometry = currentFeature.getGeometry();
         var coordinates = geometry.getCoordinates();
         if (geoType == 'Polygon') {
-            geoStr = coordinates[0].join('],[');
-            geoStr = "[[[" + geoStr + "]]]";
+            geoStr = coordinates.join(',');
+            geoStr = "[" + geoStr + "]";
         } else if (geoType == "LineString") {
             geoStr = coordinates.join('],[');
             geoStr = "[[" + geoStr + "]]";
         } else {
-            geoStr = coordinates.join(',');
-            geoStr = "[" + geoStr + "]";
+            geoStr = coordinates[0].join('],[');
+            geoStr = "[[[" + geoStr + "]]]";
         }
     }
 
-
+    /**
+     * 在地图容器中创建一个Overlay
+     */
+    var element = document.getElementById('popup');
+    var popup = new ol.Overlay(/** @type {olx.OverlayOptions} */({
+        element: element,
+        positioning: 'bottom-center',
+        stopEvent: false
+    }));
+    map.addOverlay(popup);
 
 
 
@@ -270,71 +279,203 @@ $(document).ready(function () {
         selectReg();
     })
 
-    /**
-     * 在地图容器中创建一个Overlay
-     */
-    var element = document.getElementById('popup');
-    var popup = new ol.Overlay(/** @type {olx.OverlayOptions} */({
-        element: element,
-        positioning: 'bottom-center',
-        stopEvent: false
-    }));
-    map.addOverlay(popup);
+
 
     // 鼠标移动监听事件
+    // function pointermoveFun(e) {
+    //     var pixel = map.getEventPixel(e.originalEvent);
+    //     var hit = map.hasFeatureAtPixel(pixel);
+    //     map.getTargetElement().style.cursor = hit ? "point" : '';
+    //     if (hit) {
+    //         var feature = map.forEachFeatureAtPixel(e.pixel,
+    //             function (feature, layer) {
+    //                 return feature;
+    //             });
+    //         // 如果要素存在
+    //         if (feature) {
+    //             hotSpotLayer.setVisible(true);
+    //             // 如果选中要素与先前要素相同
+    //             if (preFeature != null) {
+    //                 if (preFeature === feature) {
+    //                     flag = true;
+    //                 } else {
+    //                     flag = false;
+    //                     hotSpotSource.removeFeature(preFeature);
+    //                     preFeature = feature;
+    //                 }
+    //             }
+    //             // 如果选中要素与先前要素不同
+    //             if (!flag) {
+    //                 $(element).popover('destroy');
+    //                 flashFeature = feature;
+    //                 flashFeature.setStyle(flashStyle);
+    //                 hotSpotSource.addFeature(flashFeature);
+    //                 hotSpotLayer.setVisible(true);
+    //                 preFeature = flashFeature;
+    //             }
+    //
+    //             // 弹出pop显示信息
+    //             popup.setPosition(e.coordinate);
+    //             $(element).popover({
+    //                 placement: 'top',
+    //                 html: true,
+    //                 content: feature.get('name')
+    //             });
+    //             $(element).css('width', '120px');
+    //             $(element).popover('show');
+    //         } else {
+    //             hotSpotSource.clear();
+    //             flashFeature = null;
+    //             $(element).popover('destroy');
+    //             hotSpotLayer.setVisible(false);
+    //         }
+    //     } else {
+    //         $(element).popover('destroy');
+    //         hotSpotLayer.setVisible(false);
+    //     }
+    //
+    // }
+    /**
+     * 鼠标移动事件监听处理函数（添加热区功能）
+     */
     function pointermoveFun(e) {
         var pixel = map.getEventPixel(e.originalEvent);
         var hit = map.hasFeatureAtPixel(pixel);
-        map.getTargetElement().style.cursor = hit ? "point" : '';
+        map.getTargetElement().style.cursor = hit ? 'pointer' : '';//改变鼠标光标状态
+
         if (hit) {
+            //当前鼠标位置选中要素
             var feature = map.forEachFeatureAtPixel(e.pixel,
                 function (feature, layer) {
                     return feature;
                 });
-            // 如果要素存在
+            //如果当前存在热区要素                   
             if (feature) {
+                //显示热区图层
                 hotSpotLayer.setVisible(true);
-                // 如果选中要素与先前要素相同
+                //控制添加热区要素的标识（默认为false）
                 if (preFeature != null) {
                     if (preFeature === feature) {
-                        flag = true;
-                    } else {
-                        flag = false;
-                        hotSpotSource.removeFeature(preFeature);
-                        preFeature = feature;
+                        flag = true; //当前鼠标选中要素与前一个选中要素相同
+                    }
+                    else {
+
+                        flag = false; //当前鼠标选中要素不是前一个选中要素
+                        hotSpotSource.removeFeature(preFeature); //将前一个热区要素移除
+                        preFeature = feature; //更新前一个热区要素对象
                     }
                 }
-                // 如果选中要素与先前要素不同
+                //如果当前选中要素与之前选中要素不同，在热区绘制层添加当前要素
                 if (!flag) {
-                    $(element).popover('destroy');
-                    flashFeature = feature;
-                    flashFeature.setStyle(flashStyle);
-                    hotSpotSource.addFeature(flashFeature);
-                    hotSpotLayer.setVisible(true);
-                    preFeature = flashFeature;
+                    $(element).popover('destroy'); //销毁popup
+                    flashFeature = feature; //当前热区要素
+                    flashFeature.setStyle(flashStyle); //设置要素样式
+                    hotSpotSource.addFeature(flashFeature); //添加要素
+                    hotSpotLayer.setVisible(true); //显示热区图层
+                    preFeature = flashFeature; //更新前一个热区要素对象                           
                 }
-
-                // 弹出pop显示信息
-                popup.setPosition(e.coordinate);
+                //弹出popup显示热区信息
+                popup.setPosition(e.coordinate); //设置popup的位置
                 $(element).popover({
                     placement: 'top',
                     html: true,
                     content: feature.get('name')
                 });
-                $(element).css('width', '120px');
-                $(element).popover('show');
-            } else {
-                hotSpotSource.clear();
-                flashFeature = null;
-                $(element).popover('destroy');
-                hotSpotLayer.setVisible(false);
-            }
-        } else {
-            $(element).popover('destroy');
-            hotSpotLayer.setVisible(false);
-        }
+                $(element).css("width", "120px");
+                $(element).popover('show'); //显示popup
 
+            }
+            else {
+                hotSpotSource.clear(); //清空热区图层数据源
+                flashFeature = null; //置空热区要素
+                $(element).popover('destroy'); //销毁popup
+                hotSpotLayer.setVisible(false); //隐藏热区图层
+            }
+        }
+        else {
+            $(element).popover('destroy'); //销毁popup
+            hotSpotLayer.setVisible(false); //隐藏热区图层
+        }
     }
+    // 单击事件
+    function singleclickFun(e) {
+        var pixel = map.getEventPixel(e.originalEvent);
+        var hit = map.hasFeatureAtPixel(pixel);
+        map.getTargetElement().style.cursor = hit ? "point" : '';
+
+        var feature = map.forEachFeatureAtPixel(e.pixel,
+            function (feature, layer) {
+                return feature;
+            })
+        if (!feature) {
+            $("#dialog-delete").dialog("open");
+            currentFeature = feature;
+        }
+    }
+
+    // 初始化删除要素信息设置对话框
+    $("#dialog-delete").dialog(
+        {
+            modal: true,  // 创建模式对话框
+            autoOpen: false, //默认隐藏对话框
+            //对话框打开时默认设置
+            open: function (event, ui) {
+                $(".ui-dialog-titlebar-close", $(this).parent()).hide(); //隐藏默认的关闭按钮
+            },
+            //对话框功能按钮
+            buttons: {
+                "删除": function () {
+                    deleteReg(currentFeature);  //通过后台删除数据库中的热区要素数据并同时删除前端绘图
+                    $(this).dialog('close'); //关闭对话框
+                },
+                "取消": function () {
+                    $(this).dialog('close'); //关闭对话框
+
+                }
+            }
+        });
+
+    function deleteReg(feature) {
+        debugger;
+        var regId = feature.get('id');
+        $().ajax({
+            url: 'feature/delete'+regId,
+            type: "get",
+            success: function (data) {
+                alert(data);
+            },
+            error:function () {
+                alert('删除失败');
+            }
+        })
+    }
+
+    /**
+     * 【删除热区】功能按钮处理函数
+     */
+    document.getElementById('deleteReg').onclick = function () {
+        map.un('pointermove', pointermoveFun, this); //移除鼠标移动事件监听
+
+        map.un('singleclick', singleclickFun, this); //移除鼠标单击事件监听
+        map.on('singleclick', singleclickFun, this); //添加鼠标单击事件监听
+    };
+
+    /**
+     * 【绘制热区】功能按钮处理函数
+     */
+    document.getElementById('drawReg').onclick = function () {
+        map.removeInteraction(draw); //移除绘制控件
+        map.un('singleclick', singleclickFun, this); //移除鼠标单击事件监听
+
+        //实例化交互绘制类对象并添加到地图容器中
+        draw = new ol.interaction.Draw({
+            source: vectorLayer.getSource(), //绘制层数据源
+            type: /** @type {ol.geom.GeometryType} */"Polygon"  //几何图形类型
+        });
+        map.addInteraction(draw);
+        //添加绘制结束事件监听，在绘制结束后保存信息到数据库
+        draw.on('drawend', drawAndCallBack, this);
+    };
 })
 
 

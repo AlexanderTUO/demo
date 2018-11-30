@@ -1,6 +1,7 @@
 package com.example.blog.mapper;
 
 import com.example.blog.entity.FeatureEntity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface FeatureMapper {
     void saveFeature(FeatureEntity featureEntity);
 
     List<FeatureEntity> listFeatures();
+
+    void deleteFeature(@Param("regId") String regId);
 }
