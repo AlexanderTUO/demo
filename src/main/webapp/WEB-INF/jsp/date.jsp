@@ -36,23 +36,57 @@
                         fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
                 return fmt;
             }
-            // 当天
-            var systemDate = new Date();
-            var curDay = systemDate.Format("yyyy-MM-dd");
-            $('#curDay').val(curDay);
 
-            systemDate.setDate(1);
-            var firstDay = systemDate.Format("yyyy-MM-dd");
-            $('#firstDay').val(firstDay);
+            /**
+             * 当月的天数问题
+             */
+            function monthData() {
+                // 当天
+                var monthData = new Date();
+                var curDay = monthData.Format("yyyy-MM-dd");
+                $('#curDay').val(curDay);
 
-            var currentMonth = systemDate.getMonth();
-            var nextMonth = ++currentMonth;
-            var nextMonthFirstDay = new Date(systemDate.getFullYear(), nextMonth, 1);
-            var oneDay = 24 * 60 * 60 * 1000;
-            var end = new Date(nextMonthFirstDay - oneDay);
+                // 第一天
+                monthData.setDate(1);
+                var firstDay = monthData.Format("yyyy-MM-dd");
+                $('#firstDay').val(firstDay);
 
-            var lastDay = end.Format("yyyy-MM-dd");
-            $('#lastDay').val(lastDay);
+                // 最后一天
+                var currentMonth = monthData.getMonth();
+                var nextMonth = ++currentMonth;
+                var nextMonthFirstDay = new Date(monthData.getFullYear(), nextMonth, 1);
+                var oneDay = 24 * 60 * 60 * 1000;
+                var end = new Date(nextMonthFirstDay - oneDay);
+
+                var lastDay = end.Format("yyyy-MM-dd");
+                $('#lastDay').val(lastDay);
+            }
+
+            monthData();
+
+
+            /**
+             * 本周天数问题
+             */
+            function weekDate() {
+                var weekDate = new Date();
+                var curWeekDate = weekDate.Format("yyyy-MM-dd");
+                $("#curWeekDay").val(curWeekDate);
+
+                // 本周第一天
+                var day = weekDate.getDay() == 0 ? 7 : weekDate.getDay();
+
+                weekDate.setDate(weekDate.getDate() - day+1);
+                var firstWeekDay = weekDate.Format("yyyy-MMM-dd");
+                $("#firstWeekDay").val(firstWeekDay);
+
+                // 本周最后一天
+                // var day2 = 7-weekDate.getDay()==7 ? 0 : 7-weekDate.getDay();
+                weekDate.setDate(weekDate.getDate()+6);
+                var lastWeekDay = weekDate.Format("yyyy-MMM-dd");
+                $("#lastWeekDay").val(lastWeekDay);
+            }
+            weekDate();
 
 
         })
@@ -62,6 +96,17 @@
 </head>
 <body>
     <div class="container">
+        <h2>当周天数问题</h2>
+        <label for="firstWeekDay">当周第一天：</label>
+        <input id="firstWeekDay"/><br/>
+
+        <label>当周当天：</label>
+        <input id="curWeekDay"/><br/>
+
+        <label for="lastWeekDay">当周最后一天：</label>
+        <input id="lastWeekDay"/><br/>
+
+        <h2>本月天数问题</h2>
         <label for="firstDay">本月第一天：</label>
         <input id="firstDay"/><br/>
 

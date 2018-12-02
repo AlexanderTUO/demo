@@ -67,7 +67,7 @@ $(document).ready(function () {
         map.removeInteraction(draw);
         addInteraction();
     }
-    // addInteraction();
+    addInteraction();
 
     var geoStr = null;
     var currentFeature = null;
@@ -226,27 +226,6 @@ $(document).ready(function () {
         })
     })
 
-    // 气泡popup
-    var popup = new ol.Overlay({
-        element: document.getElementById('popup')
-    })
-    map.addOverlay(popup);
-
-    // 地图点击事件
-    map.on('click',function (ev) {
-        var element = popup.getElement();
-        var popCoordinate = ev.coordinate;
-        var hdms = ol.coordinate.toStringHDMS(popCoordinate);
-        $(element).popover('destroy');
-        popup.setPosition(popCoordinate);
-        $(element).popover({
-            placement: 'top',
-            animation: false,
-            html: true,
-            content: '<p>您当前位置为：</p><code>' + hdms + '</code>'
-        })
-        $(element).popover('show');
-    });
 })
 
 
