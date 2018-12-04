@@ -165,7 +165,7 @@ $(document).ready(function () {
         $("#dialog-confirm").dialog("open");
         var geometry = currentFeature.getGeometry();
         var coordinates = geometry.getCoordinates();
-        if (geoType == 'Polygon') {
+        if (geoType == 'Point') {
             geoStr = coordinates.join(',');
             geoStr = "[" + geoStr + "]";
         } else if (geoType == "LineString") {

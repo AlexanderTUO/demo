@@ -130,7 +130,7 @@ $(document).ready(function () {
                     }
                 }
 
-                map.on('pointermove',pointermoveFun,this)
+                map.on('pointermove', pointermoveFun, this);
             }
         })
     }
@@ -163,7 +163,7 @@ $(document).ready(function () {
             });
             vectSource.addFeature(feature);
         });
-        map.on('pointermove', pointermoveFun,this); //添加鼠标移动事件监听，捕获要素时添加热区功能
+        // map.on('pointermove', pointermoveFun,this); //添加鼠标移动事件监听，捕获要素时添加热区功能
     }
 
     /**
@@ -234,17 +234,18 @@ $(document).ready(function () {
      * 绘制结束事件的回调函数，
      * @param {ol.interaction.DrawEvent} evt 绘制结束事件
      */
-    function drawEndCallBack(evt) {
+    function drawEndCallBack(e) {
         map.removeInteraction(draw); //移除绘制控件
 
         var geoType = "Polygon"; //绘制图形类型
         $("#dialog-confirm").dialog("open"); //打开属性信息设置对话框
-        currentFeature = evt.feature; //当前绘制的要素
+        currentFeature = e.feature; //当前绘制的要素
         var geo = currentFeature.getGeometry(); //获取要素的几何信息
         var coordinates = geo.getCoordinates(); //获取几何坐标
         //将几何坐标拼接为字符串
         if (geoType == "Polygon") {
-            geoStr = coordinates[0].join(";");
+            geoStr = coordinates[0].join('],[');
+            geoStr = "[[[" + geoStr + "]]]";
         }
         else {
             geoStr = coordinates.join(";");
@@ -257,9 +258,11 @@ $(document).ready(function () {
      * @param {string} attData 区属性数据
      */
     function saveData( geoData, attData) {
+        var geoType = "Polygon"; //绘制图形类型
         var data = {
             attr: attData,
-            geometry: geoStr
+            geometry: geoStr,
+            type:geoType
         };
         $.ajax({
             url: '/Feature/save',
@@ -310,6 +313,7 @@ $(document).ready(function () {
                 "提交": function () {
                     submitData(); //提交几何与属性信息到后台处理
                     $(this).dialog('close'); //关闭对话框
+
                 },
                 "取消": function () {
                     $(this).dialog('close'); //关闭对话框
@@ -342,11 +346,12 @@ $(document).ready(function () {
      */
     function deleteData(feature) {
         var regId = feature.get('id');
-        $().ajax({
-            url: 'feature/delete'+regId,
-            type: "get",
+        $.ajax({
+            url: '/Feature/delete/'+regId,
+            type: "GET",
             success: function (data) {
                 alert(data);
+                selectRegData();
             },
             error:function () {
                 alert('删除失败');

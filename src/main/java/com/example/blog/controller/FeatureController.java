@@ -45,13 +45,11 @@ public class FeatureController {
         return list;
     }
 
-    @RequestMapping("delete/{regId}")
+    @RequestMapping(value = "delete/{regId}")
     @ResponseBody
-    public String deleteFeature(@PathVariable String regId) {
-        List<FeatureEntity> list = featureService.list();
+    public String deleteFeature(@PathVariable("regId") String regId) {
+        featureService.deleteFeature(regId);
         return "删除成功";
     }
-
-
 
 }
