@@ -84,4 +84,24 @@ public class OpenLayersController {
     public String date() {
         return "date";
     }
+
+    @RequestMapping("kml")
+    public String kml() {
+        return "kml";
+    }
+
+    @RequestMapping("mapEcharts")
+    public String mapEcharts() {
+        return "mapEcharts";
+    }
+
+    @RequestMapping("dataformat")
+    public String dataformat() {
+        return "dataformat";
+    }
+
+    @RequestMapping("uploadForm")
+    public String uploadForm() {
+        return "uploadForm";
+    }
 }

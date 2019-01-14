@@ -54,7 +54,8 @@
     <label>名称（name）：<input id='name' type="text" value=""></label><br/>
     <label>省市（city）：<input id='city' type="text" value=""></label>
 </div>
-<div id="map"></div>
+<div id="map" style="width: 100%;height: 500px;"></div>
 <div id="popup" title="我是气泡"></div>
+<div id="info"></div>
 </body>
 </html>

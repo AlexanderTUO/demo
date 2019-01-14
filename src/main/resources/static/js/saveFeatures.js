@@ -67,7 +67,7 @@ $(document).ready(function () {
         map.removeInteraction(draw);
         addInteraction();
     }
-    addInteraction();
+    // addInteraction();
 
     var geoStr = null;
     var currentFeature = null;
@@ -80,7 +80,7 @@ $(document).ready(function () {
             type: type,
             source: vectorLayer.getSource()
         });
-        map.addInteraction(draw);
+        // map.addInteraction(draw);
         draw.on('drawend', drawAndCallBack,this);
     }
 
@@ -225,6 +225,107 @@ $(document).ready(function () {
 
         })
     })
+
+    var select = new ol.interaction.Select();
+    map.addInteraction(select);
+    var selectedFeatures = select.getFeatures();
+    // a DragBox interaction used to select features by drawing boxes
+    var dragBox = new ol.interaction.DragBox({
+        condition: ol.events.condition.platformModifierKeyOnly
+    });
+
+    map.addInteraction(dragBox);
+
+    dragBox.on('boxend', function() {
+        // features that intersect the box are added to the collection of
+        // selected features
+        var extent = dragBox.getGeometry().getExtent();
+        vectorLayer.getSource().forEachFeatureIntersectingExtent(extent, function(feature) {
+            selectedFeatures.push(feature);
+        });
+    });
+
+    // clear selection when drawing a new box and when clicking on the map
+    dragBox.on('boxstart', function() {
+        selectedFeatures.clear();
+    });
+
+    var infoBox = document.getElementById('info');
+
+    selectedFeatures.on(['add', 'remove'], function() {
+        var names = selectedFeatures.getArray().map(function(feature) {
+            return feature.get('name');
+        });
+        if (names.length > 0) {
+            infoBox.innerHTML = names.join(', ');
+        } else {
+            infoBox.innerHTML = 'No countries selected';
+        }
+    });
+    /* 框选 */
+    // var draw = new ol.interaction.Draw({
+    //     source: vectorLayer.getSource(),
+    //     type: "v",
+    //     style: new ol.style.Style({
+    //         stroke:new ol.style.Stroke({
+    //             color: '#cc3300',
+    //             width: 5
+    //         })
+    //
+    //     })});
+    // map.addInteraction(draw);
+    // draw.on('drawend', function (evt) {
+    //     var polygon = evt.feature.getGeometry();
+    //     setTimeout(function () {
+    //         //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
+    //         var center = polygon.getCenter(),
+    //             radius = polygon.getRadius(),
+    //             extent = polygon.getExtent();
+    //         var features = vectorLayer.getSource().getFeaturesInExtent(extent);
+    //         //先缩小feature的范围
+    //         var str = "";
+    //         for(var i=0;i<features.length;i++){
+    //             var newCoords = features[i].getGeometry().getCoordinates();
+    //             if(pointInsideCircle(newCoords,center,radius)){
+    //                 selectedFeatures.push(features[i]);
+    //                 // str += "<div class=\"selectedItem\" onclick='showDeviceOnMap(\""+features[i].getId()+"\");'>"+features[i].get("name")+"</div>";
+    //             }
+    //         }
+    //         $("#selectedInfoContent").html(str);
+    //     },300)
+    // })
+    /**
+     *判断一个点是否在多边形内部
+     * @param points 多边形坐标集合
+     * @param testPoint 测试点坐标
+     * @returns {boolean} 返回true为真，false为假
+     */
+    function insidePolygon(points, testPoint) {
+        var x = testPoint[0], y = testPoint[1];
+        var inside = false;
+        for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
+            var xi = points[i][0], yi = points[i][1];
+            var xj = points[j][0], yj = points[j][1];
+            var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
+    }
+
+    /**
+     *判断一个点是否在圆的内部
+     * @param point 测试点坐标
+     * @param circle 圆心坐标
+     * @param r 圆半径
+     * @returns {boolean} 返回true为真，false为假
+     */
+    function pointInsideCircle(point, circle, r) {
+        if (r === 0) return false
+        var dx = circle[0] - point[0]
+        var dy = circle[1] - point[1]
+        return dx * dx + dy * dy <= r * r
+    }
+
 
 })
 
