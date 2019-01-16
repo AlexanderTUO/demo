@@ -9,13 +9,19 @@ import java.util.Vector;
 
 public class Gdal {
     public static void main(String[] args) {
+        dataTransfer();
+    }
+
+    private static void dataTransfer() {
         ogr.RegisterAll();
-        gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8", "No");
-        gdal.SetConfigOption("SHAPE_ENCODING", "");
+        //支持中文路径
+        gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8","YES");
+        //支持中文字段
+        gdal.SetConfigOption("SHAPE_ENCODING","CP936");
 //        String strVectorFile = "D:\\Tools\\GIS\\Data\\test\\testSC.shp";
-//        String strVectorFile = "D:\\Tools\\GIS\\Data\\test\\testSC.geojson";
+        String strVectorFile = "D:\\Tools\\GIS\\Data\\geoJSON\\510100.geojson";
 //        String strVectorFile = "D:\\Tools\\GIS\\Data\\kml\\xj_jq.kml";
-        String strVectorFile = "D:\\Tools\\GIS\\Data\\kml\\xj_jq.kml";
+//        String strVectorFile = "D:\\Tools\\GIS\\Data\\kml\\xj_jq.kml";
         DataSource dataSource = ogr.Open(strVectorFile, 0);
         if (dataSource == null) {
             System.out.println("加载数据源失败！");
@@ -31,7 +37,6 @@ public class Gdal {
             System.out.println("加载驱动失败！");
             return;
         }
-        Vector vector = new Vector();
         System.out.println("加载驱动成功！");
 
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC.geojson");
@@ -41,18 +46,11 @@ public class Gdal {
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC2.shp");
 
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\xj_jq.geojson");
-        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\xj_jq2.shp");
+        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\shp\\510100.shp");
 
 
         System.out.println("数据转换成功");
     }
-
-    public void DataFormat(String filepath,String fileName,String driverName,
-                           String outputPath,String outputFileName) {
-
-
-    }
-
 
 
 }
