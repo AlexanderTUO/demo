@@ -30,8 +30,8 @@ public class Gdal {
         System.out.println("加载数据源成功！");
 
 //        Driver driver = ogr.GetDriverByName("GeoJSON");
-//        Driver driver = ogr.GetDriverByName("KML");
-        Driver driver = ogr.GetDriverByName("ESRI Shapefile");
+        Driver driver = ogr.GetDriverByName("KML");
+//        Driver driver = ogr.GetDriverByName("ESRI Shapefile");
 
         if (driver == null) {
             System.out.println("加载驱动失败！");
@@ -46,7 +46,8 @@ public class Gdal {
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC2.shp");
 
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\xj_jq.geojson");
-        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\shp\\510100.shp");
+//        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\shp\\510100.shp");
+        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\kml\\510100.kml");
 
 
         System.out.println("数据转换成功");

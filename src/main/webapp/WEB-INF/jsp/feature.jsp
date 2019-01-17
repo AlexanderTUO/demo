@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>保存几何图形</title>
+    <title>矢量操作</title>
     <link rel="stylesheet" href="openLayers-5.3.0/ol.css" type="text/css" />
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
@@ -20,15 +20,52 @@
 
     <script type="text/javascript" src="lib/jquery-ui.js"></script>
 
-    <script type="text/javascript" src="js/hotSpots.js"></script>
+    <script type="text/javascript" src="js/feature.js"></script>
 
-    <link rel="stylesheet" href="css/saveFeatures.css">
+    <link rel="stylesheet" href="css/feature.css">
     <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
-
-
 </head>
 <body>
-<div id="menu">
+
+<div class="logoImg"></div>
+<div class="containerBack" id="coverLayer"></div>
+<div class="frontPic" id="frontPic">矢量操作</div>
+<div class="closeDiv">
+    <div class="closeImg" id="closeFea"></div>
+</div>
+<div class="applyContainer" id="Feature">
+    <ul>
+        <li id="displayFea"><label>显示：</label>
+            <input type="checkbox" id="pointCh" value="point">点
+            <input type="checkbox" id="lineStringCh" value="lineString">线
+            <input type="checkbox" id="polygonCh" value="polygon">面
+        </li>
+        <li><label>绘制：</label>
+            <input type="radio" id="pointRa" name="add">点
+            <input type="radio" id="lineStringRa" name="add">线
+            <input type="radio" id="polygonRa" name="add">面
+        </li>
+        <li><label>修改：</label>
+            <input type="checkbox" id="modify">点
+        </li>
+        <li><label for="selection">选择：</label>
+            <select id="selection">
+                <option id="pointSel" class="">点选</option>
+                <option id="boxSel" class="">框选</option>
+                <option id="circleSel" class="">圆选</option>
+                <option id="polygonSel" class="">多边形选</option>
+            </select>
+        </li>
+    </ul>
+</div>
+<div id="map">
+    <div id="popup" title="我是气泡" class="ol-popup">
+        <div id="popup-closer" class="ol-popup-closer"></div>
+        <div id="popup-content"></div>
+    </div>
+</div>
+
+<div id="menu" >
     <label>几何图形类型：&nbsp;</label>
     <select id="type">
         <option value="Point">点</option>
@@ -63,9 +100,7 @@
 <div id="dialog-delete" title="删除热区要素确认">
     <label>请确认是否删除该要素</label><br />
 </div>
-<div id="map">
-    <div id="popup" title="我是气泡" class="ol-popup"></div>
-</div>
+
 
 </body>
 </html>

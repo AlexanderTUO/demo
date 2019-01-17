@@ -104,4 +104,9 @@ public class OpenLayersController {
     public String uploadForm() {
         return "uploadForm";
     }
+
+    @RequestMapping("feature")
+    public String feature() {
+        return "feature";
+    }
 }
