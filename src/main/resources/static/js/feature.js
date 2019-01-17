@@ -125,6 +125,7 @@ $(document).ready(function () {
                             type: "Point"
                         });
                         myMap.pointLayer.getSource().addFeature(point);
+                        myMap.pointLayer.setVisible(false);
                     }
                     else if (data[index].type == "LineString") {
                         var lineString = new ol.Feature({
@@ -133,6 +134,7 @@ $(document).ready(function () {
                             id: data[index].id
                         });
                         myMap.lineStringLayer.getSource().addFeature(lineString);
+                        myMap.lineStringLayer.setVisible(false);
                     }
                     if (data[index].type == "Polygon") {
                         var polygon = new ol.Feature({
@@ -141,6 +143,7 @@ $(document).ready(function () {
                             id: data[index].id
                         });
                         myMap.polygonLayer.getSource().addFeature(polygon);
+                        myMap.polygonLayer.setVisible(false);
                     }
                 }
 
@@ -150,13 +153,20 @@ $(document).ready(function () {
     }
 
     $('#displayFea :checkbox').on('change',function () {
-        var checkbox = $('#displayFea :checkbox');
+        var checkbox = $('#displayFea :checkbox :checked');
         for (var index = 0; index < checkbox.length; index++) {
-            alert(checkbox[index].value);
-            // switch (checkbox[index].val()) {
-            //     case '':
-            //
-            // }
+            switch (checkbox[index].value) {
+                case 1:
+                    myMap.pointLayer.setVisible(true);
+                    break;
+                case 2:
+                    myMap.pointLayer.setVisible(true);
+                    break;
+                case 3:
+                    myMap.pointLayer.setVisible(true);
+                    break;
+                default:
+            }
         }
         alert(checkbox.length);
     })

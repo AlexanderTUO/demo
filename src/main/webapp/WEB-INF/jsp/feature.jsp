@@ -36,9 +36,9 @@
 <div class="applyContainer" id="Feature">
     <ul>
         <li id="displayFea"><label>显示：</label>
-            <input type="checkbox" id="pointCh" value="point">点
-            <input type="checkbox" id="lineStringCh" value="lineString">线
-            <input type="checkbox" id="polygonCh" value="polygon">面
+            <input type="checkbox" id="pointCh" value="1">点
+            <input type="checkbox" id="lineStringCh" value="2">线
+            <input type="checkbox" id="polygonCh" value="3">面
         </li>
         <li><label>绘制：</label>
             <input type="radio" id="pointRa" name="add">点
