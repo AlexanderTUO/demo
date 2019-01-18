@@ -1,4 +1,5 @@
-$(document).ready(function () {
+// $(document).ready(function () {
+$(function () {
     var flashFeature;
     var preFeature;
     var flag = false;
@@ -84,27 +85,61 @@ $(document).ready(function () {
 
         if (myMap.pointLayer == null) {
             myMap.pointLayer = new ol.layer.Vector({
-                source: new ol.source.Vector()
+                source: new ol.source.Vector(),
+                style:createStyle("1")
             })
             myMap.map.addLayer(myMap.pointLayer);
         }
 
         if (myMap.lineStringLayer == null) {
             myMap.lineStringLayer = new ol.layer.Vector({
-                source: new ol.source.Vector()
+                source: new ol.source.Vector(),
+                style:createStyle("2")
             });
             myMap.map.addLayer(myMap.lineStringLayer);
         }
 
         if (myMap.polygonLayer == null) {
             myMap.polygonLayer = new ol.layer.Vector({
-                source: new ol.source.Vector()
+                source: new ol.source.Vector(),
+                style:createStyle("3")
             });
             myMap.map.addLayer(myMap.polygonLayer);
 
         }
         // 从后台获取要素
         displayFeatures();
+    }
+    
+    function createStyle(type) {
+        switch (type) {
+            case "1":
+                return new ol.style.Style({
+                    image: new ol.style.Icon({
+                        src: "images/air.png"
+                    })
+                });
+            case "2":
+                return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        width:2,
+                        color: "blue"
+                    })
+                });
+            case "3":
+                return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        width:2,
+                        color: "green"
+                    }),
+                    fill:new  ol.style.Fill({
+
+                        color: "#D9D8D7"
+                    })
+                });
+            default:
+
+        }
     }
 
     /**
@@ -224,7 +259,7 @@ $(document).ready(function () {
         }
     }
 
-    
+
     /**
      * 绘制图形
      * @param geoType 绘制图形的集合类型
@@ -271,22 +306,22 @@ $(document).ready(function () {
                 if (validate()) {
                     submitData();
                 }
-                $(this).dialog(close);
+                $(this).dialog("close");
             },
             "取消":function () {
-                $(this).dialog(close);
+                $(this).dialog("close");
             }
         },
         close:function () {
-            
+            $("#dialog-form").removeClass("ui-state-error");
         }
     });
 
     var name = $("#name"),
         city = $("#city"),
-        geoType = $("#geoType"),
+        type = $("#geoType"),
         infoType = $("#infoType"),
-        allFields = $([]).add(name).add(city).add(geoType).add(infoType),
+        allFields = $([]).add(name).add(city).add(type).add(infoType),
         tips = $(".validateTips");
 
     /**
@@ -341,7 +376,7 @@ $(document).ready(function () {
         allFields.removeClass("ui-state-error");
         bValid = bValid && checkLength(name, "name", 3, 16);
         bValid = bValid && checkLength(city, "city", 3, 16);
-        bValid = bValid && checkLength(geoType, "geoType", 1, 16);
+        bValid = bValid && checkLength(type, "type", 1, 16);
         bValid = bValid && checkLength(infoType, "infoType", 1, 16);
 
         // bValid = bValid && checkRegexp(name, /^[a-z]([0-9a-z])+$/i, "名称必须有a-z、0-9、下划线组成");
@@ -349,23 +384,32 @@ $(document).ready(function () {
 
         return bValid;
     }
-    
+
     function submitData() {
         // var data = new FormData($("#featureCon"));
-        var data = new FormData(document.querySelector("form"));
-        data.append("geometry", geoStr);
-
-        console.log(data.get("infoType"));
+        // var data = new FormData(document.querySelector("form"));
+        // data.append("geometry", geoStr);
+        //
+        // console.log(data.get("infoType"));
         // for (var index in data) {
         //     console.log(data.get(index))
         // }
 
+        var data = {
+            "name": name.val(),
+            "city": city.val(),
+            "infoType": infoType.val(),
+            "type":type.val(),
+            "geometry":geoStr
+
+        };
+
         $.ajax({
             url: '/Feature/save2',
             type: "POST",
-            data: data,//必要
-            // dataType:"json",
-            // contentType:"application/json",
+            data: JSON.stringify(data),//必要
+            dataType:"json",
+            contentType:"application/json",
             //请求成功完成后要执行的方法
             success: function (response) {
                 alert(response);
@@ -406,147 +450,148 @@ $(document).ready(function () {
         // 开始选择
     });
 
-
-
-
-
-
     
 
-/*****************************实现框选功能START****************************************/
- //    var select = new ol.interaction.Select();
- //    map.addInteraction(select);
- //    var selectedFeatures = select.getFeatures();
- //
- //    // var dragBox = new ol.interaction.DragBox({
- //    //     condition: ol.events.condition.platformModifierKeyOnly
- //    // })
- //    //
- //    // map.addInteraction(dragBox);
- //    //
- //    // dragBox.on('boxend', function () {
- //    //     var extent = dragBox.getGeometry().getExtent();
- //    //     VectorSource.forEachFeatureIntersectingExtent(extent, function (feature) {
- //    //         selectedFeatures.push(feature);
- //    //     })
- //    // });
- //    //
- //    // dragBox.on('boxstart', function () {
- //    //     selectedFeatures.clear();
- //    // });
- //
- //    var infoBox = document.getElementById('info');
- //
- //    selectedFeatures.on(['add','remove'],function () {
- //        var names = selectedFeatures.getArray().map(function (feature) {
- //            return feature.get('name');
- //        });
- //        if (names.length > 0) {
- //            infoBox.innerHTML = names.join(',');
- //        } else {
- //            infoBox.innerHTML = '没有要素被选中';
- //        }
- //    })
- //
- // /*****************************实现框选功能END****************************************/
- // /*****************************实现圈选功能START****************************************/
- //    //  var circleDraw = new ol.interaction.Draw({
- //    //      source: VectorSource,
- //    //      type: 'Circle',
- //    //      condition: ol.events.condition.platformModifierKeyOnly
- //    //  })
- //    //
- //    //  map.addInteraction(circleDraw);
- //    //
- //    // circleDraw.on('drawend',function(evt){
- //    //     var polygon = evt.feature.getGeometry();
- //    //     setTimeout(function(){
- //    //         //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
- //    //         var center = polygon.getCenter(),
- //    //             radius = polygon.getRadius(),
- //    //             extent = polygon.getExtent();
- //    //         var features = vectorLayer.getSource().getFeaturesInExtent(extent);
- //    //         //先缩小feature的范围
- //    //         var str = "";
- //    //         for(var i=0;i<features.length;i++){
- //    //             var newCoords = features[i].getGeometry().getCoordinates();
- //    //             if(pointInsideCircle(newCoords,center,radius)){
- //    //                 selectedFeatures.push(features[i]);
- //    //             }
- //    //         }
- //    //     },300)
- //    // })
- //    //
- //    // circleDraw.on('drawend',function(evt){
- //    //     selectedFeatures.clear();
- //    // })
- //
- // /*****************************实现圈选功能END****************************************/
- // /*****************************实现多边形选择功能START****************************************/
- // var polygonDraw = new ol.interaction.Draw({
- //     source: VectorSource,
- //     type: 'Polygon',
- //     condition: ol.events.condition.platformModifierKeyOnly
- // })
- //
- //    map.addInteraction(polygonDraw);
- //
- //    polygonDraw.on('drawend',function(evt){
- //        var polygon = evt.feature.getGeometry();
- //        setTimeout(function(){
- //            //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
- //            var extent = polygon.getExtent();
- //            var features = vectorLayer.getSource().getFeaturesInExtent(extent);
- //            //先缩小feature的范围
- //            var polygonCoor = polygon.getCoordinates()[0];
- //            for(var i=0;i<features.length;i++){
- //                if (!features[i].get('type')) {
- //                    continue;
- //                }
- //                var newCoords = features[i].getGeometry().getCoordinates();
- //                if (insidePolygon(polygonCoor, newCoords)) {
- //                    selectedFeatures.push(features[i]);
- //                }
- //            }
- //        },300)
- //    })
- //
- //    polygonDraw.on('drawend',function(evt){
- //        selectedFeatures.clear();
- //    })
- //
- // /*****************************实现多边形选择功能END****************************************/
- //    /**
- //     *判断一个点是否在多边形内部
- //     * @param points 多边形坐标集合
- //     * @param testPoint 测试点坐标
- //     * @returns {boolean} 返回true为真，false为假
- //     */
- //    function insidePolygon(points, testPoint) {
- //        var x = testPoint[0], y = testPoint[1];
- //        var inside = false;
- //        for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
- //            var xi = points[i][0], yi = points[i][1];
- //            var xj = points[j][0], yj = points[j][1];
- //            var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
- //            if (intersect) inside = !inside;
- //        }
- //        return inside;
- //    }
- //
- //    /**
- //     *判断一个点是否在圆的内部
- //     * @param point 测试点坐标
- //     * @param circle 圆心坐标
- //     * @param r 圆半径
- //     * @returns {boolean} 返回true为真，false为假
- //     */
- //    function pointInsideCircle(point, circle, r) {
- //        if (r === 0) return false
- //        var dx = circle[0] - point[0]
- //        var dy = circle[1] - point[1]
- //        return dx * dx + dy * dy <= r * r
- //    }
+
+
+
+
+    /*****************************实现框选功能START****************************************/
+    //    var select = new ol.interaction.Select();
+    //    map.addInteraction(select);
+    //    var selectedFeatures = select.getFeatures();
+    //
+    //    // var dragBox = new ol.interaction.DragBox({
+    //    //     condition: ol.events.condition.platformModifierKeyOnly
+    //    // })
+    //    //
+    //    // map.addInteraction(dragBox);
+    //    //
+    //    // dragBox.on('boxend', function () {
+    //    //     var extent = dragBox.getGeometry().getExtent();
+    //    //     VectorSource.forEachFeatureIntersectingExtent(extent, function (feature) {
+    //    //         selectedFeatures.push(feature);
+    //    //     })
+    //    // });
+    //    //
+    //    // dragBox.on('boxstart', function () {
+    //    //     selectedFeatures.clear();
+    //    // });
+    //
+    //    var infoBox = document.getElementById('info');
+    //
+    //    selectedFeatures.on(['add','remove'],function () {
+    //        var names = selectedFeatures.getArray().map(function (feature) {
+    //            return feature.get('name');
+    //        });
+    //        if (names.length > 0) {
+    //            infoBox.innerHTML = names.join(',');
+    //        } else {
+    //            infoBox.innerHTML = '没有要素被选中';
+    //        }
+    //    })
+    //
+    // /*****************************实现框选功能END****************************************/
+    // /*****************************实现圈选功能START****************************************/
+    //    //  var circleDraw = new ol.interaction.Draw({
+    //    //      source: VectorSource,
+    //    //      type: 'Circle',
+    //    //      condition: ol.events.condition.platformModifierKeyOnly
+    //    //  })
+    //    //
+    //    //  map.addInteraction(circleDraw);
+    //    //
+    //    // circleDraw.on('drawend',function(evt){
+    //    //     var polygon = evt.feature.getGeometry();
+    //    //     setTimeout(function(){
+    //    //         //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
+    //    //         var center = polygon.getCenter(),
+    //    //             radius = polygon.getRadius(),
+    //    //             extent = polygon.getExtent();
+    //    //         var features = vectorLayer.getSource().getFeaturesInExtent(extent);
+    //    //         //先缩小feature的范围
+    //    //         var str = "";
+    //    //         for(var i=0;i<features.length;i++){
+    //    //             var newCoords = features[i].getGeometry().getCoordinates();
+    //    //             if(pointInsideCircle(newCoords,center,radius)){
+    //    //                 selectedFeatures.push(features[i]);
+    //    //             }
+    //    //         }
+    //    //     },300)
+    //    // })
+    //    //
+    //    // circleDraw.on('drawend',function(evt){
+    //    //     selectedFeatures.clear();
+    //    // })
+    //
+    // /*****************************实现圈选功能END****************************************/
+    // /*****************************实现多边形选择功能START****************************************/
+    // var polygonDraw = new ol.interaction.Draw({
+    //     source: VectorSource,
+    //     type: 'Polygon',
+    //     condition: ol.events.condition.platformModifierKeyOnly
+    // })
+    //
+    //    map.addInteraction(polygonDraw);
+    //
+    //    polygonDraw.on('drawend',function(evt){
+    //        var polygon = evt.feature.getGeometry();
+    //        setTimeout(function(){
+    //            //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
+    //            var extent = polygon.getExtent();
+    //            var features = vectorLayer.getSource().getFeaturesInExtent(extent);
+    //            //先缩小feature的范围
+    //            var polygonCoor = polygon.getCoordinates()[0];
+    //            for(var i=0;i<features.length;i++){
+    //                if (!features[i].get('type')) {
+    //                    continue;
+    //                }
+    //                var newCoords = features[i].getGeometry().getCoordinates();
+    //                if (insidePolygon(polygonCoor, newCoords)) {
+    //                    selectedFeatures.push(features[i]);
+    //                }
+    //            }
+    //        },300)
+    //    })
+    //
+    //    polygonDraw.on('drawend',function(evt){
+    //        selectedFeatures.clear();
+    //    })
+    //
+    // /*****************************实现多边形选择功能END****************************************/
+    //    /**
+    //     *判断一个点是否在多边形内部
+    //     * @param points 多边形坐标集合
+    //     * @param testPoint 测试点坐标
+    //     * @returns {boolean} 返回true为真，false为假
+    //     */
+    //    function insidePolygon(points, testPoint) {
+    //        var x = testPoint[0], y = testPoint[1];
+    //        var inside = false;
+    //        for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
+    //            var xi = points[i][0], yi = points[i][1];
+    //            var xj = points[j][0], yj = points[j][1];
+    //            var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    //            if (intersect) inside = !inside;
+    //        }
+    //        return inside;
+    //    }
+    //
+    //    /**
+    //     *判断一个点是否在圆的内部
+    //     * @param point 测试点坐标
+    //     * @param circle 圆心坐标
+    //     * @param r 圆半径
+    //     * @returns {boolean} 返回true为真，false为假
+    //     */
+    //    function pointInsideCircle(point, circle, r) {
+    //        if (r === 0) return false
+    //        var dx = circle[0] - point[0]
+    //        var dy = circle[1] - point[1]
+    //        return dx * dx + dy * dy <= r * r
+    //    }
 })
+
+// })
 
 
