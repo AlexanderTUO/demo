@@ -109,4 +109,9 @@ public class OpenLayersController {
     public String feature() {
         return "feature";
     }
+
+    @RequestMapping("formdata")
+    public String formdata() {
+        return "formdata";
+    }
 }

@@ -13,5 +13,6 @@ public class FeatureEntity {
     private String name;
     private String city;
     private String type;
+    private String infoType;
     private String geometry;
 }

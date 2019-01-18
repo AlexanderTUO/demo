@@ -52,4 +52,12 @@ public class FeatureController {
         return "删除成功";
     }
 
+    @RequestMapping(value = {"save2", "save2"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String saveFeature2(@RequestBody FeatureEntity featureEntity) {
+
+        featureService.saveFeature(featureEntity);
+        return "success";
+    }
+
 }

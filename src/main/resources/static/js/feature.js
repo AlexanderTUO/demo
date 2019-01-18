@@ -86,18 +86,22 @@ $(document).ready(function () {
             myMap.pointLayer = new ol.layer.Vector({
                 source: new ol.source.Vector()
             })
+            myMap.map.addLayer(myMap.pointLayer);
         }
 
         if (myMap.lineStringLayer == null) {
             myMap.lineStringLayer = new ol.layer.Vector({
                 source: new ol.source.Vector()
-            })
+            });
+            myMap.map.addLayer(myMap.lineStringLayer);
         }
 
         if (myMap.polygonLayer == null) {
             myMap.polygonLayer = new ol.layer.Vector({
                 source: new ol.source.Vector()
-            })
+            });
+            myMap.map.addLayer(myMap.polygonLayer);
+
         }
         // 从后台获取要素
         displayFeatures();
@@ -152,24 +156,259 @@ $(document).ready(function () {
         })
     }
 
+    /**
+     * 绑定显示复选框改变事件
+     */
     $('#displayFea :checkbox').on('change',function () {
-        var checkbox = $('#displayFea :checkbox :checked');
+        var checkbox = $('#displayFea :checkbox');
         for (var index = 0; index < checkbox.length; index++) {
             switch (checkbox[index].value) {
-                case 1:
-                    myMap.pointLayer.setVisible(true);
+                case '1':
+                    if (checkbox[index].checked) {
+                        myMap.pointLayer.setVisible(true);
+                    } else {
+                        myMap.pointLayer.setVisible(false);
+                    }
                     break;
-                case 2:
-                    myMap.pointLayer.setVisible(true);
+                case '2':
+                    if (checkbox[index].checked) {
+                        myMap.lineStringLayer.setVisible(true);
+                    } else {
+                        myMap.lineStringLayer.setVisible(false);
+                    }
                     break;
-                case 3:
-                    myMap.pointLayer.setVisible(true);
+                case '3':
+                    if (checkbox[index].checked) {
+                        myMap.polygonLayer.setVisible(true);
+                    } else {
+                        myMap.polygonLayer.setVisible(false);
+                    }
                     break;
                 default:
             }
         }
-        alert(checkbox.length);
     })
+
+
+    /**
+     * 绑定绘制单选框改变事件
+     */
+    $('#addFea :radio').on('change', function () {
+        // var radio = $('#addFea :checked');
+        var addType = $('#addFea input:checked')[0].value;
+
+        var radio = $('#modifyFea input:checked');
+        if (radio && radio.length > 0) {
+            addType = radio[0].value;
+        }
+        console.log(addType);
+        // 开始绘制
+        addFeature(addType);
+    });
+
+    var addDraw = null;
+    var currentFeature = null;
+
+    /**
+     * 类型转换
+     * @param type 数字
+     * @returns {*[]}
+     */
+    function typeTransfer(type) {
+        if (type === '1') {
+            return ["Point",myMap.pointLayer];
+        }else  if (type === '2') {
+            return ["LineString",myMap.lineStringLayer];
+        }else  if (type === '3') {
+            return ["Polygon",myMap.polygonLayer];
+        }
+    }
+
+    
+    /**
+     * 绘制图形
+     * @param geoType 绘制图形的集合类型
+     */
+    function addFeature(geoType) {
+        addDraw = new ol.interaction.Draw({
+            source: typeTransfer(geoType)[1].getSource(),
+            type: typeTransfer(geoType)[0]
+        })
+        myMap.map.addInteraction(addDraw);
+        addDraw.on('drawend', drawAndCallBack, this);
+    }
+
+    function drawAndCallBack(evt) {
+        var addType = $('#addFea input:checked')[0].value;
+
+        currentFeature = evt.feature;
+
+        var geometry = evt.feature.getGeometry();
+        var coordinates = geometry.getCoordinates();
+        if (addType === '1') {
+            geoStr = coordinates.join(',');
+            geoStr = "[" + geoStr + "]";
+        } else if (addType === "2") {
+            geoStr = coordinates.join('],[');
+            geoStr = "[[" + geoStr + "]]";
+        } else {
+            geoStr = coordinates[0].join('],[');
+            geoStr = "[[[" + geoStr + "]]]";
+        }
+
+        // 打开对话框
+        $("#dialog-form").dialog('open');
+
+    }
+
+    $("#dialog-form").dialog({
+        autoOpen: false,
+        height: 300,
+        width:350,
+        modal: true,
+        buttons:{
+            "提交": function () {
+                if (validate()) {
+                    submitData();
+                }
+                $(this).dialog(close);
+            },
+            "取消":function () {
+                $(this).dialog(close);
+            }
+        },
+        close:function () {
+            
+        }
+    });
+
+    var name = $("#name"),
+        city = $("#city"),
+        geoType = $("#geoType"),
+        infoType = $("#infoType"),
+        allFields = $([]).add(name).add(city).add(geoType).add(infoType),
+        tips = $(".validateTips");
+
+    /**
+     * 更新提示消息
+     * @param t
+     */
+    function updateTips(t) {
+        tips.text(t).addClass("ui-state-highlight");
+        setTimeout(function () {
+            tips.removeClass("ui-state-highlight", 1500);
+        }, 500);
+    }
+
+    /**
+     * 验证输入内容的长度
+     * @param o
+     * @param n
+     * @param min
+     * @param max
+     * @returns {boolean}
+     */
+    function checkLength(o, n, min, max) {
+        if (o.val().length > max || o.val().length < min) {
+            o.addClass("ui-state-error");
+            updateTips("" + n + "的长度必须在" + min + "和" + max + "之间。");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 正则表达式验证内容
+     * @param o
+     * @param regexp
+     * @param n
+     * @returns {boolean}
+     */
+    function checkRegexp(o, regexp, n) {
+        if (!regexp.test(o.val())) {
+            o.addClass("ui-state-error");
+            updateTips(n);
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    function validate() {
+        var bValid = true;
+        allFields.removeClass("ui-state-error");
+        bValid = bValid && checkLength(name, "name", 3, 16);
+        bValid = bValid && checkLength(city, "city", 3, 16);
+        bValid = bValid && checkLength(geoType, "geoType", 1, 16);
+        bValid = bValid && checkLength(infoType, "infoType", 1, 16);
+
+        // bValid = bValid && checkRegexp(name, /^[a-z]([0-9a-z])+$/i, "名称必须有a-z、0-9、下划线组成");
+        // bValid = bValid && checkRegexp(city, /^[a-z]([0-9a-z])+$/i, "城市必须有a-z、0-9、下划线组成");
+
+        return bValid;
+    }
+    
+    function submitData() {
+        // var data = new FormData($("#featureCon"));
+        var data = new FormData(document.querySelector("form"));
+        data.append("geometry", geoStr);
+
+        console.log(data.get("infoType"));
+        // for (var index in data) {
+        //     console.log(data.get(index))
+        // }
+
+        $.ajax({
+            url: '/Feature/save2',
+            type: "POST",
+            data: data,//必要
+            // dataType:"json",
+            // contentType:"application/json",
+            //请求成功完成后要执行的方法
+            success: function (response) {
+                alert(response);
+            },
+            error: function (err) {
+                alert("执行失败");
+            }
+        })
+
+    }
+
+    /**
+     * 绑定修改单选框改变事件
+     */
+    $('#modify').on('change', function () {
+        console.log(this.checked);
+        if (this.checked) {
+            // 开始修改
+            $('#delete').prop("checked",false);
+        }
+    });
+
+    /**
+     * 绑定删除单选框改变事件
+     */
+    $('#delete').on('change', function () {
+        console.log(this.checked);
+        if (this.checked) {
+            // 开始删除
+            $('#modify').prop("checked", false);
+        }
+    });
+
+    var selectType = null;
+    $('#selectFea').on('change', function () {
+        selectType = $('#selectFea option:selected')[0].value;
+        console.log(selectType);
+        // 开始选择
+    });
+
+
+
+
 
 
     

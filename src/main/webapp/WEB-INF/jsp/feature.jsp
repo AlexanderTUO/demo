@@ -9,11 +9,13 @@
 <html>
 <head>
     <title>矢量操作</title>
+
+    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="openLayers-5.3.0/ol.css" type="text/css" />
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <script src="openLayers-5.3.0/ol.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+
 
     <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.css">
@@ -40,20 +42,23 @@
             <input type="checkbox" id="lineStringCh" value="2">线
             <input type="checkbox" id="polygonCh" value="3">面
         </li>
-        <li><label>绘制：</label>
-            <input type="radio" id="pointRa" name="add">点
-            <input type="radio" id="lineStringRa" name="add">线
-            <input type="radio" id="polygonRa" name="add">面
+        <li id="addFea"><label>绘制：</label>
+            <input type="radio" id="pointRa" name="add" value="1">点
+            <input type="radio" id="lineStringRa" name="add" value="2">线
+            <input type="radio" id="polygonRa" name="add" value="3">面
         </li>
-        <li><label>修改：</label>
-            <input type="checkbox" id="modify">点
+        <li id="modifyFea"><label>修改：</label>
+            <input type="checkbox" id="modify">
         </li>
-        <li><label for="selection">选择：</label>
+        <li id="deleteFea"><label>删除：</label>
+            <input type="checkbox" id="delete">
+        </li>
+        <li id="selectFea"><label for="selection">选择：</label>
             <select id="selection">
-                <option id="pointSel" class="">点选</option>
-                <option id="boxSel" class="">框选</option>
-                <option id="circleSel" class="">圆选</option>
-                <option id="polygonSel" class="">多边形选</option>
+                <option id="pointSel" class="" value="0">点选</option>
+                <option id="boxSel" class="" value="1">框选</option>
+                <option id="circleSel" class="" value="2">圆选</option>
+                <option id="polygonSel" class="" value="3">多边形选</option>
             </select>
         </li>
     </ul>
@@ -65,9 +70,25 @@
     </div>
 </div>
 
+<div id="dialog-form" title="绘制要素">
+    <p class="validateTips">所有表单字段都是必填的。</p>
+    <form id="featureCon">
+        <fieldset>
+            <label for="type">几何类型</label>
+            <input type="text" name="type" id="type" class="text ui-widget-content ui-corner-all">
+            <label for="infoType">信息类型</label>
+            <input type="text" name="infoType" id="infoType" class="text ui-widget-content ui-corner-all">
+            <label for="name">名称</label>
+            <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+            <label for="name">省市</label>
+            <input type="text" name="city" id="city" class="text ui-widget-content ui-corner-all">
+        </fieldset>
+    </form>
+</div>
+
 <div id="menu" >
     <label>几何图形类型：&nbsp;</label>
-    <select id="type">
+    <select id="geoType">
         <option value="Point">点</option>
         <option value="LineString">线</option>
         <option value="Polygon">面</option>
@@ -81,25 +102,25 @@
     <button id="deleteReg" class="btn" title="单击删除热区按钮后请用鼠标在地图上选中删除要素操作">删除热区</button>
     <span id="info">没有要素被选中</span>
 </div>
-<div id="dialog-confirm" title="图形属性信息设置">
-    <label >图形类型（GeoType）：</label>
-    <select id="geoType">
-        <option value="Point" selected="selected" disabled="disabled">点</option>
-        <option value="LineString" disabled="disabled">线</option>
-        <option value="Polygon" disabled="disabled">多边形</option>
-    </select><br/>
-    <label >信息类别（infoType）：</label>
-    <select id="infoType">
-        <option value="Point" selected="selected" disabled="disabled">兴趣点</option>
-        <option value="LineString" disabled="disabled">道路线</option>
-        <option value="Polygon" disabled="disabled">高校区域</option>
-    </select><br/>
-    <label>名称（name）：<input id='name' type="text" value=""></label><br/>
-    <label>省市（city）：<input id='city' type="text" value=""></label>
-</div>
-<div id="dialog-delete" title="删除热区要素确认">
-    <label>请确认是否删除该要素</label><br />
-</div>
+<%--<div id="dialog-confirm" title="图形属性信息设置">--%>
+    <%--<label >图形类型（GeoType）：</label>--%>
+    <%--<select id="geoType">--%>
+        <%--<option value="Point" selected="selected" disabled="disabled">点</option>--%>
+        <%--<option value="LineString" disabled="disabled">线</option>--%>
+        <%--<option value="Polygon" disabled="disabled">多边形</option>--%>
+    <%--</select><br/>--%>
+    <%--<label >信息类别（infoType）：</label>--%>
+    <%--<select id="infoType">--%>
+        <%--<option value="Point" selected="selected" disabled="disabled">兴趣点</option>--%>
+        <%--<option value="LineString" disabled="disabled">道路线</option>--%>
+        <%--<option value="Polygon" disabled="disabled">高校区域</option>--%>
+    <%--</select><br/>--%>
+    <%--<label>名称（name）：<input id='name' type="text" value=""></label><br/>--%>
+    <%--<label>省市（city）：<input id='city' type="text" value=""></label>--%>
+<%--</div>--%>
+<%--<div id="dialog-delete" title="删除热区要素确认">--%>
+    <%--<label>请确认是否删除该要素</label><br />--%>
+<%--</div>--%>
 
 
 </body>
