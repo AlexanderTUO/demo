@@ -43,22 +43,26 @@
             <input type="checkbox" id="polygonCh" value="3">面
         </li>
         <li id="addFea"><label>绘制：</label>
-            <input type="radio" id="pointRa" name="add" value="1">点
+            <input type="checkbox" id="add">
+            <input type="radio" id="pointRa" name="add" value="1" checked>点
             <input type="radio" id="lineStringRa" name="add" value="2">线
             <input type="radio" id="polygonRa" name="add" value="3">面
         </li>
         <li id="modifyFea"><label>修改：</label>
             <input type="checkbox" id="modify">
+            <input type="button" id="modifyBtnSave" value="保存">
+            <input type="button" id="modifyBtnCancel" value="取消">
         </li>
         <li id="deleteFea"><label>删除：</label>
             <input type="checkbox" id="delete">
         </li>
         <li id="selectFea"><label for="selection">选择：</label>
+            <input type="checkbox" id="selectionChe">
             <select id="selection">
-                <option id="pointSel" class="" value="0">点选</option>
-                <option id="boxSel" class="" value="1">框选</option>
-                <option id="circleSel" class="" value="2">圆选</option>
-                <option id="polygonSel" class="" value="3">多边形选</option>
+                <option id="pointSel" class="" value="1" selected>点选</option>
+                <option id="boxSel" class="" value="2">框选</option>
+                <option id="circleSel" class="" value="3">圆选</option>
+                <option id="polygonSel" class="" value="4">多边形选</option>
             </select>
         </li>
     </ul>
@@ -84,6 +88,14 @@
             <input type="text" name="city" id="city" class="text ui-widget-content ui-corner-all">
         </fieldset>
     </form>
+</div>
+
+<div id="dialog-delete" title="删除要素">
+    <p>确定要删除吗？</p>
+</div>
+
+<div id="dialog-modify" title="修改要素">
+    <p>确定要修改吗？</p>
 </div>
 
 <div id="menu" >
