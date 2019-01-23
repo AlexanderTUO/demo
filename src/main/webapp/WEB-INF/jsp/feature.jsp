@@ -26,6 +26,9 @@
 
     <link rel="stylesheet" href="css/feature.css">
     <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+
+    <link href="lib/datatable/jquery.dataTables.css" rel="stylesheet">
+    <script type="text/javascript" src="lib/datatable/jquery.dataTables.js"></script>
 </head>
 <body>
 
@@ -38,6 +41,9 @@
 <div class="applyContainer" id="Feature">
     <ul>
         <li id="displayFea"><label>显示：</label>
+            <input type="checkbox" id="allSelect" value="4">全选
+            <input type="checkbox" id="allNotSelect" value="5">全不选<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="checkbox" id="pointCh" value="1">点
             <input type="checkbox" id="lineStringCh" value="2">线
             <input type="checkbox" id="polygonCh" value="3">面
@@ -96,6 +102,18 @@
 
 <div id="dialog-modify" title="修改要素">
     <p>确定要修改吗？</p>
+</div>
+
+<div id="dialog-display" title="所选要素" style="width: 500px;height: 500px">
+    <table id="d1">
+        <%--<tr>--%>
+            <%--<thead>--%>
+            <%--<td></td>--%>
+            <%--<td></td>--%>
+            <%--<td></td>--%>
+            <%--</thead>--%>
+        <%--</tr>--%>
+    </table>
 </div>
 
 <div id="menu" >

@@ -207,18 +207,17 @@ $(function () {
         })
     }
 
-    /**
-     * 绑定显示复选框改变事件
-     */
-    $('#displayFea :checkbox').on('change',function () {
+    function displayEvent() {
         var checkbox = $('#displayFea :checkbox');
         for (var index = 0; index < checkbox.length; index++) {
             switch (checkbox[index].value) {
                 case '1':
                     if (checkbox[index].checked) {
                         myMap.pointLayer.setVisible(true);
+                        // $('#allNotSelect').prop('checked', false);
                     } else {
                         myMap.pointLayer.setVisible(false);
+                        // $('#allSelect').prop('checked', false);
                     }
                     break;
                 case '2':
@@ -238,8 +237,36 @@ $(function () {
                 default:
             }
         }
-    })
+    }
 
+    /**
+     * 绑定显示复选框改变事件
+     */
+    $('#displayFea :checkbox').on('change', function () {
+        displayEvent();
+    });
+
+    $('#allSelect').on('change', function () {
+        if (this.checked) {
+            $('#allNotSelect').prop('checked', false);
+
+            $('#pointCh').prop('checked', true);
+            $('#lineStringCh').prop('checked', true);
+            $('#polygonCh').prop('checked', true);
+            displayEvent();
+        }
+    });
+
+    $('#allNotSelect').on('change', function () {
+        if (this.checked) {
+            $('#allSelect').prop('checked', false);
+
+            $('#pointCh').prop('checked', false);
+            $('#lineStringCh').prop('checked', false);
+            $('#polygonCh').prop('checked', false);
+            displayEvent();
+        }
+    });
 
     var addType = "1";//添加要素的类型,默认为点
     var addDraw = null;
@@ -259,6 +286,7 @@ $(function () {
             // 开始修改
             $('#delete').prop("checked", false);
             $('#modify').prop("checked", false);
+            $('#selectionChe').prop("checked", false);
             // 开始绘制
             addFeature(addType);
         } else {
@@ -474,6 +502,7 @@ $(function () {
             modifyFea();
             $('#delete').prop("checked", false);
             $('#add').prop("checked", false);
+            $('#selectionChe').prop("checked", false);
         } else {
             myMap.map.removeInteraction(selectionInter);
             myMap.map.removeInteraction(modifyInter);
@@ -572,7 +601,7 @@ $(function () {
             data["geometry"] = geoStr;
 
             $.ajax({
-                url: '/Feature/save2',
+                url: '/Feature/updateFeature',
                 type: "POST",
                 data: JSON.stringify(data),//必要
                 dataType:"json",
@@ -598,6 +627,7 @@ $(function () {
             opeaType = 'delete';
             $('#modify').prop("checked", false);
             $('#add').prop("checked", false);
+            $('#selectionChe').prop("checked", false);
 
             myMap.map.un('singleclick', singleclickFun, this);
             myMap.map.on('singleclick', singleclickFun, this);
@@ -645,36 +675,41 @@ $(function () {
     $('#selectFea').on('change', function () {
         selectType = $('#selectFea option:selected')[0].value;
         selectFea();
-        console.log(selectType);
+        $('#add').prop("checked", false);
+        $('#delete').prop("checked", false);
+        $('#modify').prop("checked", false);
     });
 
     /**
      * 实现选择
      */
+    var selectedFeatures = null;
+    myMap.map.on('singleclick', singleclickFun, this);
     function selectFea() {
         console.log($('#selectionChe').prop('checked'));
         if (!$('#selectionChe').prop('checked')) {
             return;
         }
-       var select = new ol.interaction.Select();
-       myMap.map.addInteraction(select);
-       var selectedFeatures = select.getFeatures();
+        opeaType = "select";
+        var select = new ol.interaction.Select();
+        myMap.map.addInteraction(select);
+        selectedFeatures = select.getFeatures();
 
         myMap.pointLayer.set("type", "vector");
         myMap.lineStringLayer.set("type", "vector");
         myMap.polygonLayer.set("type", "vector");
 
-       switch (selectType) {
+        switch (selectType) {
            case "1":
-
+               // 弹出显示框
+               // displaySelectedFea(selectedFeatures);
                break;
            case "2":
                var dragBox = new ol.interaction.DragBox({
                    // condition: ol.events.condition.platformModifierKeyOnly
-               })
+               });
 
                myMap.map.addInteraction(dragBox);
-
 
                dragBox.on('boxend', function () {
                    var extent = dragBox.getGeometry().getExtent();
@@ -684,11 +719,16 @@ $(function () {
                        if (layers.item(index).get("type")) {
                            console.log("index:" + index);
                            layers.item(index).getSource().forEachFeatureIntersectingExtent(extent, function (feature) {
-                               console.log(feature.get('info').name);
-                               selectedFeatures.push(feature);
+                               if (feature.get('info')) {
+                                   console.log(feature.get('info').name);
+                                   selectedFeatures.push(feature);
+                               }
+
                            });
                        }
                    }
+                   // 弹出显示框
+                   displaySelectedFea(selectedFeatures);
                });
 
                dragBox.on('boxstart', function () {
@@ -696,43 +736,157 @@ $(function () {
                });
                break;
            case "3":
-                var circleDraw = new ol.interaction.Draw({
-                    source: VectorSource,
+               //  var circleDraw = new ol.interaction.Draw({
+               //      source: myMap.pointLayer.getSource(),
+               //      type: 'Circle',
+               //      // condition: ol.events.condition.platformModifierKeyOnly
+               //  })
+               //  myMap.map.addInteraction(circleDraw);
+               //
+               // circleDraw.on('drawend',function(evt){
+               //     var polygon = evt.feature.getGeometry();
+               //     setTimeout(function(){
+               //         //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
+               //         var center = polygon.getCenter(),
+               //             radius = polygon.getRadius(),
+               //             extent = polygon.getExtent();
+               //         var features = myMap.pointLayer.getSource().getFeaturesInExtent(extent);
+               //         //先缩小feature的范围
+               //         var str = "";
+               //         console.log(features.length);
+               //         for(var i=0;i<features.length;i++){
+               //             var newCoords = features[i].getGeometry().getCoordinates();
+               //             if (!newCoords) {
+               //                 continue;
+               //             }
+               //             console.log(i + ":" + newCoords);
+               //             if(pointInsideCircle(newCoords,center,radius)){
+               //                 selectedFeatures.push(features[i]);
+               //             }
+               //         }
+               //     },300)
+               // })
+               //
+               // circleDraw.on('drawend',function(evt){
+               //     selectedFeatures.clear();
+               // })
+
+                var dragBox = new ol.interaction.Draw({
+                    source: myMap.pointLayer.getSource(),
                     type: 'Circle',
                     // condition: ol.events.condition.platformModifierKeyOnly
                 })
-                myMap.map.addInteraction(circleDraw);
 
-               circleDraw.on('drawend',function(evt){
-                   var polygon = evt.feature.getGeometry();
-                   setTimeout(function(){
-                       //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
-                       var center = polygon.getCenter(),
-                           radius = polygon.getRadius(),
-                           extent = polygon.getExtent();
-                       var features = vectorLayer.getSource().getFeaturesInExtent(extent);
-                       //先缩小feature的范围
-                       var str = "";
-                       for(var i=0;i<features.length;i++){
-                           var newCoords = features[i].getGeometry().getCoordinates();
-                           if(pointInsideCircle(newCoords,center,radius)){
-                               selectedFeatures.push(features[i]);
+               myMap.map.addInteraction(dragBox);
+
+               dragBox.on('drawend', function (evt) {
+                   // var extent = dragBox.getGeometry().getExtent();
+
+                   var extent = evt.feature.getGeometry().getExtent();
+                   selectedFeatures.clear();
+                   setTimeout(function () {
+                       console.log(selectedFeatures);
+                       var layers = myMap.map.getLayers();
+                       console.log(layers.getLength());
+                       for (var index = 0; index < layers.getLength(); index++) {
+                           if (layers.item(index).get("type")) {
+                               console.log("index:" + index);
+                               layers.item(index).getSource().forEachFeatureIntersectingExtent(extent, function (feature) {
+                                   if (feature.get('info')) {
+                                       console.log(feature.get('info').name);
+                                       selectedFeatures.push(feature);
+                                   }
+
+                               });
                            }
                        }
-                   },300)
-               })
+                       // 弹出显示框
+                       displaySelectedFea(selectedFeatures);
+                   }, 300);
 
-               circleDraw.on('drawend',function(evt){
+               });
+
+               dragBox.on('drawstart', function () {
                    selectedFeatures.clear();
-               })
+               });
                break;
            case "4":
+               // var polygonDraw = new ol.interaction.Draw({
+               //     source: myMap.pointLayer.getSource(),
+               //     type: 'Polygon',
+               //     // condition: ol.events.condition.platformModifierKeyOnly
+               // })
+               //    myMap.map.addInteraction(polygonDraw);
+               //
+               //    polygonDraw.on('drawend',function(evt){
+               //        var polygon = evt.feature.getGeometry();
+               //        setTimeout(function(){
+               //            //如果不设置延迟，范围内要素选中后自动取消选中，具体原因不知道
+               //            var extent = polygon.getExtent();
+               //            var features = myMap.pointLayer.getSource().getFeaturesInExtent(extent);
+               //            //先缩小feature的范围
+               //            var polygonCoor = polygon.getCoordinates()[0];
+               //            for(var i=0;i<features.length;i++){
+               //                if (!features[i].get('type')) {
+               //                    continue;
+               //                }
+               //                var newCoords = features[i].getGeometry().getCoordinates();
+               //                if (insidePolygon(polygonCoor, newCoords)) {
+               //                    selectedFeatures.push(features[i]);
+               //                }
+               //            }
+               //        },300)
+               //    })
+               //
+               //    polygonDraw.on('drawend',function(evt){
+               //        selectedFeatures.clear();
+               //    })
 
+               // var dragBox = new ol.interaction.DragBox({
+               //     // condition: ol.events.condition.platformModifierKeyOnly
+               // });
+
+               var dragBox = new ol.interaction.Draw({
+                   source: myMap.pointLayer.getSource(),
+                   type: 'Polygon',
+                   // condition: ol.events.condition.platformModifierKeyOnly
+               })
+
+               myMap.map.addInteraction(dragBox);
+
+               dragBox.on('drawend', function (evt) {
+                   // var extent = dragBox.getGeometry().getExtent();
+
+                   var extent = evt.feature.getGeometry().getExtent();
+                   selectedFeatures.clear();
+                   setTimeout(function () {
+                       console.log(selectedFeatures);
+                       var layers = myMap.map.getLayers();
+                       console.log(layers.getLength());
+                       for (var index = 0; index < layers.getLength(); index++) {
+                           if (layers.item(index).get("type")) {
+                               console.log("index:" + index);
+                               layers.item(index).getSource().forEachFeatureIntersectingExtent(extent, function (feature) {
+                                   if (feature.get('info')) {
+                                       console.log(feature.get('info').name);
+                                       selectedFeatures.push(feature);
+                                   }
+
+                               });
+                           }
+                       }
+                       // 弹出显示框
+                       displaySelectedFea(selectedFeatures);
+                   }, 300);
+
+               });
+
+               dragBox.on('drawstart', function () {
+                   selectedFeatures.clear();
+               });
                break;
            default:
-
        }
-
 
        // var infoBox = document.getElementById('info');
 
@@ -753,8 +907,126 @@ $(function () {
             // 开始选择
             selectFea();
         }
-
     });
+
+    $("#dialog-display").dialog({
+        autoOpen: false,
+        resizable: false,
+        height: 500,
+        width:500
+        // modal: true,
+    })
+
+    var featureTable = null;
+    function displaySelectedFea(selectedFeatures) {
+        // selectedFeatures;
+
+        var featureData1 = new Array();
+        for (var index = 0; index < selectedFeatures.getLength(); index++) {
+            featureData1.push(selectedFeatures.item(index).get('info'));
+        }
+        var featureData = [
+            ['Trident','Internet Explorer 4.0','Win 95+','4','X'],
+            ['Trident','Internet Explorer 5.0','Win 95+','5','C'],
+            ['Trident','Internet Explorer 5.5','Win 95+','5.5','A'],
+            ['Trident','Internet Explorer 6','Win 98+','6','A'],
+            ['Trident','Internet Explorer 7','Win XP SP2+','7','A'],
+            ['Trident','AOL browser (AOL desktop)','Win XP','6','A'],
+            ['Gecko','Firefox 1.0','Win 98+ / OSX.2+','1.7','A'],
+            ['Gecko','Firefox 1.5','Win 98+ / OSX.2+','1.8','A'],
+            ['Gecko','Firefox 2.0','Win 98+ / OSX.2+','1.8','A'],
+            ['Gecko','Firefox 3.0','Win 2k+ / OSX.3+','1.9','A']
+        ];
+
+        if (featureTable == null) {
+            featureTable = $('#d1').DataTable({
+                autoWidth: true,
+                info: false,
+                data: featureData1,
+                searching: false,
+                paging: false,
+                columns: [
+                    {
+                        // width: "20%",
+                        targets: 0,
+                        data: "id",
+                        title: "id",
+                        // visible:false
+                    },
+                    {
+                        targets: 1,
+                        data: "name",
+                        title: "名称",
+                    },
+                    {
+                        targets: 2,
+                        data: "city",
+                        title: "城市",
+                    },
+                    {
+                        targets: 3,
+                        data: "type",
+                        title: "类型",
+                    },
+                    // {
+                    //     targets: 4,
+                    //     data: "geometry",
+                    //     title: "位置",
+                    // },
+                ],
+                "destroy": true,
+            });
+        } else {
+            var currentPage = featureTable.page();  //该行是固定写死的
+            featureTable.clear();
+            featureTable.rows.add(featureData1);
+            featureTable.page(currentPage).draw(false);
+            // rainTable.ajax.reload();
+        }
+
+
+        // featureTable = $("#displaySelectedFea1").dataTable({
+        //     paging: false,
+        //     searching: false,
+        //     data: featureData,
+        //     columns:[
+        //         {title: "id"},
+        //         {title: "name"},
+        //         {title: "age"},
+        //         {title: "age1"},
+        //         {title: "age2"}
+        //     ]
+        //     // serverSide: true,
+        //     // autoWidth: false,
+        //     // ajax: {
+        //     //     url: "/rain/getRainInfo",
+        //     //     type: "post",
+        //     //     // data: function (d) {
+        //     //     //     var from = $("#ssyqfrom1").val()+$("#fromTime").val()+":00:00";
+        //     //     //     var to = $("#ssyqfrom2").val()+$("#toTime").val()+":00:00";
+        //     //     //
+        //     //     //     // var fromTime = $("#fromTime").val();
+        //     //     //     // var toTime = $("#toTime").val();
+        //     //     //
+        //     //     //     var rainfall=getRainfall();
+        //     //     //
+        //     //     //     d.fromTime = from;//起始时间
+        //     //     //     d.toTime = to;//结束时间
+        //     //     //
+        //     //     //     d.minRain = rainfall[0];//最小雨量
+        //     //     //     d.maxRain = rainfall[1];//最大雨量
+        //     //     //     // d.minRain = 0;
+        //     //     //
+        //     //     //     return JSON.stringify(d);
+        //     //     // },
+        //     //     data: featureData,
+        //     //     // dataSrc: ""
+        //     //     dataType: "json",
+        //     //     contentType: "application/json",
+        // });
+        $("#dialog-display").dialog("open");
+
+    }
 
     /**
      * 鼠标单击事件监听处理函数
@@ -774,13 +1046,27 @@ $(function () {
                 $("#dialog-delete").dialog("open"); //打开删除要素设置对话框
             }else if (opeaType === "modify") {
                 // $("#dialog-modify").dialog("open");
+            }else if (opeaType === "select") {
+                console.log($('#selectionChe').prop('checked'));
+                if (!$('#selectionChe').prop('checked')) {
+                    return;
+                }
+                opeaType = "select";
+                var select = new ol.interaction.Select();
+                myMap.map.addInteraction(select);
+                selectedFeatures = select.getFeatures();
+
+                myMap.pointLayer.set("type", "vector");
+                myMap.lineStringLayer.set("type", "vector");
+                myMap.polygonLayer.set("type", "vector");
+
+                selectedFeatures.push(feature);
+                displaySelectedFea(selectedFeatures);
             }
+
                 currentFeature = feature; //当前绘制的要素
         }
 
-
-
-        
     }
 
 

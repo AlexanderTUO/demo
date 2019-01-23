@@ -17,4 +17,6 @@ public interface FeatureMapper {
     List<FeatureEntity> listFeatures();
 
     void deleteFeature(@Param("regId") String regId);
+
+    void updateFeature(FeatureEntity featureEntity) ;
 }

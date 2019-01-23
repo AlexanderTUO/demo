@@ -29,5 +29,15 @@
     <delete id="deleteFeature">
         delete from feature where id= #{regId};
     </delete>
+
+    <update id="updateFeature">
+        UPDATE `openlayer`.`feature`
+        SET
+        `type` = #{type},
+        `name` = #{name},
+        `city` = #{city},
+        `geometry` = #{geometry}
+        WHERE `id` = #{id};
+    </update>
 </mapper>
 

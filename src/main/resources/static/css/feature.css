@@ -5,7 +5,7 @@
 }
 .containerBack {
     width: 240px;
-    height: 190px;
+    height: 200px;
     position: absolute;
     z-index: 999;
     top: 80px;
@@ -39,7 +39,7 @@
 }
 .applyContainer{
     width: 240px;
-    height: 160px;
+    height: 170px;
     position: absolute;
     z-index: 1000;
     top: 110px;

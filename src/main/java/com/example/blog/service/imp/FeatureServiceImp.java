@@ -34,4 +34,9 @@ public class FeatureServiceImp implements FeatureService {
     public void deleteFeature(String regId) {
         featureMapper.deleteFeature(regId);
     }
+
+    @Override
+    public void updateFeature(FeatureEntity featureEntity) {
+        featureMapper.updateFeature(featureEntity);
+    }
 }

@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface FeatureService {
     void saveFeature(FeatureEntity featureEntity) ;
+    void updateFeature(FeatureEntity featureEntity) ;
     List<FeatureEntity> list();
 
     void deleteFeature(String regId);

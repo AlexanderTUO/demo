@@ -60,4 +60,11 @@ public class FeatureController {
         return "success";
     }
 
+    @RequestMapping(value = {"updateFeature", "updateFeature"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String updateFeature(@RequestBody FeatureEntity featureEntity) {
+        featureService.updateFeature(featureEntity);
+        return "success";
+    }
+
 }

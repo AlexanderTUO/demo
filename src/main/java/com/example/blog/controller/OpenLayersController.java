@@ -114,4 +114,9 @@ public class OpenLayersController {
     public String formdata() {
         return "formdata";
     }
+
+    @RequestMapping("jsts")
+    public String jsts() {
+        return "jsts";
+    }
 }
