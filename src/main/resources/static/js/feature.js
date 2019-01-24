@@ -107,6 +107,14 @@ $(function () {
             });
             myMap.map.addLayer(myMap.polygonLayer);
         }
+
+        if (myMap.circleLayer == null) {
+            myMap.circleLayer = new ol.layer.Vector({
+                source: new ol.source.Vector(),
+                style:createStyle("4")
+            });
+            myMap.map.addLayer(myMap.circleLayer);
+        }
         // 从后台获取要素
         displayFeatures();
     }
@@ -134,6 +142,16 @@ $(function () {
                     }),
                     fill:new  ol.style.Fill({
 
+                        color: "#D9D8D7"
+                    })
+                });
+            case "4":
+                return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        width:2,
+                        color: "yellow"
+                    }),
+                    fill:new  ol.style.Fill({
                         color: "#D9D8D7"
                     })
                 });
@@ -178,7 +196,7 @@ $(function () {
                         myMap.lineStringLayer.getSource().addFeature(lineString);
                         myMap.lineStringLayer.setVisible(false);
                     }
-                    if (data[index].type == "Polygon") {
+                    else if (data[index].type == "Polygon") {
                         var polygon = new ol.Feature({
                             geometry: new ol.geom.Polygon(coordinate),
                             name: data[index].name,
@@ -188,6 +206,19 @@ $(function () {
                         });
                         myMap.polygonLayer.getSource().addFeature(polygon);
                         myMap.polygonLayer.setVisible(false);
+                    }
+                    else if (data[index].type == "Circle") {
+                        var radius = JSON.parse(data[index].radius);
+
+                        var circle = new ol.Feature({
+                            geometry: new ol.geom.Circle(coordinate,radius),
+                            name: data[index].name,
+                            id: data[index].id,
+                            type: "Circle",
+                            info:data[index]
+                        });
+                        myMap.circleLayer.getSource().addFeature(circle);
+                        myMap.circleLayer.setVisible(false);
                     }
                 }
 
@@ -234,6 +265,13 @@ $(function () {
                         myMap.polygonLayer.setVisible(false);
                     }
                     break;
+                case '4':
+                    if (checkbox[index].checked) {
+                        myMap.circleLayer.setVisible(true);
+                    } else {
+                        myMap.circleLayer.setVisible(false);
+                    }
+                    break;
                 default:
             }
         }
@@ -253,6 +291,7 @@ $(function () {
             $('#pointCh').prop('checked', true);
             $('#lineStringCh').prop('checked', true);
             $('#polygonCh').prop('checked', true);
+            $('#circleCh').prop('checked', true);
             displayEvent();
         }
     });
@@ -264,6 +303,7 @@ $(function () {
             $('#pointCh').prop('checked', false);
             $('#lineStringCh').prop('checked', false);
             $('#polygonCh').prop('checked', false);
+            $('#circleCh').prop('checked', false);
             displayEvent();
         }
     });
@@ -310,6 +350,8 @@ $(function () {
             return ["LineString",myMap.lineStringLayer];
         }else  if (type === '3') {
             return ["Polygon",myMap.polygonLayer];
+        }else if (type === '4') {
+            return ["Circle",myMap.circleLayer];
         }
     }
 
@@ -336,11 +378,12 @@ $(function () {
     }
 
 
-
+    var radiusDo = null;
     function drawAndCallBack(evt) {
         currentFeature = evt.feature;
         var geometry = evt.feature.getGeometry();
         var coordinates = geometry.getCoordinates();
+
         if (addType === '1') {
             geoStr = coordinates.join(',');
             geoStr = "[" + geoStr + "]";
@@ -350,6 +393,10 @@ $(function () {
         } else if (addType === "3") {
             geoStr = coordinates[0].join('],[');
             geoStr = "[[[" + geoStr + "]]]";
+        }else if (addType == '4') {
+            radiusDo = geometry.getRadius();
+            geoStr = geometry.getCenter().join(',');
+            geoStr = "[" + geoStr + "]";
         }
 
         // 打开对话框
@@ -376,6 +423,8 @@ $(function () {
                     myMap.lineStringLayer.getSource().removeFeature(currentFeature);
                 } else if (addType === "3") {
                     myMap.polygonLayer.getSource().removeFeature(currentFeature);
+                }else if (addType === "4") {
+                    myMap.circleLayer.getSource().removeFeature(currentFeature);
                 }
                 $(this).dialog("close");
             }
@@ -471,7 +520,8 @@ $(function () {
             "city": city.val(),
             "infoType": infoType.val(),
             "type":type.val(),
-            "geometry":geoStr
+            "geometry":geoStr,
+            "radius": radiusDo
         };
 
         $.ajax({
@@ -595,6 +645,9 @@ $(function () {
             } else if (modifyType == "Polygon") {
                 geoStr = coordinates[0].join('],[');
                 geoStr = "[[[" + geoStr + "]]]";
+            }else if (modifyType == 'Circle') {
+                geoStr = modifyFeature.getGeometry().getCenter().join(',');
+                geoStr = "[" + geoStr + "]";
             }
 
             var data = modifyFeature.get("info");
@@ -698,6 +751,7 @@ $(function () {
         myMap.pointLayer.set("type", "vector");
         myMap.lineStringLayer.set("type", "vector");
         myMap.polygonLayer.set("type", "vector");
+        myMap.circleLayer.set("type", "vector");
 
         switch (selectType) {
            case "1":
@@ -723,7 +777,6 @@ $(function () {
                                    console.log(feature.get('info').name);
                                    selectedFeatures.push(feature);
                                }
-
                            });
                        }
                    }
@@ -783,18 +836,29 @@ $(function () {
                    // var extent = dragBox.getGeometry().getExtent();
 
                    var extent = evt.feature.getGeometry().getExtent();
+                   // var circle = evt.feature.getGeometry();
+                   var center = evt.feature.getGeometry().getCenter(),
+                       radius = evt.feature.getGeometry().getRadius();
+
+                   var circle = new ol.geom.Circle(center, radius);
                    selectedFeatures.clear();
                    setTimeout(function () {
                        console.log(selectedFeatures);
                        var layers = myMap.map.getLayers();
                        console.log(layers.getLength());
                        for (var index = 0; index < layers.getLength(); index++) {
-                           if (layers.item(index).get("type")) {
+                           if (layers.item(index).get("type")=="Circle") {
                                console.log("index:" + index);
                                layers.item(index).getSource().forEachFeatureIntersectingExtent(extent, function (feature) {
                                    if (feature.get('info')) {
                                        console.log(feature.get('info').name);
-                                       selectedFeatures.push(feature);
+                                       // if (polyIntersectsPoly(circle,feature.getGeometry()) === true){
+                                       //     selectedFeatures.push(feature);
+                                       // }
+                                       if (circleIntersectsPoly(center, radius, feature.getGeometry().getCenter(), feature.getGeometry().getRadius())) {
+                                           selectedFeatures.push(feature);
+                                       }
+                                       // selectedFeatures.push(feature);
                                    }
 
                                });
@@ -809,6 +873,8 @@ $(function () {
                dragBox.on('drawstart', function () {
                    selectedFeatures.clear();
                });
+
+
                break;
            case "4":
                // var polygonDraw = new ol.interaction.Draw({
@@ -846,18 +912,20 @@ $(function () {
                //     // condition: ol.events.condition.platformModifierKeyOnly
                // });
 
-               var dragBox = new ol.interaction.Draw({
+               var polygonDraw = new ol.interaction.Draw({
                    source: myMap.pointLayer.getSource(),
                    type: 'Polygon',
                    // condition: ol.events.condition.platformModifierKeyOnly
                })
 
-               myMap.map.addInteraction(dragBox);
+               myMap.map.addInteraction(polygonDraw);
 
-               dragBox.on('drawend', function (evt) {
+               polygonDraw.on('drawend', function (evt) {
                    // var extent = dragBox.getGeometry().getExtent();
 
                    var extent = evt.feature.getGeometry().getExtent();
+                   var polygon = evt.feature.getGeometry();
+
                    selectedFeatures.clear();
                    setTimeout(function () {
                        console.log(selectedFeatures);
@@ -869,7 +937,10 @@ $(function () {
                                layers.item(index).getSource().forEachFeatureIntersectingExtent(extent, function (feature) {
                                    if (feature.get('info')) {
                                        console.log(feature.get('info').name);
-                                       selectedFeatures.push(feature);
+
+                                       if (polyIntersectsPoly(polygon,feature.getGeometry()) === true){
+                                           selectedFeatures.push(feature);
+                                       }
                                    }
 
                                });
@@ -880,10 +951,10 @@ $(function () {
                    }, 300);
 
                });
-
-               dragBox.on('drawstart', function () {
+               polygonDraw.on('drawstart', function () {
                    selectedFeatures.clear();
                });
+
                break;
            default:
        }
@@ -901,6 +972,45 @@ $(function () {
            // }
        })
     }
+
+    /**
+     * check whether the supplied polygons have any spatial interaction
+     * @{ol.geometry.Polygon} polygeomA
+     * @{ol.geometry.Polygon} polygeomB
+     * @returns {Boolean} true||false
+     */
+    function polyIntersectsPoly(polygeomA, polygeomB) {
+        var geomA = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
+            new ol.Feature({
+                geometry: polygeomA
+            })
+            )
+        ).geometry;
+        var geomB = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
+            new ol.Feature({
+                geometry: polygeomB
+            })
+            )
+        ).geometry;
+        return geomA.intersects(geomB);
+    };
+
+    function circleIntersectsPoly(coordinate1,radius1,coordinate2,radius2) {
+        var geomA = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
+            new ol.Feature({
+                // geometry: polygeomA
+                geometry: new ol.geom.Circle(coordinate1,radius1),
+            })
+            )
+        ).geometry;
+        var geomB = new jsts.io.GeoJSONReader().read(new ol.format.GeoJSON().writeFeatureObject(
+            new ol.Feature({
+                geometry: new ol.geom.Circle(coordinate2,radius2),
+            })
+            )
+        ).geometry;
+        return geomA.intersects(geomB);
+    };
 
     $('#selectionChe').on('change', function () {
         if (this.checked) {
@@ -1046,23 +1156,24 @@ $(function () {
                 $("#dialog-delete").dialog("open"); //打开删除要素设置对话框
             }else if (opeaType === "modify") {
                 // $("#dialog-modify").dialog("open");
-            }else if (opeaType === "select") {
-                console.log($('#selectionChe').prop('checked'));
-                if (!$('#selectionChe').prop('checked')) {
-                    return;
-                }
-                opeaType = "select";
-                var select = new ol.interaction.Select();
-                myMap.map.addInteraction(select);
-                selectedFeatures = select.getFeatures();
-
-                myMap.pointLayer.set("type", "vector");
-                myMap.lineStringLayer.set("type", "vector");
-                myMap.polygonLayer.set("type", "vector");
-
-                selectedFeatures.push(feature);
-                displaySelectedFea(selectedFeatures);
             }
+            // else if (opeaType === "select") {
+            //     console.log($('#selectionChe').prop('checked'));
+            //     if (!$('#selectionChe').prop('checked')) {
+            //         return;
+            //     }
+            //     opeaType = "select";
+            //     var select = new ol.interaction.Select();
+            //     myMap.map.addInteraction(select);
+            //     selectedFeatures = select.getFeatures();
+            //
+            //     myMap.pointLayer.set("type", "vector");
+            //     myMap.lineStringLayer.set("type", "vector");
+            //     myMap.polygonLayer.set("type", "vector");
+            //
+            //     selectedFeatures.push(feature);
+            //     displaySelectedFea(selectedFeatures);
+            // }
 
                 currentFeature = feature; //当前绘制的要素
         }

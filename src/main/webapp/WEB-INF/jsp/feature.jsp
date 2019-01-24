@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <script src="openLayers-5.3.0/ol.js" type="text/javascript" charset="utf-8"></script>
 
+    <script src="https://unpkg.com/jsts@2.0.2/dist/jsts.min.js"></script>
 
     <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.css">
@@ -47,12 +48,14 @@
             <input type="checkbox" id="pointCh" value="1">点
             <input type="checkbox" id="lineStringCh" value="2">线
             <input type="checkbox" id="polygonCh" value="3">面
+            <input type="checkbox" id="circleCh" value="4">圆
         </li>
         <li id="addFea"><label>绘制：</label>
             <input type="checkbox" id="add">
             <input type="radio" id="pointRa" name="add" value="1" checked>点
             <input type="radio" id="lineStringRa" name="add" value="2">线
             <input type="radio" id="polygonRa" name="add" value="3">面
+            <input type="radio" id="circleRa" name="add" value="4">圆
         </li>
         <li id="modifyFea"><label>修改：</label>
             <input type="checkbox" id="modify">
@@ -80,7 +83,7 @@
     </div>
 </div>
 
-<div id="dialog-form" title="绘制要素">
+<div id="dialog-form" title="绘制要素" style="height: 425px;">
     <p class="validateTips">所有表单字段都是必填的。</p>
     <form id="featureCon">
         <fieldset>

@@ -9,14 +9,17 @@
 <html>
 <head>
     <title>jsts</title>
+
     <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" href="openLayers-5.3.0/ol.css" type="text/css" />
+
+    <link rel="stylesheet" href="openLayers-5.3.0/ol.css" type="text/css"/>
     <script src="https://unpkg.com/jsts@2.0.2/dist/jsts.min.js"></script>
+    <%--<script src="lib/jstslib/jsts.js"></script>--%>
     <script src="openLayers-5.3.0/ol.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="js/jsts.js"></script>
+    <script type="text/javascript" src="js/jstsDemo.js"></script>
 </head>
 <body>
-<div id="map">
+<div id="map" style="width: 100%; height: 100%;">
 </div>
 </body>
 </html>

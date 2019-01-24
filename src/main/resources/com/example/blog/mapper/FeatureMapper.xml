@@ -20,9 +20,17 @@
 
     <insert id="saveFeature">
         insert into feature(
-          `type`,`name`,city,geometry
+          `type`,`name`,city,
+          <if test="radius!=null">
+              radius,
+          </if>
+          geometry
         )values(
-          #{type},#{name},#{city},#{geometry}
+          #{type},#{name},#{city},
+        <if test="radius!=null">
+            #{radius},
+        </if>
+        #{geometry}
         )
     </insert>
 
@@ -36,6 +44,9 @@
         `type` = #{type},
         `name` = #{name},
         `city` = #{city},
+        <if test="radius!=null">
+          `radius` = #{radius},
+        </if>
         `geometry` = #{geometry}
         WHERE `id` = #{id};
     </update>
