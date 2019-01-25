@@ -68,9 +68,9 @@
         <li id="selectFea"><label for="selection">选择：</label>
             <input type="checkbox" id="selectionChe">
             <select id="selection">
-                <option id="pointSel" class="" value="1" selected>点选</option>
+                <option id="pointSel" class="" value="1" disabled="disabled">点选</option>
                 <option id="boxSel" class="" value="2">框选</option>
-                <option id="circleSel" class="" value="3">圆选</option>
+                <option id="circleSel" class="" value="3"disabled="disabled">圆选</option>
                 <option id="polygonSel" class="" value="4">多边形选</option>
             </select>
         </li>
@@ -88,7 +88,14 @@
     <form id="featureCon">
         <fieldset>
             <label for="type">几何类型</label>
-            <input type="text" name="type" id="type" class="text ui-widget-content ui-corner-all">
+            <%--<input type="text" name="type" id="type" class="text ui-widget-content ui-corner-all">--%>
+            <select id="type" name="type" class="ui-widget-content ui-corner-all" >
+                <option value="Point">点</option>
+                <option value="LineString">线</option>
+                <option value="Polygon">面</option>
+                <option value="Circle">圆</option>
+            </select>
+
             <label for="infoType">信息类型</label>
             <input type="text" name="infoType" id="infoType" class="text ui-widget-content ui-corner-all">
             <label for="name">名称</label>
@@ -107,6 +114,7 @@
     <p>确定要修改吗？</p>
 </div>
 
+<%--<div id="dialog-display" title="所选要素" style="height: auto; width: 500px; top: 48px; left: 1400px;">--%>
 <div id="dialog-display" title="所选要素" style="width: 500px;height: 500px">
     <table id="d1">
         <%--<tr>--%>

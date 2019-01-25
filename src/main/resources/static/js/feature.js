@@ -125,6 +125,10 @@ $(function () {
                 return new ol.style.Style({
                     image: new ol.style.Icon({
                         src: "images/air.png"
+                    }),
+                    text:new ol.style.Text({
+                        text: "点",
+                        scale: "4"
                     })
                 });
             case "2":
@@ -132,8 +136,12 @@ $(function () {
                     stroke: new ol.style.Stroke({
                         width:2,
                         color: "blue"
+                    }),
+                    text:new ol.style.Text({
+                        text: "我是线线"
                     })
                 });
+
             case "3":
                 return new ol.style.Style({
                     stroke: new ol.style.Stroke({
@@ -436,7 +444,7 @@ $(function () {
 
     var name = $("#name"),
         city = $("#city"),
-        type = $("#geoType"),
+        type = $("#type"),
         infoType = $("#infoType"),
         allFields = $([]).add(name).add(city).add(type).add(infoType),
         tips = $(".validateTips");
@@ -638,6 +646,7 @@ $(function () {
             var modifyType = modifyFeature.get("type");
             if (modifyType == 'Point') {
                 geoStr = coordinates.join(',');
+
                 geoStr = "[" + geoStr + "]";
             } else if (modifyType == "LineString") {
                 geoStr = coordinates.join('],[');
@@ -1011,6 +1020,8 @@ $(function () {
         ).geometry;
         return geomA.intersects(geomB);
     };
+
+    // var linearRing = new ol.geom.LinearRing()
 
     $('#selectionChe').on('change', function () {
         if (this.checked) {

@@ -58,7 +58,7 @@ div{
 
 /*对话框样式设置*/
 
-#dialog-form{
+#dialog-form {
     font-size: 62.5%;
 }
 
@@ -82,3 +82,9 @@ fieldset {
     border:1px solid transparent;
     padding: 0.3em;
 }
+
+/*#dialog-display{*/
+    /*height: auto; width: 500px; top: 48px; left: 1400px;*/
+/*}*/
+
+
