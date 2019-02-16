@@ -1,6 +1,6 @@
 package com.example.blog.service;
 
-import com.example.blog.mapper.ItemMapper;
+import com.example.blog.mapper.mysql.ItemMapper;
 import com.example.blog.model.ItemQuery;
 import com.example.blog.model.ItemQueryBean;
 import org.springframework.beans.factory.annotation.Autowired;

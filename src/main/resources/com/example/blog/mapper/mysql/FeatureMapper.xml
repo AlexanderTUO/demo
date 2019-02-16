@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.example.blog.mapper.FeatureMapper">
+<mapper namespace="com.example.blog.mapper.mysql.FeatureMapper">
     <select id="listFeatures" resultType="com.example.blog.entity.FeatureEntity">
         select * from feature
     </select>

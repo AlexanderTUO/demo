@@ -1,7 +1,7 @@
 package com.example.blog.service;
 
 import com.example.blog.entity.SysCatTree;
-import com.example.blog.mapper.SysCatTreeMapper;
+import com.example.blog.mapper.mysql.SysCatTreeMapper;
 import com.example.blog.model.ItemQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

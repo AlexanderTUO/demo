@@ -22,6 +22,7 @@ public class FeatureController {
     @Autowired
     public FeatureService featureService;
 
+
     @RequestMapping(value = {"save", "save"}, method = RequestMethod.POST)
     @ResponseBody
     public String saveFeature(@RequestBody FeatureQuery featureQuery) {
@@ -65,6 +66,14 @@ public class FeatureController {
     public String updateFeature(@RequestBody FeatureEntity featureEntity) {
         featureService.updateFeature(featureEntity);
         return "success";
+    }
+
+
+    @RequestMapping(value = "postinfo", method = RequestMethod.GET)
+    @ResponseBody
+    public String getpqinfo() {
+        String name =  featureService.getXZQ(1).getName();
+        return name;
     }
 
 }

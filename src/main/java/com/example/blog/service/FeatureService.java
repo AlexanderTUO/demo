@@ -1,6 +1,7 @@
 package com.example.blog.service;
 
 import com.example.blog.entity.FeatureEntity;
+import com.example.blog.entity.XZQ;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface FeatureService {
 
     void deleteFeature(String regId);
 
+    XZQ getXZQ(int id);
 }

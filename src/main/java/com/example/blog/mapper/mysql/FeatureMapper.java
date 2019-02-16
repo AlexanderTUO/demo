@@ -1,6 +1,7 @@
-package com.example.blog.mapper;
+package com.example.blog.mapper.mysql;
 
 import com.example.blog.entity.FeatureEntity;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @Date: 2018/11/22 09:23
  * @Description:
  */
-
+@Mapper
 public interface FeatureMapper {
     void saveFeature(FeatureEntity featureEntity);
 

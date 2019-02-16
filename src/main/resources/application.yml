@@ -1,14 +1,22 @@
-spring:
+mysql:
   datasource:
 #    url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2b8&autoReconnect=true&useSSL=true
     url: jdbc:mysql://localhost:3306/openlayer?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2b8&autoReconnect=true&useSSL=false
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
+
+postgresql:
+  datasource:
+    driver-class-name:  org.postgresql.Driver
+    username: postgres
+    password: 123456
+    url: jdbc:postgresql://localhost:7800/CHINA
+spring:
   mvc:
     view:
       prefix: /WEB-INF/jsp/
-#      prefix: /WEB-INF/
+  #      prefix: /WEB-INF/
       suffix: .jsp
 mybatis:
   type-aliases-package: com.example.blog.model
