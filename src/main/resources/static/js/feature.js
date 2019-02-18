@@ -66,14 +66,25 @@ $(function () {
         })
 
         // kml地图
-        myMap.kmlLayer = new ol.layer.Vector({
+        // myMap.kmlLayer = new ol.layer.Vector({
+        //     source: new ol.source.Vector({
+        //         url: "data/510100.kml",
+        //         format: new ol.format.KML(),
+        //     }),
+        //     style: flashStyle,
+        //     zIndex: 99
+        // });
+
+        // geoserver发布地图
+        myMap.geoserverLayer = new ol.layer.Vector({
             source: new ol.source.Vector({
-                url: "data/510100.kml",
-                format: new ol.format.KML(),
+                url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=nyc_roads:testsc&outputFormat=application/json&srsname=EPSG:4326',
+                format: new ol.format.GeoJSON(),
             }),
             style: flashStyle,
             zIndex: 99
-        })
+        });
+
 
         myMap.map = new ol.Map({
             target: 'map',
@@ -81,7 +92,8 @@ $(function () {
             view: view
         });
 
-        myMap.map.addLayer(myMap.kmlLayer);
+        myMap.map.addLayer(myMap.geoserverLayer);
+        // myMap.map.addLayer(myMap.kmlLayer);
         myMap.map.addLayer(myMap.gaodeMapLayer);
 
         if (myMap.pointLayer == null) {
@@ -168,6 +180,11 @@ $(function () {
         }
     }
 
+    function traverseFeatures(features) {
+        for (var i = 0; i < features.length; i++) {
+            features[i].set("info", "fea");
+        }
+    }
     /**
      * 从后台获取要素
      */
@@ -761,6 +778,7 @@ $(function () {
         myMap.lineStringLayer.set("type", "vector");
         myMap.polygonLayer.set("type", "vector");
         myMap.circleLayer.set("type", "vector");
+        myMap.geoserverLayer.set("type", "vector");
 
         switch (selectType) {
            case "1":
@@ -773,6 +791,9 @@ $(function () {
                });
 
                myMap.map.addInteraction(dragBox);
+
+               var features = myMap.geoserverLayer.getSource().getFeatures();
+               traverseFeatures(features);
 
                dragBox.on('boxend', function () {
                    var extent = dragBox.getGeometry().getExtent();
@@ -1030,6 +1051,8 @@ $(function () {
         }
     });
 
+
+
     $("#dialog-display").dialog({
         autoOpen: false,
         resizable: false,
@@ -1192,8 +1215,25 @@ $(function () {
     }
 
 
-    
+    function deleteWfs(features) {
+        var WFSTSerializer = new ol.format.WFS();
+        var featObject = WFSTSerializer.writeTransaction(null,
+            null, features, {
+                featureType: 'testsc',
+                featureNS: 'http://geoserver.org/nyc_roads',
+                srsName: 'EPSG:4326'
+            });
+        var serializer = new XMLSerializer();
+        var featString = serializer.serializeToString(featObject);
+        var request = new XMLHttpRequest();
+        request.open('POST', 'http://localhost:8888/geoserver/wfs?service=wfs');
+        request.setRequestHeader('Content-Type', 'text/xml');
+        request.send(featString);
+    }
 
+    $('#deleteFeaWfs').on('click', function () {
+        deleteWfs([selectedFeatures.item(0)]);
+    });
 
 
 

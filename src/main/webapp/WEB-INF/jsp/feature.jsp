@@ -74,6 +74,9 @@
                 <option id="polygonSel" class="" value="4">多边形选</option>
             </select>
         </li>
+        <li id="deleteFeaWfs"><label>wfs删除：</label>
+            <input type="button" id="deleteWfs">
+        </li>
     </ul>
 </div>
 <div id="map">

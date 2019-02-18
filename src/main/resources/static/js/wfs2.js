@@ -60,11 +60,16 @@ $(function () {
             source: new ol.source.OSM()
         }),drawLayer],
         target: 'map',
-        view: new ol.View({
-            center: [-73.99710639567148, 40.742270050255556],
-            maxZoom: 19,
-            zoom: 13,
-            projection: 'EPSG:4326'
+        // view: new ol.View({
+        //     center: [-73.99710639567148, 40.742270050255556],
+        //     maxZoom: 19,
+        //     zoom: 13,
+        //     projection: 'EPSG:4326'
+        // })
+        view:new ol.View({
+            projection: ol.proj.get('EPSG:4326'),
+            zoom: 10,
+            center: [104.068, 30.664],
         })
     });
 
@@ -81,7 +86,8 @@ $(function () {
                 format: new ol.format.GeoJSON({
                     geometryName: 'the_geom' // 因为数据源里面字段the_geom存储的是geometry，所以需要指定
                 }),
-                url: 'http://localhost:8080/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=nyc_roads:nyc_roads&outputFormat=application/json&srsname=EPSG:4326'
+                // url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=nyc_roads:nyc_roads&outputFormat=application/json&srsname=EPSG:4326'
+                url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=nyc_roads:testsc&outputFormat=application/json&srsname=EPSG:4326'
             }),
             style: function(feature, resolution) {
                 return new ol.style.Style({
@@ -226,7 +232,7 @@ $(function () {
         var serializer = new XMLSerializer();
         var featString = serializer.serializeToString(featObject);
         var request = new XMLHttpRequest();
-        request.open('POST', 'http://localhost:8080/geoserver/wfs?service=wfs');
+        request.open('POST', 'http://localhost:8888/geoserver/wfs?service=wfs');
         // 指定内容为xml类型
         request.setRequestHeader('Content-Type', 'text/xml');
         request.send(featString);
@@ -253,7 +259,7 @@ $(function () {
         var serializer = new XMLSerializer();
         var featString = serializer.serializeToString(featObject);
         var request = new XMLHttpRequest();
-        request.open('POST', 'http://localhost:8080/geoserver/wfs?service=wfs');
+        request.open('POST', 'http://localhost:8888/geoserver/wfs?service=wfs');
         request.setRequestHeader('Content-Type', 'text/xml');
         request.send(featString);
     }
@@ -275,14 +281,14 @@ $(function () {
         var WFSTSerializer = new ol.format.WFS();
         var featObject = WFSTSerializer.writeTransaction(null,
             null, features, {
-                featureType: 'nyc_roads',
+                featureType: 'testsc',
                 featureNS: 'http://geoserver.org/nyc_roads',
                 srsName: 'EPSG:4326'
             });
         var serializer = new XMLSerializer();
         var featString = serializer.serializeToString(featObject);
         var request = new XMLHttpRequest();
-        request.open('POST', 'http://localhost:8080/geoserver/wfs?service=wfs');
+        request.open('POST', 'http://localhost:8888/geoserver/wfs?service=wfs');
         request.setRequestHeader('Content-Type', 'text/xml');
         request.send(featString);
     }
