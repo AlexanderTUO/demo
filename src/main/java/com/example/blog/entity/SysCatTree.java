@@ -11,7 +11,7 @@ public class SysCatTree implements java.io.Serializable{
     private static final long serialVersionUID = 3118551510633166045L;
 
     /** 分类ID*/
-    private String catId;
+    private Integer catId;
     /** 分类ID -catId别名*/
     private String id;
 
@@ -19,30 +19,18 @@ public class SysCatTree implements java.io.Serializable{
     private String catKind;
 
     /** 分类名称*/
-    private String catName;
+    private String text;
     /** 分类名称 -catName别名*/
     private String label;
 
     /** 父类ID*/
-    private String parentId;
+    private String parent;
 
     /** 行业编码*/
     private String catCode;
     /** 子类*/
-    private List<SysCatTree> nodes;
+    private List<SysCatTree> children;
 
-    public void setCatId(String catId) {
-        this.catId = catId;
-        this.id = catId;
-    }
-
-    public String getCatName() {
-        return catName;
-    }
-    public void setCatName(String catName) {
-        this.catName = catName;
-        this.label = catName;
-    }
     //...省略get/set方法
 
 }

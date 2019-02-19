@@ -16,16 +16,16 @@ public class TreeService {
 
     public List findTrees(ItemQuery itemQuery){
         List items = sysCatTreeMapper.findTrees(itemQuery);
-        List trees = createTree(items,"0");
+        List trees = createTree(items,"#");
         return trees;
     }
 
     private static List<SysCatTree> createTree(List<SysCatTree> menuList, String parentId) {
         List<SysCatTree> childMenu = new ArrayList<>();
         for (SysCatTree catTree : menuList) {
-            if (parentId.equals(catTree.getParentId())) {
+            if (parentId.equals(catTree.getParent())) {
                 List<SysCatTree> c_node = createTree(menuList, catTree.getId());
-                catTree.setNodes(c_node);
+                catTree.setChildren(c_node);
                 childMenu.add(catTree);
             }
         }

@@ -119,4 +119,14 @@ public class OpenLayersController {
     public String jsts() {
         return "jsts";
     }
+
+    @RequestMapping("featureWfs")
+    public String featureWfs() {
+        return "featureWfs";
+    }
+
+    @RequestMapping("jstree")
+    public String jstree() {
+        return "jstree";
+    }
 }

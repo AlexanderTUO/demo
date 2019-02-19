@@ -26,6 +26,11 @@ public class TreeController {
         return "jqTree";
     }
 
+    @RequestMapping("EnterJsTree")
+    public String getJsTrees(){
+        return "jstree";
+    }
+
     @RequestMapping("getTreeNode")
     @ResponseBody
     public List<Tree> GetTreeData(){
@@ -52,7 +57,7 @@ public class TreeController {
 
     @RequestMapping("getTrees")
     @ResponseBody
-    public List<SysCatTree> getTrees2(){
+    public Object getTrees2(){
         ItemQuery itemQuery = new ItemQuery();
         List<SysCatTree> list = treeService.findTrees(itemQuery);
         return list;
