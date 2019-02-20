@@ -33,7 +33,6 @@
 
     <%--jstree--%>
     <link rel="stylesheet" href="lib/jstreelib/themes/default/style.min.css" />
-    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/jstreelib/jstree.min.js"></script>
 </head>
 <body>
@@ -88,7 +87,42 @@
 </div>
 <div id="jstree">
 </div>
+<div class="toolbarContainer"></div>
+<diV class="leaflet-draw leaflet-control">
+    <div class="leaflet-draw-section">
+        <div class="leaflet-draw-toolbar leaflet-bar leaflet-draw-toolbar-top">
+            <a class="leaflet-draw-draw-polyline" href="#" title="折线">
+                <span class="sr-only">折线</span>
+            </a>
+            <a class="leaflet-draw-draw-polygon" href="#" title="多边形">
+                <span class="sr-only">多边形</span>
+            </a>
+            <a class="leaflet-draw-draw-rectangle" href="#" title="矩形">
+                <span class="sr-only">矩形</span>
+            </a>
+            <a class="leaflet-draw-draw-circle" href="#" title="圆">
+                <span class="sr-only">圆</span>
+            </a>
+            <a class="leaflet-draw-draw-marker" href="#" title="点">
+                <span class="sr-only">点</span>
+            </a>
+            <a class="leaflet-draw-draw-circlemarker" href="#" title="圆形标注">
+                <span class="sr-only">圆形标注</span>
+            </a>
+        </div>
+    </diV>
+    <div class="leaflet-draw-section">
+        <div class="leaflet-draw-toolbar leaflet-bar">
+            <a class="leaflet-draw-edit-edit leaflet-disabled" href="#" title="没有图层可被编辑">
+                <span class="sr-only">编辑</span>
+            </a>
+            <a class="leaflet-draw-edit-remove leaflet-disabled" href="#" title="没有图层可被删除">
+                <span class="sr-only">删除</span>
+            </a>
+        </div>
 
+    </div>
+</diV>
 <div id="map">
     <div id="popup" title="我是气泡" class="ol-popup">
         <div id="popup-closer" class="ol-popup-closer"></div>

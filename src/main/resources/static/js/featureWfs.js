@@ -16,7 +16,7 @@ $(function () {
 
 
 
-    initTree();
+    // initTree();
 
     function initMap(){
         //初始化osm地图
