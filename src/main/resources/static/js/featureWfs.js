@@ -8,10 +8,15 @@ $(function () {
     var geoStr = null;
     var currentFeature = null;
     var opeaType = null;
+    var jstree = null;
 
     var myMap = {};
     // 初始化地图
     initMap();
+
+
+
+    initTree();
 
     function initMap(){
         //初始化osm地图
@@ -129,6 +134,97 @@ $(function () {
         }
         // 从后台获取要素
         displayFeatures();
+    }
+
+    function initTree() {
+        /*******后台普通结构数据******/
+        jstree = $("#jstree").jstree({
+            "core" : {
+                "themes" : {
+                    "variant" : "large"
+                },
+                // 'data':{
+                //     'url': "getTreeWFS",
+                //     "dataType" : "json", // needed only if you do not supply JSON headers
+                // }
+            'data' : function (obj, callback) {
+                $.ajax({
+                    type: "GET",
+                    url:"getTreeWFS",
+                    dataType:"json",
+                    async: false,
+                    success:function(result) {
+                        var data = [];
+                        // traverseTree1(result);
+                        // for(var item in result){
+                        //     data.push({
+                        //         "id":item.id,
+                        //         "parent":item.parent,
+                        //         "text":item.text,
+                        //         "state": true
+                        //     })
+                        // }
+                        for (var i = 0; i < result.length; i++) {
+                            data.push({
+                                "id":result[i].id,
+                                "parent":result[i].parent,
+                                "text":result[i].text,
+                                "state": {
+                                    selected: false,
+                                    opened: true
+                                },
+                                "type": result[i].type,
+                                "geoType": result[i].geoType,
+                                "layerName":result[i].layerName
+                            })
+                        }
+                        callback.call(this, data);
+                    }
+                });
+
+            // }
+                },
+            },
+            "checkbox" : {
+                "keep_selected_style" : true,
+                "three_state": true//
+            },
+            "plugins" : [ "checkbox" ]
+        });
+
+
+        jstree.on('changed.jstree', function (e, data){
+            // if (data.action == "deselect_node") {
+            //     data.instance.get_node(data.node).set_state("selected", false);
+            // }data.node.state.selected
+
+            // var i, j, r = [];
+            // for(i = 0, j = data.selected.length; i < j; i++) {
+            //     // r.push(data.instance.get_node(data.selected[i]).text);
+            //     var node = data.instance.get_node(data.selected[i]).original;
+            //     if (node.type == "layer") {
+            //         myMap[node.layerName].setVisible(node.state.selected);
+            //     }
+            // }
+
+            if (data.action == "model" || data.action == "ready") {
+                return;
+            }
+            handleLayer(data.node);
+        })
+
+
+        function handleLayer(data) {
+            if (data.original.type == "layer") {
+                myMap[data.original.layerName].setVisible(data.state.selected);
+            }
+            var children = data.children;
+            children.forEach(function (index, value) {
+                var child = jstree.jstree().get_node(index);
+                handleLayer(child);
+            })
+        }
+
     }
     
     function createStyle(type) {

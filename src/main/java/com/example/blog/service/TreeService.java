@@ -31,4 +31,10 @@ public class TreeService {
         }
         return childMenu;
     }
+
+
+    public List findList(ItemQuery itemQuery){
+        List items = sysCatTreeMapper.findTrees(itemQuery);
+        return items;
+    }
 }

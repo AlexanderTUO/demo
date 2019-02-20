@@ -9,7 +9,7 @@
     position: absolute;
     z-index: 999;
     top: 80px;
-    left: 30px;
+    right: 30px;
     opacity: 0.5;
     background-color: #D9D8D7;
 }
@@ -19,7 +19,7 @@
     position: absolute;
     z-index: 1000;
     top: 80px;
-    left: 30px;
+    right: 30px;
     background-color: #D9D8D7;
     opacity: 0.8;
     text-indent: 11px;
@@ -32,7 +32,7 @@
     position: absolute;
     z-index: 1000;
     top: 80px;
-    left: 118px;
+    right: 118px;
     background-color: #D9D8D7;
     opacity: 0.8;
     font-size: 15px;
@@ -43,7 +43,7 @@
     position: absolute;
     z-index: 1000;
     top: 110px;
-    left: 30px;
+    right: 30px;
     font-size: 13px;
     box-shadow: 0px 0px 10px #757770;
 }
@@ -81,6 +81,25 @@ fieldset {
 .validateTips{
     border:1px solid transparent;
     padding: 0.3em;
+}
+/*wfs背景*/
+.featureWfs {
+    width: 240px;
+    height: 500px;
+    position: absolute;
+    z-index: 999;
+    top: 80px;
+    left: 30px;
+    opacity: 0.8;
+    background-color: #D9D8D7;
+}
+#jstree {
+    width: 240px;
+    height: 500px;
+    position: absolute;
+    z-index: 1000;
+    top: 80px;
+    left: 30px;
 }
 
 /*#dialog-display{*/

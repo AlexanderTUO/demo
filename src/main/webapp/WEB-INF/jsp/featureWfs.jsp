@@ -30,6 +30,11 @@
 
     <link href="lib/datatable/jquery.dataTables.css" rel="stylesheet">
     <script type="text/javascript" src="lib/datatable/jquery.dataTables.js"></script>
+
+    <%--jstree--%>
+    <link rel="stylesheet" href="lib/jstreelib/themes/default/style.min.css" />
+    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/jstreelib/jstree.min.js"></script>
 </head>
 <body>
 
@@ -79,6 +84,11 @@
         </li>
     </ul>
 </div>
+<div class="featureWfs">
+</div>
+<div id="jstree">
+</div>
+
 <div id="map">
     <div id="popup" title="我是气泡" class="ol-popup">
         <div id="popup-closer" class="ol-popup-closer"></div>
