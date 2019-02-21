@@ -33,8 +33,9 @@
 
     <%--jstree--%>
     <link rel="stylesheet" href="lib/jstreelib/themes/default/style.min.css" />
-    <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
     <script src="lib/jstreelib/jstree.min.js"></script>
+
+    <script type="text/javascript" src="js/trackandedit"></script>
 </head>
 <body>
 
@@ -79,14 +80,65 @@
                 <option id="polygonSel" class="" value="4">多边形选</option>
             </select>
         </li>
-        <li id="deleteFeaWfs"><label>wfs删除：</label>
-            <input type="button" id="deleteWfs">
-        </li>
     </ul>
 </div>
 <div class="featureWfs">
 </div>
 <div id="jstree">
+</div>
+<div class="toolbarWFS"></div>
+<div class="leaflet-draw leaflet-control">
+    <div class="leaflet-draw-section">
+        <div class="leaflet-draw-toolbar leaflet-bar leaflet-draw-toolbar-top">
+            <a class="leaflet-draw-draw-polyline" href="#" title="折线">
+                <span class="sr-only">折线</span>
+            </a>
+            <a class="leaflet-draw-draw-polygon" href="#" title="多边形">
+                <span class="sr-only">多边形</span>
+            </a>
+            <a class="leaflet-draw-draw-rectangle leaflet-draw-toolbar-button-enabled" href="#" title="矩形">
+                <span class="sr-only">矩形</span>
+            </a>
+            <a class="leaflet-draw-draw-circle" href="#" title="圆">
+                <span class="sr-only">圆</span>
+            </a>
+            <a class="leaflet-draw-draw-marker" href="#" title="点">
+                <span class="sr-only">点</span>
+            </a>
+            <a class="leaflet-draw-draw-circlemarker" href="#" title="圆形标注">
+                <span class="sr-only">圆形标注</span>
+            </a>
+        </div>
+        <%--<ul class="leaflet-draw-actions" style="top: 63px; display: block;">--%>
+            <%--<li class>--%>
+                <%--<a class href="#" title="结束标绘">结束</a>--%>
+            <%--</li>--%>
+            <%--<li class>--%>
+                <%--<a class href="#" title="回退">回退</a>--%>
+            <%--</li>--%>
+            <%--<li class>--%>
+                <%--<a class href="#" title="取消标绘">取消</a>--%>
+            <%--</li>--%>
+        <%--</ul>--%>
+    </div>
+    <div class="leaflet-draw-section">
+        <div class="leaflet-draw-toolbar leaflet-bar leaflet-draw-toolbar-top">
+            <a class="leaflet-draw-edit-edit" href="#" title="编辑">
+                <span class="sr-only">编辑</span>
+            </a>
+            <a class="leaflet-draw-edit-remove" href="#" title="删除">
+                <span class="sr-only">删除</span>
+            </a>
+        </div>
+        <ul class="leaflet-draw-actions" style="top: 1px; display: none;">
+            <li class>
+                <a class href="#" title="保存更新">保存</a>
+            </li>
+            <li class>
+                <a class href="#" title="取消编辑，并放弃所有更新">取消</a>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <div id="map">
@@ -95,6 +147,18 @@
         <div id="popup-content"></div>
     </div>
 </div>
+<%--下方编辑栏--%>
+<div class="nav" id="nav">
+    <div class="item " key='1'>单点追踪</div>
+    <div class="item " key='2'>实时监控</div>
+    <div class="item ac" key='3'>历史轨迹</div>
+    <div class="item" key='4'>地图绘制</div>
+</div>
+<!-- tool -->
+<div class="tool" id="tool">
+
+
+
 
 <div id="dialog-form" title="绘制要素" style="height: 425px;">
     <p class="validateTips">所有表单字段都是必填的。</p>
@@ -140,22 +204,22 @@
     </table>
 </div>
 
-<div id="menu" >
-    <label>几何图形类型：&nbsp;</label>
-    <select id="geoType">
-        <option value="Point">点</option>
-        <option value="LineString">线</option>
-        <option value="Polygon">面</option>
-    </select>
-    <input type="button" value="清空" id="empty">
-    <input type="button" value="查询" id="query">
+<%--<div id="menu" >--%>
+    <%--<label>几何图形类型：&nbsp;</label>--%>
+    <%--<select id="geoType">--%>
+        <%--<option value="Point">点</option>--%>
+        <%--<option value="LineString">线</option>--%>
+        <%--<option value="Polygon">面</option>--%>
+    <%--</select>--%>
+    <%--<input type="button" value="清空" id="empty">--%>
+    <%--<input type="button" value="查询" id="query">--%>
 
-    <label class="title" > 热区功能：</label>
-    <button id="showReg" class="btn" title="加载热区后请用鼠标移动到热区范围显示其信息">显示热区</button>
-    <button id="drawReg" class="btn" title="单击绘制热区按钮后请用鼠标在地图上绘制热区">绘制热区</button>
-    <button id="deleteReg" class="btn" title="单击删除热区按钮后请用鼠标在地图上选中删除要素操作">删除热区</button>
-    <span id="info">没有要素被选中</span>
-</div>
+    <%--<label class="title" > 热区功能：</label>--%>
+    <%--<button id="showReg" class="btn" title="加载热区后请用鼠标移动到热区范围显示其信息">显示热区</button>--%>
+    <%--<button id="drawReg" class="btn" title="单击绘制热区按钮后请用鼠标在地图上绘制热区">绘制热区</button>--%>
+    <%--<button id="deleteReg" class="btn" title="单击删除热区按钮后请用鼠标在地图上选中删除要素操作">删除热区</button>--%>
+    <%--<span id="info">没有要素被选中</span>--%>
+<%--</div>--%>
 <%--<div id="dialog-confirm" title="图形属性信息设置">--%>
     <%--<label >图形类型（GeoType）：</label>--%>
     <%--<select id="geoType">--%>

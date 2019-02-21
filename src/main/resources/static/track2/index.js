@@ -1,5 +1,5 @@
 (function($, window) {
-  function CC(opts) {
+    function CC(opts) {
     var me = this;
 
 
@@ -882,39 +882,39 @@
           me._fence_storage_get();
           var marker = null;
 
-          if (fence_data.length == 0) {
+          if (fence_data == 0) {
             layer.msg('本地没有数据');
             return;
           }
 
           fence_data.forEach(function(ele, index) {
-            // 图标
-            if (ele.type == 'icon') {
-              marker = me._fence_init_icon(ele);
-            }
-            // 点 
-            else if (ele.type == 'Point') {
-              marker = me._fence_init_Point(ele);
-            }
-            // 线 
-            else if (ele.type == 'LineString') {
-              marker = me._fence_init_LineString(ele);
-            }
-            // 线 
-            else if (ele.type == 'Circle') {
-              marker = me._fence_init_Circle(ele);
-            }
-            // 多边形
-            else if (ele.type == 'Polygon') {
-              marker = me._fence_init_Polygon(ele);
-            }
+              // 图标
+              if (ele.type == 'icon') {
+                  marker = me._fence_init_icon(ele);
+              }
+              // 点
+              else if (ele.type == 'Point') {
+                  marker = me._fence_init_Point(ele);
+              }
+              // 线
+              else if (ele.type == 'LineString') {
+                  marker = me._fence_init_LineString(ele);
+              }
+              // 线
+              else if (ele.type == 'Circle') {
+                  marker = me._fence_init_Circle(ele);
+              }
+              // 多边形
+              else if (ele.type == 'Polygon') {
+                  marker = me._fence_init_Polygon(ele);
+              }
 
-            // 挂载属性
-            marker.type = ele.type;
-            marker.type_id = ele.style;
+              // 挂载属性
+              marker.type = ele.type;
+              marker.type_id = ele.style;
 
-            // 数据层收集marker
-            me.all_obj.fence.data_c.addFeature(marker);
+              // 数据层收集marker
+              me.all_obj.fence.data_c.addFeature(marker);
           });
 
           me._map_fit(me.all_obj.fence.data_c);

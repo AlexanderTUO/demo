@@ -13,7 +13,7 @@
     <title>demo-01</title>
     <link rel="stylesheet" href="lib/theme/default/layer.css">
     <link href="openLayers-5.3.0/ol.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="css/index.less">
+    <link rel="stylesheet" href="track2/track.css">
 </head>
 
 <body>
