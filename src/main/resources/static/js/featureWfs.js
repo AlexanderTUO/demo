@@ -5,10 +5,20 @@ $(function () {
     var flag = false;
     var feature;
     var draw;
-    var geoStr = null;
+    var geoStr = "";
     var currentFeature = null;
     var opeaType = null;
     var jstree = null;
+    var styleTree = null;
+
+    //要素绘制类型
+    var addFeaType = null;
+
+    var drawedFeature = null;
+
+    // 编辑类型（普通/WFS）
+    var choice = null;
+
 
     var myMap = {};
     // 初始化地图
@@ -193,6 +203,7 @@ $(function () {
         });
 
 
+
         jstree.on('changed.jstree', function (e, data){
             // if (data.action == "deselect_node") {
             //     data.instance.get_node(data.node).set_state("selected", false);
@@ -224,6 +235,60 @@ $(function () {
                 handleLayer(child);
             })
         }
+
+        styleTree = $("#styleTree").jstree({
+            "core" : {
+                "themes" : {
+                    "variant" : "large"
+                },
+                // 'data':{
+                //     'url': "getTreeWFS",
+                //     "dataType" : "json", // needed only if you do not supply JSON headers
+                // }
+                'data' : function (obj, callback) {
+                    $.ajax({
+                        type: "GET",
+                        url:"getTreeWFS",
+                        dataType:"json",
+                        async: false,
+                        success:function(result) {
+                            var data = [];
+                            for (var i = 0; i < result.length; i++) {
+                                data.push({
+                                    "id":result[i].id,
+                                    "parent":result[i].parent,
+                                    "text":result[i].text,
+                                    "state": {
+                                        selected: false,
+                                        opened: true
+                                    },
+                                    "type": result[i].type,
+                                    "geoType": result[i].geoType,
+                                    "layerName":result[i].layerName,
+                                    "icon": '/images/toolbar/marker.png'
+                                })
+                            }
+                            callback.call(this, data);
+                        }
+                    });
+
+                    // }
+                },
+            },
+            "checkbox" : {
+                "keep_selected_style" : true,
+                "three_state": true//
+            },
+            "plugins" : [ "checkbox" ]
+        });
+
+        styleTree.on('changed.jstree', function (e, data){
+            var i, j;
+            for(i = 0, j = data.selected.length; i < j; i++) {
+                // addFeaType = data.instance.get_node(data.selected[i]).text;
+                addFeaType = data.selected[i];
+            }
+        })
 
     }
     
@@ -476,11 +541,24 @@ $(function () {
         }
     }
 
+    function typeTransferWfs(type) {
+        if (type === '11') {
+            return ["Point",myMap.pointLayer];
+        }else  if (type === '12') {
+            return ["LineString",myMap.lineStringLayer];
+        }else  if (type === '13') {
+            return ["Polygon",myMap.polygonLayer];
+        }else if (type === '14') {
+            return ["Circle",myMap.circleLayer];
+        }
+    }
+
     /**
      * 绘制图形
      * @param geoType 绘制图形的集合类型
      */
     function addFeature() {
+        choice = "normal";
         if (!$('#add').prop('checked')) {
             return;
         }
@@ -501,25 +579,53 @@ $(function () {
 
     var radiusDo = null;
     function drawAndCallBack(evt) {
-        currentFeature = evt.feature;
-        var geometry = evt.feature.getGeometry();
-        var coordinates = geometry.getCoordinates();
+        if (choice == "normal") {
+            currentFeature = evt.feature;
+            var geometry = evt.feature.getGeometry();
+            var coordinates = geometry.getCoordinates();
 
-        if (addType === '1') {
-            geoStr = coordinates.join(',');
-            geoStr = "[" + geoStr + "]";
-        } else if (addType === "2") {
-            geoStr = coordinates.join('],[');
-            geoStr = "[[" + geoStr + "]]";
-        } else if (addType === "3") {
-            geoStr = coordinates[0].join('],[');
-            geoStr = "[[[" + geoStr + "]]]";
-        }else if (addType == '4') {
-            radiusDo = geometry.getRadius();
-            geoStr = geometry.getCenter().join(',');
-            geoStr = "[" + geoStr + "]";
+            if (addType === '1') {
+                geoStr = coordinates.join(',');
+                geoStr = "[" + geoStr + "]";
+            } else if (addType === "2") {
+                geoStr = coordinates.join('],[');
+                geoStr = "[[" + geoStr + "]]";
+            } else if (addType === "3") {
+                geoStr = coordinates[0].join('],[');
+                geoStr = "[[[" + geoStr + "]]]";
+            }else if (addType == '4') {
+                radiusDo = geometry.getRadius();
+                geoStr = geometry.getCenter().join(',');
+                geoStr = "[" + geoStr + "]";
+            }
+        }else if (choice == "WFS") {
+            currentFeature = evt.feature;
+            var geometry = evt.feature.getGeometry();
+            var coordinates = geometry.getCoordinates();
+            var coors = coordinates.toString().split(",");
+
+            var i, j;
+            for (var i = 0,j =coors.length; i < j; i++) {
+                if (i % 2 == 0||i==j-1) {
+                    geoStr += coors[i]+" ";
+                } else {
+                    geoStr += coors[i]+",";
+                }
+            }
+            debugger;
+            if (addFeaType === '11') {
+                geoStr = "POINT(" + geoStr + ")";
+            } else if (addFeaType === "12") {
+                geoStr = "LINESTRING(" + geoStr + ")";
+            } else if (addFeaType === "13") {
+                geoStr = "POLYGON((" + geoStr + "))";
+            }else if (addFeaType == '4') {
+                radiusDo = geometry.getRadius();
+                geoStr = geometry.getCenter().join(',');
+                geoStr = "[" + geoStr + "]";
+            }
         }
-
+        drawedFeature = evt.feature;
         // 打开对话框
         $("#dialog-form").dialog('open');
 
@@ -534,6 +640,12 @@ $(function () {
             "提交": function () {
                 if (validate()) {
                     submitData();
+                    // if (choice == "normal") {
+                    //     submitData();
+                    // }else if (choice == "WFS") {
+                    //     submitDataWfs();
+                    // }
+
                     $(this).dialog("close");
                 }
             },
@@ -644,9 +756,15 @@ $(function () {
             "geometry":geoStr,
             "radius": radiusDo
         };
+        var url;
+        if (choice == "normal") {
+            url = '/Feature/save2';
+        }else if (choice == "WFS") {
+            url = '/PFeature/save2';
+        }
 
         $.ajax({
-            url: '/Feature/save2',
+            url: url,
             type: "POST",
             data: JSON.stringify(data),//必要
             dataType:"json",
@@ -660,6 +778,56 @@ $(function () {
             }
         })
 
+    }
+
+    /**
+     * 提交保存数据到数据库WFS
+     */
+    function submitDataWfs() {
+        // 转换坐标
+        var geometry = drawedFeature.getGeometry().clone();
+        geometry.applyTransform(function(flatCoordinates, flatCoordinates2, stride) {
+            for (var j = 0; j < flatCoordinates.length; j += stride) {
+                var y = flatCoordinates[j];
+                var x = flatCoordinates[j + 1];
+                flatCoordinates[j] = x;
+                flatCoordinates[j + 1] = y;
+            }
+        });
+
+        // 设置feature对应的属性，这些属性是根据数据源的字段来设置的
+        var newFeature = new ol.Feature();
+        newFeature.set('name', "自定义");
+        newFeature.set('id', '11');
+        newFeature.set('gid', 208);
+        // newFeature.setGeometry(new ol.geom.MultiLineString([geometry.getCoordinates()]));
+        newFeature.setGeometry(new ol.geom.Polygon([[[104.28523063659668,30.23317337036133],[104.28093910217285,30.231628417968754],[104.28042411804199,30.227165222167972],[104.27853584289551,30.222358703613285],[104.27750587463379,30.220298767089847],[104.2781925201416,30.216865539550785],[104.27132606506348,30.21171569824219],[104.26480293273926,30.21549224853516],[104.26377296447754,30.218410491943363],[104.27046775817871,30.231628417968754],[104.26806449890137,30.236606597900394],[104.25965309143066,30.23866653442383],[104.25845146179199,30.24347305297852],[104.2536449432373,30.247764587402347],[104.24283027648926,30.249996185302738],[104.23836708068848,30.24742126464844],[104.23699378967285,30.25068283081055],[104.24300193786621,30.25566101074219],[104.24368858337402,30.259094238281254],[104.25004005432129,30.259265899658207],[104.2558765411377,30.26046752929688],[104.25965309143066,30.270080566406254],[104.26377296447754,30.278491973876957],[104.25793647766113,30.282783508300785],[104.24901008605957,30.283813476562504],[104.23596382141113,30.28141021728516],[104.22978401184082,30.274715423583988],[104.22823905944824,30.27986526489258],[104.2339038848877,30.29016494750977],[104.23579216003418,30.296001434326175],[104.23956871032715,30.302696228027347],[104.24471855163574,30.304927825927738],[104.24695014953613,30.307331085205078],[104.25004005432129,30.31848907470703],[104.24969673156738,30.323467254638672],[104.24592018127441,30.326557159423828],[104.24798011779785,30.328102111816406],[104.25810813903809,30.326557159423828],[104.26119804382324,30.3277587890625],[104.26497459411621,30.32878875732422],[104.26823616027832,30.325355529785156],[104.27716255187988,30.315227508544922],[104.28454399108887,30.305442810058594],[104.28814888000488,30.30303955078125],[104.29312705993652,30.302696228027344],[104.29879188537598,30.298404693603516],[104.29930686950684,30.293598175048828],[104.29913520812988,30.28484344482422],[104.2998218536377,30.279006958007812],[104.29638862609863,30.276260375976562],[104.29347038269043,30.273513793945312],[104.29295539855957,30.27059555053711],[104.29261207580566,30.267333984375],[104.29244041442871,30.264759063720703],[104.2946720123291,30.260639190673828],[104.29862022399902,30.256519317626953],[104.29587364196777,30.25531768798828],[104.29312705993652,30.256004333496094],[104.29106712341309,30.252399444580078],[104.29055213928223,30.24913787841797],[104.29278373718262,30.250511169433594],[104.29776191711426,30.250167846679688],[104.30085182189941,30.248966217041016],[104.29879188537598,30.246906280517578],[104.29518699645996,30.246906280517578],[104.2920970916748,30.244674682617188],[104.28900718688965,30.23935317993164],[104.28969383239746,30.23660659790039],[104.29072380065918,30.234031677246094],[104.28952217102051,30.231800079345703],[104.28746223449707,30.231971740722656],[104.28523063659668,30.23317337036133]]]));
+        console.log(new ol.geom.MultiLineString([geometry.getCoordinates()]));
+        addWfs([newFeature]);
+        // 更新id
+        // newId = newId + 1;
+        // // 3秒后，自动刷新页面上的feature
+        // setTimeout(function() {
+        //     drawLayer.getSource().clear();
+        //     queryWfs();
+        // }, 3000);
+    }
+    //新增元素
+    // 添加到服务器端
+    function addWfs(features) {
+        var WFSTSerializer = new ol.format.WFS();
+        var featObject = WFSTSerializer.writeTransaction(features,
+            null, null, {
+                featureType: 'testsc',
+                featureNS: 'http://geoserver.org/nyc_roads',
+                srsName: 'EPSG:4326'
+            });
+        var serializer = new XMLSerializer();
+        var featString = serializer.serializeToString(featObject);
+        var request = new XMLHttpRequest();
+        request.open('POST', 'http://localhost:8888/geoserver/wfs?service=wfs');
+        request.setRequestHeader('Content-Type', 'text/xml');
+        request.send(featString);
     }
 
     /**
@@ -1331,8 +1499,19 @@ $(function () {
         deleteWfs([selectedFeatures.item(0)]);
     });
 
+    function addFeaWfs() {
+        choice = "WFS";
+        if (addDraw) {
+            myMap.map.removeInteraction(addDraw);
+        }
+        addDraw = new ol.interaction.Draw({
+            source: typeTransferWfs(addFeaType)[1].getSource(),
+            type: typeTransferWfs(addFeaType)[0]
+        })
 
-
+        myMap.map.addInteraction(addDraw);
+        addDraw.on('drawend', drawAndCallBack, this);
+    }
 
     /*****************************实现框选功能START****************************************/
     //    var select = new ol.interaction.Select();
@@ -1436,6 +1615,35 @@ $(function () {
     //        selectedFeatures.clear();
     //    })
     //
+    // 选择样式对话框
+    $("#dialog-style").dialog({
+        autoOpen: false,
+        height: 300,
+        width:350,
+        modal: true,
+        buttons:{
+            "选择": function () {
+                $(this).dialog("close");
+                //开始绘制要素
+                addFeaWfs();
+            },
+            "取消": function () {
+                $(this).dialog("close");
+                addFeaType = null;
+            }
+        },
+        close:function () {
+            $("#dialog-style").removeClass("ui-state-error");
+        }
+    });
+    $(".leaflet-draw-edit-add").on("click", function () {
+        // 清除选择
+        styleTree.jstree('deselect_all');
+        // 打开对话框
+        $("#dialog-style").dialog('open');
+    });
+
+
     /*****************************实现多边形选择功能END****************************************/
        /**
         *判断一个点是否在多边形内部
