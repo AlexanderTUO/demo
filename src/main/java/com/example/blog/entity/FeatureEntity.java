@@ -16,4 +16,7 @@ public class FeatureEntity {
     private String infoType;
     private String geometry;
     private Double radius;
+
+    private Integer grid;
+
 }
