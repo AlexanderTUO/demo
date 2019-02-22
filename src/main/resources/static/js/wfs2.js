@@ -279,8 +279,10 @@ $(function () {
     // 在服务器端删除feature
     function deleteWfs(features) {
         var WFSTSerializer = new ol.format.WFS();
-        var featObject = WFSTSerializer.writeTransaction(null,
-            null, features, {
+        var featObject = WFSTSerializer.writeTransaction(features,
+            null, null, {
+        // var featObject = WFSTSerializer.writeTransaction(null,
+        //     null, features, {
                 featureType: 'testsc',
                 featureNS: 'http://geoserver.org/nyc_roads',
                 srsName: 'EPSG:4326'

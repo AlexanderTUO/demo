@@ -184,6 +184,10 @@ fieldset {
     /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFW…RgmJoONay7mzbuWnlo4amZH5o47jHsrdEJUWpu4/+a5iPAAHPyCihdbfhJAAAAAElFTkSuQmCC);*/
     background-image: url("/images/toolbar/circlemarker.png");
 }
+.leaflet-draw-toolbar .leaflet-draw-edit-add {
+    /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFW…RgmJoONay7mzbuWnlo4amZH5o47jHsrdEJUWpu4/+a5iPAAHPyCihdbfhJAAAAAElFTkSuQmCC);*/
+    background-image: url("/images/toolbar/add.png");
+}
 .leaflet-draw-toolbar .leaflet-draw-edit-edit {
     /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFW…RgmJoONay7mzbuWnlo4amZH5o47jHsrdEJUWpu4/+a5iPAAHPyCihdbfhJAAAAAElFTkSuQmCC);*/
     background-image: url("/images/toolbar/edit.png");
@@ -280,7 +284,7 @@ ul {
 /*下方编辑栏*/
 .nav {
     position: absolute;
-    bottom: 0;
+    /*bottom: 0;*/
     left: 0;
     z-index: 1000;
     width: 100%;

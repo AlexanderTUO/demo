@@ -35,7 +35,6 @@
     <link rel="stylesheet" href="lib/jstreelib/themes/default/style.min.css" />
     <script src="lib/jstreelib/jstree.min.js"></script>
 
-    <script type="text/javascript" src="js/trackandedit"></script>
 </head>
 <body>
 
@@ -88,41 +87,44 @@
 </div>
 <div class="toolbarWFS"></div>
 <div class="leaflet-draw leaflet-control">
+    <%--<div class="leaflet-draw-section">--%>
+        <%--<div class="leaflet-draw-toolbar leaflet-bar leaflet-draw-toolbar-top">--%>
+            <%--<a class="leaflet-draw-draw-polyline" href="#" title="折线">--%>
+                <%--<span class="sr-only">折线</span>--%>
+            <%--</a>--%>
+            <%--<a class="leaflet-draw-draw-polygon" href="#" title="多边形">--%>
+                <%--<span class="sr-only">多边形</span>--%>
+            <%--</a>--%>
+            <%--<a class="leaflet-draw-draw-rectangle leaflet-draw-toolbar-button-enabled" href="#" title="矩形">--%>
+                <%--<span class="sr-only">矩形</span>--%>
+            <%--</a>--%>
+            <%--<a class="leaflet-draw-draw-circle" href="#" title="圆">--%>
+                <%--<span class="sr-only">圆</span>--%>
+            <%--</a>--%>
+            <%--<a class="leaflet-draw-draw-marker" href="#" title="点">--%>
+                <%--<span class="sr-only">点</span>--%>
+            <%--</a>--%>
+            <%--<a class="leaflet-draw-draw-circlemarker" href="#" title="圆形标注">--%>
+                <%--<span class="sr-only">圆形标注</span>--%>
+            <%--</a>--%>
+        <%--</div>--%>
+        <%--&lt;%&ndash;<ul class="leaflet-draw-actions" style="top: 63px; display: block;">&ndash;%&gt;--%>
+            <%--&lt;%&ndash;<li class>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<a class href="#" title="结束标绘">结束</a>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;<li class>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<a class href="#" title="回退">回退</a>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;<li class>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<a class href="#" title="取消标绘">取消</a>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
+        <%--&lt;%&ndash;</ul>&ndash;%&gt;--%>
+    <%--</div>--%>
     <div class="leaflet-draw-section">
         <div class="leaflet-draw-toolbar leaflet-bar leaflet-draw-toolbar-top">
-            <a class="leaflet-draw-draw-polyline" href="#" title="折线">
-                <span class="sr-only">折线</span>
+            <a class="leaflet-draw-edit-add" href="#" title="添加">
+                <span class="sr-only">添加</span>
             </a>
-            <a class="leaflet-draw-draw-polygon" href="#" title="多边形">
-                <span class="sr-only">多边形</span>
-            </a>
-            <a class="leaflet-draw-draw-rectangle leaflet-draw-toolbar-button-enabled" href="#" title="矩形">
-                <span class="sr-only">矩形</span>
-            </a>
-            <a class="leaflet-draw-draw-circle" href="#" title="圆">
-                <span class="sr-only">圆</span>
-            </a>
-            <a class="leaflet-draw-draw-marker" href="#" title="点">
-                <span class="sr-only">点</span>
-            </a>
-            <a class="leaflet-draw-draw-circlemarker" href="#" title="圆形标注">
-                <span class="sr-only">圆形标注</span>
-            </a>
-        </div>
-        <%--<ul class="leaflet-draw-actions" style="top: 63px; display: block;">--%>
-            <%--<li class>--%>
-                <%--<a class href="#" title="结束标绘">结束</a>--%>
-            <%--</li>--%>
-            <%--<li class>--%>
-                <%--<a class href="#" title="回退">回退</a>--%>
-            <%--</li>--%>
-            <%--<li class>--%>
-                <%--<a class href="#" title="取消标绘">取消</a>--%>
-            <%--</li>--%>
-        <%--</ul>--%>
-    </div>
-    <div class="leaflet-draw-section">
-        <div class="leaflet-draw-toolbar leaflet-bar leaflet-draw-toolbar-top">
             <a class="leaflet-draw-edit-edit" href="#" title="编辑">
                 <span class="sr-only">编辑</span>
             </a>
@@ -152,12 +154,14 @@
     <div class="item " key='1'>单点追踪</div>
     <div class="item " key='2'>实时监控</div>
     <div class="item ac" key='3'>历史轨迹</div>
-    <div class="item" key='4'>地图绘制</div>
+    <div class="item" key='4'>要素绘制</div>
 </div>
 <!-- tool -->
 <div class="tool" id="tool">
 
-
+<div id="dialog-style" title="样式选择">
+    <div id="styleTree">
+</div>
 
 
 <div id="dialog-form" title="绘制要素" style="height: 425px;">
