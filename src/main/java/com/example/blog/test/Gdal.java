@@ -19,7 +19,7 @@ public class Gdal {
         //支持中文字段
         gdal.SetConfigOption("SHAPE_ENCODING","CP936");
 //        String strVectorFile = "D:\\Tools\\GIS\\Data\\test\\testSC.shp";
-        String strVectorFile = "D:\\Tools\\GIS\\Data\\geoJSON\\510100.geojson";
+        String strVectorFile = "E:\\Tools\\GIS\\Data\\geoJSON\\510100.geojson";
 //        String strVectorFile = "D:\\Tools\\GIS\\Data\\kml\\xj_jq.kml";
 //        String strVectorFile = "D:\\Tools\\GIS\\Data\\kml\\xj_jq.kml";
         DataSource dataSource = ogr.Open(strVectorFile, 0);
@@ -30,8 +30,8 @@ public class Gdal {
         System.out.println("加载数据源成功！");
 
 //        Driver driver = ogr.GetDriverByName("GeoJSON");
-        Driver driver = ogr.GetDriverByName("KML");
-//        Driver driver = ogr.GetDriverByName("ESRI Shapefile");
+//        Driver driver = ogr.GetDriverByName("KML");
+        Driver driver = ogr.GetDriverByName("ESRI Shapefile");
 
         if (driver == null) {
             System.out.println("加载驱动失败！");
@@ -46,8 +46,8 @@ public class Gdal {
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC2.shp");
 
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\xj_jq.geojson");
-//        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\shp\\510100.shp");
-        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\kml\\510100.kml");
+        driver.CopyDataSource(dataSource, "E:\\Tools\\GIS\\Data\\shp\\510100.shp");
+//        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\kml\\510100.kml");
 
 
         System.out.println("数据转换成功");

@@ -26,7 +26,7 @@ $(function () {
 
 
 
-    // initTree();
+    initTree();
 
     function initMap(){
         //初始化osm地图
@@ -93,12 +93,20 @@ $(function () {
         // geoserver发布地图
         myMap.geoserverLayer = new ol.layer.Vector({
             source: new ol.source.Vector({
-                url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=nyc_roads:testsc&outputFormat=application/json&srsname=EPSG:4326',
+                // url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=nyc_roads:testsc&outputFormat=application/json&srsname=EPSG:4326',
+                url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=chengdu:cdxzq&outputFormat=application/json&srsname=EPSG:4326',
                 format: new ol.format.GeoJSON(),
             }),
-            style: flashStyle,
+            // style: flashStyle,
             zIndex: 99
         });
+
+        myMap.wmsLayer = new ol.layer.Tile({
+            source:new ol.source.TileWMS({
+                // url: 'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3Acdxzq&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A404000&format=application/openlayers'
+                url:'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3AchengduGroup&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A4326&format=application/openlayers'
+            })
+        })
 
 
         myMap.map = new ol.Map({
@@ -107,9 +115,11 @@ $(function () {
             view: view
         });
 
-        myMap.map.addLayer(myMap.geoserverLayer);
+
+        // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
         myMap.map.addLayer(myMap.gaodeMapLayer);
+        myMap.map.addLayer(myMap.wmsLayer);
 
         if (myMap.pointLayer == null) {
             myMap.pointLayer = new ol.layer.Vector({
