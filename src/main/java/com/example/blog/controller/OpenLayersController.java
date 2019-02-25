@@ -1,10 +1,13 @@
 package com.example.blog.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class OpenLayersController {
+    Logger logger = LoggerFactory.getLogger("");
     @RequestMapping("toOpenLayers")
     public String toOpenLayers() {
         return "openLayers";
@@ -122,6 +125,11 @@ public class OpenLayersController {
 
     @RequestMapping("featureWfs")
     public String featureWfs() {
+        logger.trace("日志输出 trace");
+        logger.debug("日志输出 debug");
+        logger.info("日志输出 info");
+        logger.warn("日志输出 warn");
+        logger.error("日志输出 error");
         return "featureWfs";
     }
 

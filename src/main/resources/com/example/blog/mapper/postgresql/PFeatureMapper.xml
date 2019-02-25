@@ -20,11 +20,14 @@
 
     <insert id="saveFeature">
         insert into "510100"(
-        gid, name, id, geom, type, city, radius
-        )values(
-          null,#{name},#{id},#{geometry},#{type},#{city},
+        name, id, type, city,geom
         <if test="radius!=null">
-            #{radius}
+            ,radius
+        </if>
+        )values(
+        #{name},#{id},#{type},#{city},st_geomfromtext(#{geometry})
+        <if test="radius!=null">
+            ,#{radius}
         </if>
         )
     </insert>
