@@ -19,7 +19,20 @@
     </select>
 
     <insert id="saveFeature">
-        insert into "510100"(
+        insert into
+        <if test="type=='Point'">
+          f_point
+        </if>
+        <if test="type=='LineString'">
+            f_linestring
+        </if>
+        <if test="type=='Polygon'">
+            f_polygon
+        </if>
+        <if test="type=='Circle'">
+            f_circle
+        </if>
+        (
         name, id, type, city,geom
         <if test="radius!=null">
             ,radius
@@ -33,20 +46,60 @@
     </insert>
 
     <delete id="deleteFeature">
-        delete from feature where id= #{regId};
+        delete from
+        <if test="type=='Point'">
+            f_point
+        </if>
+        <if test="type=='LineString'">
+            f_linestring
+        </if>
+        <if test="type=='Polygon'">
+            f_polygon
+        </if>
+        <if test="type=='Circle'">
+            f_circle
+        </if>
+         where id= #{regId};
     </delete>
 
     <update id="updateFeature">
-        UPDATE `openlayer`.`feature`
-        SET
-        `type` = #{type},
-        `name` = #{name},
-        `city` = #{city},
-        <if test="radius!=null">
-          `radius` = #{radius},
+        UPDATE
+        <if test="type=='Point'">
+            f_point
         </if>
-        `geometry` = #{geometry}
-        WHERE `id` = #{id};
+        <if test="type=='LineString'">
+            f_linestring
+        </if>
+        <if test="type=='Polygon'">
+            f_polygon
+        </if>
+        <if test="type=='Circle'">
+            f_circle
+        </if>
+        SET
+        type = #{type},
+        name = #{name},
+        city = #{city},
+        <if test="radius!=null">
+          radius = #{radius},
+        </if>
+        geom = st_geomfromtext(#{geometry})
+        WHERE id = #{id};
     </update>
+
+    <sql id="chooseTable">
+        <if test="type=='Point'">
+            f_point
+        </if>
+        <if test="type=='LineString'">
+            f_linestring
+        </if>
+        <if test="type=='Polygon'">
+            f_polygon
+        </if>
+        <if test="type=='Circle'">
+            f_circle
+        </if>
+    </sql>
 </mapper>
 

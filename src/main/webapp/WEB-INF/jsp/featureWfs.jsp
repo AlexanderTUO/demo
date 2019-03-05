@@ -136,10 +136,10 @@
         </div>
         <ul class="leaflet-draw-actions" style="top: 1px; display: none;">
             <li class>
-                <a class href="#" title="保存更新">保存</a>
+                <a class href="#" title="保存更新" id="modifySave">保存</a>
             </li>
             <li class>
-                <a class href="#" title="取消编辑，并放弃所有更新">取消</a>
+                <a class href="#" title="取消编辑，并放弃所有更新" id="modifyCancel">取消</a>
             </li>
         </ul>
     </div>

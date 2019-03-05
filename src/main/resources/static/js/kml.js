@@ -1,4 +1,7 @@
 window.onload = function () {
+
+
+
     //图层
     var gaodeMapLayer = new ol.layer.Tile({
         source:new ol.source.XYZ({

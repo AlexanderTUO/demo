@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class FeatureEntity {
-    private Integer id;
+    private String id;
     private String name;
     private String city;
     private String type;

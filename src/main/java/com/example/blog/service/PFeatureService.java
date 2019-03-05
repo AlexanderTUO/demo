@@ -15,7 +15,7 @@ public interface PFeatureService {
     void updateFeature(FeatureEntity featureEntity) ;
     List<FeatureEntity> list();
 
-    void deleteFeature(String regId);
+    void deleteFeature(String regId,String type);
 
     XZQ getXZQ(int id);
 }

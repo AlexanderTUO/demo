@@ -38,8 +38,8 @@ public class PFeatureServiceImp implements PFeatureService {
     }
 
     @Override
-    public void deleteFeature(String regId) {
-        pfeatureMapper.deleteFeature(regId);
+    public void deleteFeature(String regId,String type) {
+        pfeatureMapper.deleteFeature(regId,type);
     }
 
     @Override

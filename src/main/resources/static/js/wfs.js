@@ -1,4 +1,9 @@
 $(function () {
+    fetch('http://geoserver.org/cdxzq510100wms').then(function (response) {
+        return response.text();
+    }).then(function (response) {
+        alert(232)
+    });
     var wfsVectorLayer = null;
     var modifiedFeatures = null;
 

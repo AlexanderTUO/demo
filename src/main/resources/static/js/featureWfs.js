@@ -101,11 +101,20 @@ $(function () {
             zIndex: 99
         });
 
+        // myMap.wmsLayer = new ol.layer.Tile({
+        //     source:new ol.source.TileWMS({
+        //         // url: 'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3Acdxzq&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A404000&format=application/openlayers'
+        //         // url:'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3AchengduGroup&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A4326&format=application/openlayers'
+        //         url:'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3A510100s4&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A4326&format=application/openlayers'
+        //     })
+        // })
+
         myMap.wmsLayer = new ol.layer.Tile({
             source:new ol.source.TileWMS({
                 // url: 'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3Acdxzq&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A404000&format=application/openlayers'
                 // url:'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3AchengduGroup&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A4326&format=application/openlayers'
                 url:'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3A510100s4&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A4326&format=application/openlayers'
+                // format: new ol.format.GeoJSON()
             })
         })
 
@@ -120,7 +129,7 @@ $(function () {
         // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
         myMap.map.addLayer(myMap.gaodeMapLayer);
-        myMap.map.addLayer(myMap.wmsLayer);
+        // myMap.map.addLayer(myMap.wmsLayer);
 
         if (myMap.pointLayer == null) {
             myMap.pointLayer = new ol.layer.Vector({
@@ -130,11 +139,18 @@ $(function () {
             myMap.map.addLayer(myMap.pointLayer);
         }
 
+
+
         if (myMap.lineStringLayer == null) {
             myMap.lineStringLayer = new ol.layer.Vector({
                 source: new ol.source.Vector(),
                 style: createStyle("2"),
             });
+            // myMap.lineStringLayer = new ol.layer.Tile({
+            //     source:new ol.source.TileWMS({
+            //         url:'http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetMap&layers=chengdu%3Af_linestring&bbox=103.957344055176%2C30.6238422393799%2C105.01350402832%2C30.8468627929688&width=768&height=330&srs=EPSG%3A4326&format=application/openlayers'
+            //     })
+            // })
             myMap.map.addLayer(myMap.lineStringLayer);
         }
 
@@ -239,6 +255,7 @@ $(function () {
         function handleLayer(data) {
             if (data.original.type == "layer") {
                 myMap[data.original.layerName].setVisible(data.state.selected);
+                myMap[data.original.layerName].set
             }
             var children = data.children;
             children.forEach(function (index, value) {
@@ -302,7 +319,12 @@ $(function () {
         })
 
     }
-    
+
+    /**
+     * 根据几何类型设置样式
+     * @param type
+     * @returns {*|Style}
+     */
     function createStyle(type) {
         switch (type) {
             case "1":
@@ -357,10 +379,46 @@ $(function () {
             features[i].set("info", "fea");
         }
     }
+
+    /**
+     * 通过wfs查询要素
+     */
+    function displayFeatures() {
+        var pointSource = new ol.source.Vector({
+            url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=chengdu:f_point&outputFormat=application/json&srsname=EPSG:4326',
+            format: new ol.format.GeoJSON()
+        });
+        var lineStringSource = new ol.source.Vector({
+            url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=chengdu:f_linestring&outputFormat=application/json&srsname=EPSG:4326',
+            format: new ol.format.GeoJSON()
+        });
+        var polygonSource = new ol.source.Vector({
+            url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=chengdu:f_polygon&outputFormat=application/json&srsname=EPSG:4326',
+            format: new ol.format.GeoJSON()
+        });
+        var circleSource = new ol.source.Vector({
+            url: 'http://localhost:8888/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=chengdu:f_circle&outputFormat=application/json&srsname=EPSG:4326',
+            format: new ol.format.GeoJSON()
+        });
+
+        myMap.pointLayer.setSource(pointSource);
+        // myMap.pointLayer.setVisible(false);
+
+        myMap.lineStringLayer.setSource(lineStringSource);
+        // myMap.lineStringLayer.setVisible(false);
+
+        myMap.polygonLayer.setSource(polygonSource);
+        // myMap.polygonLayer.setVisible(false);
+
+        myMap.circleLayer.setSource(circleSource);
+        // myMap.circleLayer.setVisible(false);
+    }
+
     /**
      * 从后台获取要素
      */
-    function displayFeatures() {
+
+    function displayFeatures11() {
         $.ajax({
             url: '/Feature/query',
             type: "get",
@@ -433,6 +491,18 @@ $(function () {
                 }
             }
         })
+    }
+    myMap.map.on('pointermove', pointermoveFun, this);
+
+    /**
+     * 鼠标移动事件监听处理函数
+     */
+    function pointermoveFun(e) {
+        var feature = myMap.map.forEachFeatureAtPixel(e.pixel,
+            function (feature, layer) {
+                return feature;
+            });
+        myMap.map.getTargetElement().style.cursor = feature ? 'pointer' : '';//改变鼠标光标状态
     }
 
     function displayEvent() {
@@ -614,19 +684,33 @@ $(function () {
             currentFeature = evt.feature;
             var geometry = evt.feature.getGeometry();
             var coordinates = geometry.getCoordinates();
-            var coors = coordinates.toString().split(",");
+            // var coors = coordinates.toString().split(",");
 
-            var i, j;
-            for (var i = 0,j =coors.length; i < j; i++) {
-                if (i % 2 == 0||i==j-1) {
-                    geoStr += coors[i]+" ";
-                } else {
-                    geoStr += coors[i]+",";
-                }
-            }
+            // var i, j;
+            // for (var i = 0,j =coors.length; i < j; i++) {
+            //     if (i % 2 == 0||i==j-1) {
+            //         geoStr += coors[i]+" ";
+            //     } else {
+            //         geoStr += coors[i]+",";
+            //     }
+            // }
+            // if (addFeaType === '11') {
+            //     geoStr = "POINT(" + geoStr + ")";
+            // } else if (addFeaType === "12") {
+            //     geoStr = "LINESTRING(" + geoStr + ")";
+            // } else if (addFeaType === "13") {
+            //     geoStr = "POLYGON((" + geoStr + "))";
+            // }else if (addFeaType == '4') {
+            //     radiusDo = geometry.getRadius();
+            //     geoStr = geometry.getCenter().join(',');
+            //     geoStr = "[" + geoStr + "]";
+            // }
+
+            var wktFormat = new ol.format.WKT();
+            geoStr = wktFormat.writeGeometry(geometry);
             debugger;
             if (addFeaType === '11') {
-                geoStr = "POINT(" + geoStr + ")";
+                geoStr = wktFormat.writeGeometry(new ol.geom.Point(coordinates));
             } else if (addFeaType === "12") {
                 geoStr = "LINESTRING(" + geoStr + ")";
             } else if (addFeaType === "13") {
@@ -862,6 +946,8 @@ $(function () {
         }
     });
 
+
+
     $('#modifyBtnSave').on('click', function () {
         saveModifyFea();
     });
@@ -870,6 +956,27 @@ $(function () {
         modifyFeatures = null;
     });
 
+    /**
+     * 绑定图形化编辑相关按钮
+     */
+    $('.leaflet-draw-edit-edit').on('click',function () {
+        opeaType = "modify";
+        $('.leaflet-draw-actions').show();
+        modifyFea();
+
+    })
+
+    $('#modifySave').on('click', function () {
+        $('.leaflet-draw-actions').hide();
+        choice = "WFS";
+        saveModifyFea();
+
+    });
+
+    $('#modifyCancel').on('click', function () {
+        $('.leaflet-draw-actions').hide();
+        modifyFeatures = null;
+    });
 
 
 
@@ -938,26 +1045,49 @@ $(function () {
             var modifyFeature = modifyFeatures.item(0).clone();
             var coordinates = modifyFeature.getGeometry().getCoordinates();
             var modifyType = modifyFeature.get("type");
-            if (modifyType == 'Point') {
-                geoStr = coordinates.join(',');
 
-                geoStr = "[" + geoStr + "]";
-            } else if (modifyType == "LineString") {
-                geoStr = coordinates.join('],[');
-                geoStr = "[[" + geoStr + "]]";
-            } else if (modifyType == "Polygon") {
-                geoStr = coordinates[0].join('],[');
-                geoStr = "[[[" + geoStr + "]]]";
-            }else if (modifyType == 'Circle') {
-                geoStr = modifyFeature.getGeometry().getCenter().join(',');
-                geoStr = "[" + geoStr + "]";
+            // if (modifyType == 'Point') {
+            //     geoStr = coordinates.join(',');
+            //     geoStr = "[" + geoStr + "]";
+            // } else if (modifyType == "LineString") {
+            //     geoStr = coordinates.join('],[');
+            //     geoStr = "[[" + geoStr + "]]";
+            // } else if (modifyType == "Polygon") {
+            //     geoStr = coordinates[0].join('],[');
+            //     geoStr = "[[[" + geoStr + "]]]";
+            // }else if (modifyType == 'Circle') {
+            //     geoStr = modifyFeature.getGeometry().getCenter().join(',');
+            //     geoStr = "[" + geoStr + "]";
+            // }
+            var wktFormat = new ol.format.WKT();
+            geoStr = wktFormat.writeGeometry(modifyFeature.getGeometry());
+            debugger;
+
+
+
+            var url,data;
+            if (choice == 'normal') {
+                data = modifyFeature.get("info");
+                data["geometry"] = geoStr;
+                url = '/Feature/updateFeature';
+            } else {
+                url = '/PFeature/updateFeature';
+                data = modifyFeature.values_;
+                data.geometry = geoStr;
             }
 
-            var data = modifyFeature.get("info");
-            data["geometry"] = geoStr;
+            // var data = {
+            //     "name": name.val(),
+            //     "city": city.val(),
+            //     "infoType": infoType.val(),
+            //     "type":type.val(),
+            //     "geometry":geoStr,
+            //     "radius": radiusDo
+            // };
+
 
             $.ajax({
-                url: '/Feature/updateFeature',
+                url: url,
                 type: "POST",
                 data: JSON.stringify(data),//必要
                 dataType:"json",
@@ -990,13 +1120,35 @@ $(function () {
         }
     });
 
+    $('.leaflet-draw-edit-remove').on('click',function () {
+        // 开始删除
+        opeaType = 'delete';
+        choice = "WFS";
+
+        myMap.map.un('singleclick', singleclickFun, this);
+        myMap.map.on('singleclick', singleclickFun, this);
+    })
+
     /**
      * 删除要素
      */
     function deleteFea() {
-        var regId = currentFeature.get("id");
+        var url,regId,type;
+        if (choice == "normal") {
+            regId = currentFeature.get("id");
+            url = '/Feature/delete/'+regId;
+        }else if (choice == "WFS") {
+            regId = currentFeature.values_.id;
+            type = currentFeature.values_.type;
+            url = '/PFeature/delete/'+regId+'/'+type;
+        }
+
+
+
+
+
         $.ajax({
-            url: "/Feature/delete/" + regId,
+            url: url,
             type: "get",
             success:function () {
                 alert("删除成功！");

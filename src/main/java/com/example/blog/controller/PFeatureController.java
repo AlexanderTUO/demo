@@ -47,10 +47,10 @@ public class PFeatureController {
 //        return list;
 //    }
 
-    @RequestMapping(value = "delete/{regId}")
+    @RequestMapping(value = "delete/{regId}/{type}")
     @ResponseBody
-    public String deleteFeature(@PathVariable("regId") String regId) {
-        pfeatureService.deleteFeature(regId);
+    public String deleteFeature(@PathVariable("regId") String regId,@PathVariable("type") String type) {
+        pfeatureService.deleteFeature(regId,type);
         return "删除成功";
     }
 
