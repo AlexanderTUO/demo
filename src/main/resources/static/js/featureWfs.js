@@ -129,7 +129,7 @@ $(function () {
         // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
         myMap.map.addLayer(myMap.gaodeMapLayer);
-        // myMap.map.addLayer(myMap.wmsLayer);
+        myMap.map.addLayer(myMap.wmsLayer);
 
         if (myMap.pointLayer == null) {
             myMap.pointLayer = new ol.layer.Vector({
@@ -171,6 +171,50 @@ $(function () {
         }
         // 从后台获取要素
         displayFeatures();
+    }
+    
+    myMap.map.on('click',function (evt) {
+        console.log("准备获取features");
+        var view = myMap.map.getView();
+        var resolution = view.getResolution();
+
+        var urls = myMap.wmsLayer.getSource().getGetFeatureInfoUrl(
+            evt.coordinate,resolution,view.getProjection(),{
+                'INFO_FORMAT':'application/json',
+                format_options: 'callback:getJson',
+                QUERY_LAYERS: "chengdu:510100s4"
+            }
+        )
+        console.log(urls);
+        // $.ajax({
+        //     type: 'POST',
+        //     url: urls,
+        //     dateType:'jsonp',
+        //     jsonpCallback:'getJson',
+        //     success:function (data) {
+        //         debugger;
+        //         console.log("信息："+data.features);
+        //     }
+        // })
+
+        fetch(urls).then(function (response) {
+            return response.text();
+        }).then(function (response) {
+            // var wms = new ol.format.WMSGetFeatureInfo();
+            // var features = wms.readFeatures(response);
+            // debugger;
+            var features = JSON.parse(response).features;
+            if (features.length > 0) {
+                var properties = features[0].properties;
+                for(var k in properties){
+                    console.log(k + ':' + properties[k]);
+                }
+            }
+        })
+    })
+
+    function getJson() {
+        console.log('返回数据来了');
     }
 
     function initTree() {
@@ -1601,6 +1645,18 @@ $(function () {
 
     }
 
+
+    $('#getGeaWmsBtn').on('click',function () {
+        // fetch('http://localhost:8888/geoserver/chengdu/wms?service=WMS&version=1.1.0&request=GetFeatureInfo&INFO_FORMAT=application/json&layers=chengdu%3A510100s4&bbox=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&width=768&height=542&srs=EPSG%3A4326&format=application/openlayers').then(function (response) {
+        fetch('http://localhost:8888/geoserver/chengdu/wms?REQUEST=GetFeatureInfo&BBOX=102.987342834473%2C30.0897579193115%2C104.890800476074%2C31.4338436126709&SERVICE=WMS&INFO_FORMAT=text/xml&QUERY_LAYERS=chengdu:510100s4&WIDTH=768&HEIGHT=542&styles=&srs=EPSG%3A3857&version=1.1.1&&x=5000&y=5000').then(function (response) {
+            return response.text();
+        }).then(function (response) {
+            debugger;
+            var wms = new ol.format.WMSGetFeatureInfo();
+            var features = wms.readFeatures(response);
+
+        })
+    })
     /**
      * 鼠标单击事件监听处理函数
      */

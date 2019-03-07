@@ -81,6 +81,10 @@
                 <option id="polygonSel" class="" value="4">多边形选</option>
             </select>
         </li>
+
+        <li id="getGeaWms"><label>wms：</label>
+            <input type="button" id="getGeaWmsBtn">
+        </li>
     </ul>
 </div>
 <div class="featureWfs">

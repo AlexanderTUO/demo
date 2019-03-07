@@ -20,18 +20,7 @@
 
     <insert id="saveFeature">
         insert into
-        <if test="type=='Point'">
-          f_point
-        </if>
-        <if test="type=='LineString'">
-            f_linestring
-        </if>
-        <if test="type=='Polygon'">
-            f_polygon
-        </if>
-        <if test="type=='Circle'">
-            f_circle
-        </if>
+        <include refid="chooseTable"></include>
         (
         name, id, type, city,geom
         <if test="radius!=null">
@@ -47,35 +36,13 @@
 
     <delete id="deleteFeature">
         delete from
-        <if test="type=='Point'">
-            f_point
-        </if>
-        <if test="type=='LineString'">
-            f_linestring
-        </if>
-        <if test="type=='Polygon'">
-            f_polygon
-        </if>
-        <if test="type=='Circle'">
-            f_circle
-        </if>
+        <include refid="chooseTable"></include>
          where id= #{regId};
     </delete>
 
     <update id="updateFeature">
         UPDATE
-        <if test="type=='Point'">
-            f_point
-        </if>
-        <if test="type=='LineString'">
-            f_linestring
-        </if>
-        <if test="type=='Polygon'">
-            f_polygon
-        </if>
-        <if test="type=='Circle'">
-            f_circle
-        </if>
+        <include refid="chooseTable"></include>
         SET
         type = #{type},
         name = #{name},
