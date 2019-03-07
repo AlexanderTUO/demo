@@ -213,6 +213,31 @@ $(function () {
         })
     })
 
+    $('#track').on('click',function () {
+        myMap.pointTrackLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({})
+        });
+        myMap.lineStringTrackLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({})
+        })
+
+        var data = [];
+        for (var i = 0; i < data.length; i++) {
+
+        }
+        // 设置定时器，每隔50ms向后台获取数据
+        var timer = setInterval(function () {
+            // 从后台获取数据，转换成坐标
+            var coordinate = null;
+            // 将点图层的要素位置设置为获取的坐标
+
+            // 将坐标放入数组，重新生成线
+        },50);
+    })
+
+
     function getJson() {
         console.log('返回数据来了');
     }

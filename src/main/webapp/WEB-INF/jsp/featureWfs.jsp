@@ -157,10 +157,10 @@
 </div>
 <%--下方编辑栏--%>
 <div class="nav" id="nav">
-    <div class="item " key='1'>单点追踪</div>
-    <div class="item " key='2'>实时监控</div>
-    <div class="item ac" key='3'>历史轨迹</div>
-    <div class="item" key='4'>要素绘制</div>
+    <div class="item " key='1' id="track">单点追踪</div>
+    <div class="item " key='2' id="monitor">实时监控</div>
+    <div class="item ac" key='3'id="history">历史轨迹</div>
+    <div class="item" key='4'id="drawFea">要素绘制</div>
 </div>
 <!-- tool -->
 <div class="tool" id="tool">
