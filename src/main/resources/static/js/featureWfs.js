@@ -52,7 +52,7 @@ $(function () {
             })
         });
         //矢量要素（区）的样式
-        var feaStyle = new ol.style.Style({
+        myMap.feaStyle = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: '#19ff0f',
                 width: 2
@@ -212,30 +212,152 @@ $(function () {
             }
         })
     })
-
+    /**
+     * 单点追踪
+     */
     $('#track').on('click',function () {
         myMap.pointTrackLayer = new ol.layer.Vector({
             source: new ol.source.Vector(),
-            style: new ol.style.Style({})
+            style: new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "images/air2.png"
+                }),
+            })
         });
         myMap.lineStringTrackLayer = new ol.layer.Vector({
             source: new ol.source.Vector(),
-            style: new ol.style.Style({})
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    width: 3,
+                    color: [255, 0, 0, 1],
+                    lineDash: [10, 10]
+                })
+            })
         })
 
-        var data = [];
-        for (var i = 0; i < data.length; i++) {
+        myMap.map.addLayer(myMap.pointTrackLayer);
+        myMap.map.addLayer(myMap.lineStringTrackLayer);
 
-        }
+        var i = 0;
+        var data = [];
+
+        var oldPoint = [104.068,30.664];
+        var newPoint = [];
+
         // 设置定时器，每隔50ms向后台获取数据
         var timer = setInterval(function () {
             // 从后台获取数据，转换成坐标
-            var coordinate = null;
-            // 将点图层的要素位置设置为获取的坐标
+            var coordinate = getCoordinate(i++);
+            // 将点图层的要素位置设置为获取的坐标，并将地图中心设置为该坐标
 
+            // if (i != 0) {
+            //     oldPoint = newPoint;
+            //     newPoint = coordinate;
+            // } else {
+            //     oldPoint = newPoint;
+            //     newPoint = coordinate;
+            // }
+
+            // if (Math.random() > 0.5) {
+            //     newPoint[0] = oldPoint[0] + Math.random() * 0.0005;
+            //     newPoint[1] = oldPoint[1] + Math.random() * 0.0005;
+            // } else {
+            //     newPoint[0] = oldPoint[0] - Math.random() * 0.005;
+            //     newPoint[1] = oldPoint[1] - Math.random() * 0.0005;
+            // }
+
+            newPoint[0] = oldPoint[0] + i * 0.0005;
+            newPoint[1] = oldPoint[1] + i * 0.0005;
+
+            var rotation = getRotation(newPoint,oldPoint);
+
+            myMap.pointTrackLayer.getSource().clear();
+            myMap.pointTrackLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point(newPoint)));
+            myMap.pointTrackLayer.getStyle().getImage().setRotation(rotation);
+            myMap.map.getView().setCenter(newPoint);
             // 将坐标放入数组，重新生成线
+            data.push(newPoint);
+            myMap.lineStringTrackLayer.getSource().addFeature(new ol.Feature(new ol.geom.LineString(data)));
+
         },50);
+
+        function getCoordinate(i) {
+            // center: [104.068, 30.664]
+            var longitude = 104.068 + 0.001 * Math.round(Math.random()*1000);
+            var latitude = 30.664 + 0.001 * Math.round(Math.random()*1000);
+            var coordinate = [longitude, latitude];
+            return coordinate;
+        }
+
+        function getRotation(new_p, old_p) {
+            // 90度的PI值
+            var pi_90 = Math.atan2(1, 0);
+            // 当前点的PI值
+            var pi_ac = Math.atan2(new_p[1] - old_p[1], new_p[0] - old_p[0]);
+            // console.log(pi_90);
+            // console.log(pi_ac);
+            console.log(pi_90 - pi_ac);
+            return pi_90 - pi_ac;
+            // return pi_ac;
+        }
+
     })
+    /**
+     * 实时监控
+     */
+    $('#monitor').on('click', function () {
+        myMap.pointMonitorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector()
+        });
+        myMap.map.addLayer(myMap.pointMonitorLayer);
+        var minitorTimer = setInterval(function () {
+            // 清空图层原始数据
+            myMap.pointMonitorLayer.getSource().clear();
+            // 遍历后台数据，解析后添加至图层
+            var minitorData = getMinitorData();
+            var feature = null;
+            var styleSrc = null;
+            minitorData.forEach(function (ele,index) {
+                if (Math.random() > 0.5) {
+                    ele.state = 1;
+                    styleSrc = 'track2/img/icon_0.png';
+                } else {
+                    ele.state = 0;
+                    styleSrc = 'track2/img/icon_1.png';
+                }
+                var style = new ol.style.Style({
+                    image: new ol.style.Icon({
+                        src: styleSrc,
+                        anchor: [0.5, 1],
+                        // 这个直接就可以控制大小了
+                        scale: 0.5
+                    }),
+                    text: new ol.style.Text({
+                        text: ele.name,
+                        textAlign: 'center',
+                        offsetY: -70
+                    })
+                });
+                feature = new ol.Feature(new ol.geom.Point(ele.lnglat));
+                feature.setStyle(style)
+                myMap.pointMonitorLayer.getSource().addFeature(feature);
+
+            })
+        }, 2000);
+    });
+    function getMinitorData() {
+        var ps_arr = [];
+        for (var i = 0; i < 10; i++) {
+            ps_arr.push({
+                id: i + 1,
+                name: 'icon-' + i,
+                // lnglat: [115.9 + Math.random() * 0.5, 39.5 + Math.random() * 0.5],
+                lnglat: [104.068 + Math.random() * 0.5, 30.664 + Math.random() * 0.5],
+                state: (Math.random() > 0.5 ? 1 : 0)
+            });
+        }
+        return ps_arr;
+    }
 
 
     function getJson() {
@@ -368,7 +490,6 @@ $(function () {
                             callback.call(this, data);
                         }
                     });
-
                     // }
                 },
             },

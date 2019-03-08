@@ -1461,6 +1461,7 @@
 
 
           // ********************************************模拟数据
+            debugger;
           ps_arr = ps_arr;
           ps_arr.forEach(function(ele, index) {
             if (Math.random() > 0.5) {
@@ -1494,11 +1495,16 @@
             // 就一个参数啊，定义坐标
             geometry: new ol.geom.Point(ele.lnglat),
           });
-
+            if (ele.state == 0) {
+                src = 'track2/img/icon_0.png';
+            } else {
+                src = 'track2/img/icon_1.png';
+            }
           p_data.setStyle(new ol.style.Style({
             // 设置一个标识
             image: new ol.style.Icon({
-              src: 'track2/img/${ele.state}.png',
+                src: src,
+              // src: 'track2/img/${ele.state}.png',
               // src: 'track2/img/icon_${ele.state}.png',
 
               // 这个是相当于是进行切图了
