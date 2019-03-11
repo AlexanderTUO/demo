@@ -22,12 +22,12 @@
         insert into
         <include refid="chooseTable"></include>
         (
-        name, id, type, city,geom
+        name, id, type, city,geom,geotext
         <if test="radius!=null">
             ,radius
         </if>
         )values(
-        #{name},#{id},#{type},#{city},st_geomfromtext(#{geometry})
+        #{name},#{id},#{type},#{city},st_geomfromtext(#{geometry}),#{geometry}
         <if test="radius!=null">
             ,#{radius}
         </if>

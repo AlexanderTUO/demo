@@ -1461,7 +1461,6 @@
 
 
           // ********************************************模拟数据
-            debugger;
           ps_arr = ps_arr;
           ps_arr.forEach(function(ele, index) {
             if (Math.random() > 0.5) {

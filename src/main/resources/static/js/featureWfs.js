@@ -366,9 +366,6 @@ $(function () {
     
     $('#history').on('click',function () {
         // 打开历史轨迹相关选项
-    })
-    
-    $('#startHis').on('click',function () {
         var features = myMap.lineStringLayer.getSource().getFeatures();
         var coordinates = features[0].getGeometry().getCoordinates();
         console.log(coordinates);
@@ -424,20 +421,38 @@ $(function () {
             }
         })
 
+        myMap.historyLayer.getSource().addFeatures([startMarker, endMarker, route]);
+        // myMap.historyLayer.getSource().addFeature(geoMarker);
+        myMap.map.addLayer(myMap.historyLayer);
+        // 2.设置运动点，定时器
+
+    })
+    
+    $('#startHis').on('click',function () {
+        var features = myMap.lineStringLayer.getSource().getFeatures();
+        var coordinates = features[0].getGeometry().getCoordinates();
+        console.log(coordinates);
+        // 1.获取轨迹数据，并绘制起始点、终点
+        var geoMarker, startMarker, endMarker,route;
+        var animating = true;
+
+        geoMarker = new ol.Feature({
+            type: "geoMarker",
+            geometry: new ol.geom.Point(coordinates[0])
+        })
+
         myMap.geoMarkerLayer = new ol.layer.Vector({
             source: new ol.source.Vector({
                 feature: geoMarker
             }),
             style: new ol.style.Style({
                 image: new ol.style.Icon({
-                    src: "images/air2.png"
+                    src: "images/car.png"
                 }),
             })
         })
 
-        myMap.historyLayer.getSource().addFeatures([startMarker, endMarker, route]);
         // myMap.historyLayer.getSource().addFeature(geoMarker);
-        myMap.map.addLayer(myMap.historyLayer);
         myMap.map.addLayer(myMap.geoMarkerLayer);
         // 2.设置运动点，定时器
         var oldPoint = null;
@@ -462,7 +477,7 @@ $(function () {
             myMap.map.getView().setCenter(newPoint);
 
             i++;
-        }, 500);
+        }, 5000);
     })
 
 
@@ -990,8 +1005,27 @@ $(function () {
             //         geoStr += coors[i]+",";
             //     }
             // }
+            if (addFeaType === '11') {
+                $('#type').val("Point");
+                // geoStr = "POINT(" + geoStr + ")";
+            } else if (addFeaType === "12") {
+                $('#type').val("LineString");
+                // geoStr = "LINESTRING(" + geoStr + ")";
+            } else if (addFeaType === "13") {
+                $('#type').val("Polygon");
+                // geoStr = "POLYGON((" + geoStr + "))";
+            }else if (addFeaType == '14') {
+                $('#type').val("Circle");
+                // radiusDo = geometry.getRadius();
+                // geoStr = geometry.getCenter().join(',');
+                // geoStr = "[" + geoStr + "]";
+            }
+
+            var wktFormat = new ol.format.WKT();
+            geoStr = wktFormat.writeGeometry(geometry);
+            debugger;
             // if (addFeaType === '11') {
-            //     geoStr = "POINT(" + geoStr + ")";
+            //     geoStr = wktFormat.writeGeometry(new ol.geom.Point(coordinates));
             // } else if (addFeaType === "12") {
             //     geoStr = "LINESTRING(" + geoStr + ")";
             // } else if (addFeaType === "13") {
@@ -1001,21 +1035,6 @@ $(function () {
             //     geoStr = geometry.getCenter().join(',');
             //     geoStr = "[" + geoStr + "]";
             // }
-
-            var wktFormat = new ol.format.WKT();
-            geoStr = wktFormat.writeGeometry(geometry);
-            debugger;
-            if (addFeaType === '11') {
-                geoStr = wktFormat.writeGeometry(new ol.geom.Point(coordinates));
-            } else if (addFeaType === "12") {
-                geoStr = "LINESTRING(" + geoStr + ")";
-            } else if (addFeaType === "13") {
-                geoStr = "POLYGON((" + geoStr + "))";
-            }else if (addFeaType == '4') {
-                radiusDo = geometry.getRadius();
-                geoStr = geometry.getCenter().join(',');
-                geoStr = "[" + geoStr + "]";
-            }
         }
         geoStr = "SRID=4326;" + geoStr;
         drawedFeature = evt.feature;
