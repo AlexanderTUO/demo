@@ -162,6 +162,11 @@
     <div class="item ac" key='3'id="history">历史轨迹</div>
     <div class="item" key='4'id="drawFea">要素绘制</div>
 </div>
+<div id="historyOptions">
+    <input type="button" id="startHis" value="开始">
+    <input type="range" id="speed" min="0" max="1000" step="5" value="60">
+</div>
+<div id="historyContainer"></div>
 <!-- tool -->
 <div class="tool" id="tool">
 

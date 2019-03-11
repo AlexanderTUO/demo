@@ -9,7 +9,11 @@
 <html>
 <head>
     <title>日期</title>
+    <link type="text/css" href="lib/jquery-ui.css">
+    <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+
     <script type="text/javascript" src="lib/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui.js"></script>
     <script>
         $(function () {
             // 对Date的扩展，将 Date 转化为指定格式的String
@@ -18,6 +22,7 @@
             // 例子：
             // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
             // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+            // 时间格式化
             Date.prototype.Format = function(fmt)
             { //author: meizz
                 var o = {
@@ -44,6 +49,7 @@
                 // 当天
                 var monthData = new Date();
                 var curDay = monthData.Format("yyyy-MM-dd");
+                // var curDay = monthData.Format("yyyy/MM/dd");
                 $('#curDay').val(curDay);
 
                 // 第一天
@@ -88,6 +94,45 @@
             }
             weekDate();
 
+            /**
+             * datepicker初始化
+             */
+            function datepickerInit() {
+                var startDate = $('#startDate').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: "yy-mm-dd"
+                })
+
+                var endDate = $('#endDate').datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: "yy-mm-dd"
+                })
+            }
+
+
+
+
+            datepickerInit();
+
+            /**
+             * datepicker测试:计算时间间隔
+             */
+            $("#submitDp").on('click',function () {
+                var startDateStr = $('#startDate').val();
+                var endDateStr = $('#endDate').val();
+
+                var startDate = new Date((startDateStr));
+                var endDate = new Date(endDateStr);
+                console.log(startDate);
+                console.log(endDate);
+
+                var interval = endDate.getTime() - startDate.getTime();
+                var days = interval / (1000 * 24 * 3600);
+                $('#interval').val(days);
+                console.log(days);
+            })
 
         })
 
@@ -116,7 +161,16 @@
         <label for="lastDay">本月最后一天：</label>
         <input id="lastDay"/><br/>
 
-
+    </div>
+    <div>
+        <h2>当周天数问题</h2>
+        <label for="startDate">起始时间：</label>
+        <input id="startDate"/><br/>
+        <label for="endDate">终止时间：</label>
+        <input id="endDate"/><br/>
+        <label for="interval">时间间隔：</label>
+        <input id="interval"/><br/>
+        <input type="button" id="submitDp" value="计算"/><br/>
     </div>
 </body>
 </html>

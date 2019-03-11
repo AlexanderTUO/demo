@@ -321,3 +321,21 @@ ul {
     display: none;
 }
 
+/*历史轨迹选项*/
+#historyOptions {
+    width: 250px;
+    height: 100px;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+/*历史轨迹选项容器*/
+#historyOptions {
+    width: 260px;
+    height: 110px;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: #D9D8D7;
+    opacity: 0.8;
+}

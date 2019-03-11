@@ -288,20 +288,25 @@ $(function () {
             var coordinate = [longitude, latitude];
             return coordinate;
         }
-
-        function getRotation(new_p, old_p) {
-            // 90度的PI值
-            var pi_90 = Math.atan2(1, 0);
-            // 当前点的PI值
-            var pi_ac = Math.atan2(new_p[1] - old_p[1], new_p[0] - old_p[0]);
-            // console.log(pi_90);
-            // console.log(pi_ac);
-            console.log(pi_90 - pi_ac);
-            return pi_90 - pi_ac;
-            // return pi_ac;
-        }
-
     })
+
+    /**
+     * 获取转向角度
+     * @param new_p
+     * @param old_p
+     * @returns {number}
+     */
+    function getRotation(new_p, old_p) {
+        // 90度的PI值
+        var pi_90 = Math.atan2(1, 0);
+        // 当前点的PI值
+        var pi_ac = Math.atan2(new_p[1] - old_p[1], new_p[0] - old_p[0]);
+        // console.log(pi_90);
+        // console.log(pi_ac);
+        console.log(pi_90 - pi_ac);
+        return pi_90 - pi_ac;
+        // return pi_ac;
+    }
     /**
      * 实时监控
      */
@@ -358,6 +363,107 @@ $(function () {
         }
         return ps_arr;
     }
+    
+    $('#history').on('click',function () {
+        // 打开历史轨迹相关选项
+    })
+    
+    $('#startHis').on('click',function () {
+        var features = myMap.lineStringLayer.getSource().getFeatures();
+        var coordinates = features[0].getGeometry().getCoordinates();
+        console.log(coordinates);
+        // 1.获取轨迹数据，并绘制起始点、终点
+        var geoMarker, startMarker, endMarker,route;
+        var animating = true;
+        var styles = {
+            'route': new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    width: 2,
+                    color: [237, 212, 0, 0.8]
+                })
+            }),
+            'geoMarker': new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "images/taxi.png"
+                })
+            }),
+            'icon': new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "images/air.png"
+                })
+            })
+        };
+
+
+        geoMarker = new ol.Feature({
+            type: "geoMarker",
+            geometry: new ol.geom.Point(coordinates[0])
+        })
+        startMarker = new ol.Feature({
+            type: "icon",
+            geometry: new ol.geom.Point(coordinates[0])
+        })
+        endMarker = new ol.Feature({
+            type: "icon",
+            geometry: new ol.geom.Point(coordinates[coordinates.length-1])
+        })
+
+        route = new ol.Feature({
+            type: "route",
+            geometry: new ol.geom.LineString(coordinates)
+        })
+
+        myMap.historyLayer = new ol.layer.Vector({
+            zIndex:1999,
+            source: new ol.source.Vector(),
+            style:function (feature) {
+                // if (!animating&&feature.get('type')==='geoMarker') {
+                //     return null;
+                // }
+                return styles[feature.get('type')];
+            }
+        })
+
+        myMap.geoMarkerLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                feature: geoMarker
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: "images/air2.png"
+                }),
+            })
+        })
+
+        myMap.historyLayer.getSource().addFeatures([startMarker, endMarker, route]);
+        // myMap.historyLayer.getSource().addFeature(geoMarker);
+        myMap.map.addLayer(myMap.historyLayer);
+        myMap.map.addLayer(myMap.geoMarkerLayer);
+        // 2.设置运动点，定时器
+        var oldPoint = null;
+        var newPoint = null;
+        var i = 0;
+        var historyTimer = setInterval(function () {
+            if (i == coordinates.length) {
+                clearInterval(historyTimer);
+            }
+            if (i == 0) {
+                oldPoint = coordinates[i];
+                newPoint = coordinates[i];
+            }else{
+                oldPoint = newPoint;
+                newPoint = oldPoint[i];
+            }
+            var rotation = getRotation(newPoint,oldPoint);
+
+            myMap.geoMarkerLayer.getSource().clear();
+            myMap.geoMarkerLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point(newPoint)));
+            myMap.geoMarkerLayer.getStyle().getImage().setRotation(rotation);
+            myMap.map.getView().setCenter(newPoint);
+
+            i++;
+        }, 500);
+    })
 
 
     function getJson() {
