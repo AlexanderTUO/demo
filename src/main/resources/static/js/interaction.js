@@ -70,7 +70,7 @@ $(function () {
                     if (!geometry) {
                         geometry = new ol.geom.Polygon(null);
                     }
-                    var start = coordinates[0];
+                    var start = coordinates[0];index.js
                     var end = coordinates[1];
                     geometry.setCoordinates([
                         [start, [start[0], end[1]], end, [end[0], start[1]], start]

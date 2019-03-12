@@ -18,6 +18,9 @@
 
     <script src="https://unpkg.com/jsts@2.0.2/dist/jsts.min.js"></script>
 
+    <%--高德地图--%>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=3d5bc0273dae19cfb06956b8b9cc3b15"></script>
+
     <script src="lib/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
     <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.css">
 
@@ -160,9 +163,9 @@
     <div class="item " key='1' id="track">单点追踪</div>
     <div class="item " key='2' id="monitor">实时监控</div>
     <div class="item ac" key='3'id="history">历史轨迹</div>
-    <div class="item" key='4'id="drawFea">要素绘制</div>
+    <div class="item" key='4'id="pathPlanning">路径规划</div>
 </div>
-<div id="historyOptions">
+<div id="historyOptions" hidden="hidden">
     <input type="button" id="startHis" value="开始">
     <input type="range" id="speed" min="0" max="1000" step="5" value="60">
 </div>

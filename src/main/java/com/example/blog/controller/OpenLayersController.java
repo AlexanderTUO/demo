@@ -137,4 +137,9 @@ public class OpenLayersController {
     public String jstree() {
         return "jstree";
     }
+
+    @RequestMapping("gaodemap")
+    public String gaodemap() {
+        return "gaodemap";
+    }
 }

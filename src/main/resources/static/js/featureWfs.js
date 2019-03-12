@@ -75,6 +75,14 @@ $(function () {
             })
         });
 
+        myMap.googleLayer = new ol.layer.Tile({
+            source:new ol.source.XYZ({
+                url: 'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}' //影像图
+            })
+        });
+
+
+
         // osm地图
         myMap.OSM = new ol.layer.Tile({
             source: new ol.source.OSM()
@@ -119,17 +127,39 @@ $(function () {
         })
 
 
+        var scaleLine = new ol.control.ScaleLine({
+            units:'metric'
+        })
+
+        //控件
+        var controls_extend = new ol.control.defaults({
+            attribution:true
+        }).extend([
+            new ol.control.FullScreen(),
+            new ol.control.MousePosition(),
+            new ol.control.OverviewMap(),
+            new ol.control.ScaleLine({
+                units:'metric'
+            }),
+            new ol.control.ZoomSlider(),
+            new ol.control.ZoomToExtent(),
+            new ol.control.Attribution(),
+            // scaleLine
+        ]);
+
         myMap.map = new ol.Map({
             target: 'map',
             layer: null,
-            view: view
+            view: view,
+            controls: controls_extend
         });
 
 
         // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
-        myMap.map.addLayer(myMap.gaodeMapLayer);
+        // myMap.map.addLayer(myMap.gaodeMapLayer);
         myMap.map.addLayer(myMap.wmsLayer);
+        myMap.map.addLayer(myMap.googleLayer);
 
         if (myMap.pointLayer == null) {
             myMap.pointLayer = new ol.layer.Vector({
@@ -363,7 +393,10 @@ $(function () {
         }
         return ps_arr;
     }
-    
+
+    /**
+     * 历史轨迹
+     */
     $('#history').on('click',function () {
         // 打开历史轨迹相关选项
         var features = myMap.lineStringLayer.getSource().getFeatures();
@@ -375,7 +408,7 @@ $(function () {
         var styles = {
             'route': new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    width: 2,
+                    width: 6,
                     color: [237, 212, 0, 0.8]
                 })
             }),
@@ -442,12 +475,13 @@ $(function () {
         })
 
         myMap.geoMarkerLayer = new ol.layer.Vector({
+            zIndex: 2000,
             source: new ol.source.Vector({
                 feature: geoMarker
             }),
             style: new ol.style.Style({
                 image: new ol.style.Icon({
-                    src: "images/car.png"
+                    src: "images/car2_50.png"
                 }),
             })
         })
@@ -459,15 +493,17 @@ $(function () {
         var newPoint = null;
         var i = 0;
         var historyTimer = setInterval(function () {
-            if (i == coordinates.length) {
+            if (i == coordinates.length-1) {
+                alert("运动完毕！")
                 clearInterval(historyTimer);
+                return ;
             }
             if (i == 0) {
                 oldPoint = coordinates[i];
                 newPoint = coordinates[i];
             }else{
                 oldPoint = newPoint;
-                newPoint = oldPoint[i];
+                newPoint = coordinates[i];
             }
             var rotation = getRotation(newPoint,oldPoint);
 
@@ -477,7 +513,76 @@ $(function () {
             myMap.map.getView().setCenter(newPoint);
 
             i++;
-        }, 5000);
+            console.log(i + '-->' + coordinates.length);
+        }, 50);
+    })
+
+    /**
+     * 路径规划
+     */
+    $('#pathPlanning').on('click',function () {
+        // var url = 'URL: //uri.amap.com/navigation?from=116.478346,39.997361,startpoint&to=116.3246,39.966577,endpoint&via=116.402796,39.936915,midwaypoint&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0';
+        var url = 'http://uri.amap.com/navigation?from=103.34220886230469,30.823516845703125,startpoint&to=103.568115234375,30.8990478515625,endpoint&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0';
+        // var url = 'https://lbs.amap.com/api/webservice/guide/api/georegeo';
+        // fetch(url).then(function (value) {
+        //     debugger;
+        // })
+
+        $.ajax(url, {
+            // data: {
+            //     'cityname': '成都',
+            //     'date': '2016.12.12'
+            // },
+            dataType: 'jsonp',
+            crossDomain: true,
+            success: function(data) {
+                debugger;
+                // if(data && data.resultcode == '200'){
+                //     console.log(data.result.today);
+                // }
+            }
+        });
+    })
+
+    /**
+     * 监听地图缩放等级变化
+     */
+    myMap.map.getView().on('change:resolution',function () {
+        var style = myMap.pointLayer.getStyle();
+        // 重新设置图标的缩放率，基于层级10来做缩放
+        style.getImage().setScale(this.getZoom() / 10);
+        var zoom = this.getZoom();
+        var zoom1 = myMap.map.getView().getZoom();
+        console.log('zoom:'+zoom);
+        console.log('zoom1:'+zoom1);
+        var scale = style.getImage().getScale();
+        console.log('scale:'+scale);
+
+        // if (zoom > 17) {
+        //     var style2 = new ol.style.Style({
+        //         image:new ol.style.Icon({
+        //             src:"images/car2_50.png"
+        //         })
+        //     })
+        //     myMap.pointLayer.setStyle(style2);
+        // }else {
+        //     var style3 = new ol.style.Style({
+        //         image:new ol.style.Icon({
+        //             src:"images/air.png"
+        //         })
+        //     })
+        //     myMap.pointLayer.setStyle(style3);
+        // }
+
+        if (zoom > 17) {
+            myMap.pointLayer.setVisible(false);
+            myMap.lineStringLayer.setVisible(true);
+        }else {
+            myMap.pointLayer.setVisible(true);
+            myMap.lineStringLayer.setVisible(false);
+        }
+        // style.sets
+        // myMap.pointLayer.setStyle(style);
     })
 
 
@@ -713,16 +818,16 @@ $(function () {
         });
 
         myMap.pointLayer.setSource(pointSource);
-        // myMap.pointLayer.setVisible(false);
+        myMap.pointLayer.setVisible(false);
 
         myMap.lineStringLayer.setSource(lineStringSource);
-        // myMap.lineStringLayer.setVisible(false);
+        myMap.lineStringLayer.setVisible(false);
 
         myMap.polygonLayer.setSource(polygonSource);
-        // myMap.polygonLayer.setVisible(false);
+        myMap.polygonLayer.setVisible(false);
 
         myMap.circleLayer.setSource(circleSource);
-        // myMap.circleLayer.setVisible(false);
+        myMap.circleLayer.setVisible(false);
     }
 
     /**
@@ -1969,6 +2074,7 @@ $(function () {
         }
 
     }
+
 
 
     function deleteWfs(features) {
