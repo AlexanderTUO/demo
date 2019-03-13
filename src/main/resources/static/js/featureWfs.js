@@ -41,15 +41,26 @@ $(function () {
                 // dataType: 'jsonp',
                 type:'get',
                 success:function (result) {
-                    debugger;
                     var paths = result.route.paths;
-                    var polylineAarry = [];
+
                     for (var i = 0; i < paths.length; i++) {
                         var steps = paths[i].steps;
                         for (var j = 0; j < steps.length; j++) {
                             var polyline = steps[j].polyline;
                             var polylines = polyline.split(";");
-                            polylineAarry.push(polylines);
+                            var status = steps[j].tmcs[0]['status'];
+                            var polylineArray = [];
+                            for (var k = 0; k < polylines.length; k++) {
+                                var realData = polylines[k].split(",");
+                                var coordinate = [realData[0], realData[1]];
+                                polylineArray.push(coordinate);
+                            }
+                            // polylineArray.push(polylines);
+                            var polylineFea = new ol.Feature({
+                                geometry: new ol.geom.LineString(polylineArray),
+                                status: status
+                            });
+                            myMap.pathLineLayer.getSource().addFeature(polylineFea);
                         }
                     }
                 }
@@ -251,6 +262,7 @@ $(function () {
         myMap.map.addLayer(myMap.wmsLayer);
         myMap.map.addLayer(myMap.googleLayer);
         myMap.map.addLayer(myMap.pathLayer);
+        myMap.map.addLayer(myMap.pathLineLayer);
 
 
         if (myMap.pointLayer == null) {
@@ -319,20 +331,20 @@ $(function () {
         //     }
         // })
 
-        fetch(urls).then(function (response) {
-            return response.text();
-        }).then(function (response) {
-            // var wms = new ol.format.WMSGetFeatureInfo();
-            // var features = wms.readFeatures(response);
-            // debugger;
-            var features = JSON.parse(response).features;
-            if (features.length > 0) {
-                var properties = features[0].properties;
-                for(var k in properties){
-                    console.log(k + ':' + properties[k]);
-                }
-            }
-        })
+        // fetch(urls).then(function (response) {
+        //     return response.text();
+        // }).then(function (response) {
+        //     // var wms = new ol.format.WMSGetFeatureInfo();
+        //     // var features = wms.readFeatures(response);
+        //     // debugger;
+        //     var features = JSON.parse(response).features;
+        //     if (features.length > 0) {
+        //         var properties = features[0].properties;
+        //         for(var k in properties){
+        //             console.log(k + ':' + properties[k]);
+        //         }
+        //     }
+        // })
     })
     /**
      * 单点追踪
