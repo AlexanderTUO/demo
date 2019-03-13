@@ -19,6 +19,7 @@
             });
             var url = 'http://uri.amap.com/navigation?from=103.34220886230469,30.823516845703125,startpoint&to=103.568115234375,30.8990478515625,endpoint&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0';
             fetch(url).then(function (value) {
+
                 debugger;
             })
         })

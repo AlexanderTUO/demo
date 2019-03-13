@@ -165,17 +165,29 @@
     <div class="item ac" key='3'id="history">历史轨迹</div>
     <div class="item" key='4'id="pathPlanning">路径规划</div>
 </div>
-<div id="historyOptions" hidden="hidden">
+<%--历史轨迹选项--%>
+<div id="historyOptions" style="display: none">
     <input type="button" id="startHis" value="开始">
     <input type="range" id="speed" min="0" max="1000" step="5" value="60">
 </div>
-<div id="historyContainer"></div>
+<%--<div id="historyContainer"></div>--%>
 <!-- tool -->
-<div class="tool" id="tool">
+<div class="tool" id="tool"></div>
+<%--路径规划选项--%>
+<div id="pathPlanningOps" style="display: none">
+    <ul>
+        <li class="pathPlaning" id="startPP">设置起点</li>
+        <li class="pathPlaning" id="endPP">设置终点</li>
+        <li class="pathPlaning" id="clearPP">清除路径</li>
+        <li class="pathPlaning" id="calculatePP">计算路径</li>
+    </ul>
+</div>
 
 <div id="dialog-style" title="样式选择">
     <div id="styleTree">
 </div>
+
+
 
 
 <div id="dialog-form" title="绘制要素" style="height: 425px;">

@@ -322,13 +322,13 @@ ul {
 }
 
 /*历史轨迹选项*/
-#historyOptions {
-    width: 250px;
-    height: 100px;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-}
+/*#historyOptions {*/
+    /*width: 250px;*/
+    /*height: 100px;*/
+    /*position: absolute;*/
+    /*bottom: 20px;*/
+    /*left: 20px;*/
+/*}*/
 /*历史轨迹选项容器*/
 #historyOptions {
     width: 260px;
@@ -339,3 +339,34 @@ ul {
     background: #D9D8D7;
     opacity: 0.8;
 }
+
+/*路径规划选项样式*/
+
+#pathPlanningOps {
+    width: 10%;
+    height: auto;
+    position: absolute;
+    bottom: 15%;
+    left: 6%;
+    background: #ffffff;
+    opacity: 0.8;
+
+    z-index: 20010;
+}
+
+#pathPlanningOps ul{
+    width: 100%;
+    padding: 6px 2px 0 2px;
+    list-style: none;
+}
+
+#pathPlanningOps>ul>li{
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+}
+
+#pathPlanningOps>ul>li:hover{
+    background-color: rgba(255, 0, 0, 0.5);
+}
+

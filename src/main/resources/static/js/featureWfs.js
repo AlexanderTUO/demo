@@ -19,6 +19,50 @@ $(function () {
     // 编辑类型（普通/WFS）
     var choice = null;
 
+    // 路径规划相关
+    var path = {
+        pathPlanningKey: false,
+        pathBtn: 1,//起点：1，终点：2
+        startPath: null,
+        endPath: null,
+        getRoute:function (startPath, endPath) { //通过高德地图api获取路径,并展示在地图中
+            var data  = {
+                // key: '3d5bc0273dae19cfb06956b8b9cc3b15',//js端
+                key: '00eb58dc2f1544aa8e4a7fd53178cc58',//web端
+                origin: startPath,
+                destination: endPath,
+                // extensions: 'all'
+            }
+            var key = '00eb58dc2f1544aa8e4a7fd53178cc58';
+            var url = 'https://restapi.amap.com/v3/direction/driving?origin='+startPath+'&destination='+endPath+'&output=JSON&key=' + key;
+            $.ajax({
+                url: url,
+                data: data,
+                // dataType: 'jsonp',
+                type:'get',
+                success:function (result) {
+                    debugger;
+                    var paths = result.route.paths;
+                    var polylineAarry = [];
+                    for (var i = 0; i < paths.length; i++) {
+                        var steps = paths[i].steps;
+                        for (var j = 0; j < steps.length; j++) {
+                            var polyline = steps[j].polyline;
+                            var polylines = polyline.split(";");
+                            polylineAarry.push(polylines);
+                        }
+                    }
+                }
+
+            })
+        },
+        clearRoute: function () {
+            path.startPath = null;
+            path.endPath = null;
+            path.pathBtn = 1;
+        }
+    };
+
 
     var myMap = {};
     // 初始化地图
@@ -126,6 +170,51 @@ $(function () {
             })
         })
 
+        myMap.pathLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            // style: new ol.style.Style({
+            //     image: new ol.style.Icon({
+            //         src: 'images/start.png'
+            //     })
+            // })
+            style: function (feature,resolution) {
+                var style = null;
+                if (feature.get('type') == "startPoint") {
+                    style = new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: 'images/start.png'
+                        })
+                    });
+                }
+                else if (feature.get("type") == "endPoint") {
+                    style = new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: 'images/end.png'
+                        })
+                    })
+                }
+                else if (feature.get("type") == "path") {
+                    style = new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: "blue",
+                            width: 4
+                        })
+                    })
+                }
+                return [style];
+            }
+        });
+
+        myMap.pathLineLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style:new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: "blue",
+                    width: 4
+                })
+            })
+        })
+
 
         var scaleLine = new ol.control.ScaleLine({
             units:'metric'
@@ -154,12 +243,15 @@ $(function () {
             controls: controls_extend
         });
 
-
+        //添加图层
+        // myMap.map.addLayer(path.pathLayer);
         // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
         // myMap.map.addLayer(myMap.gaodeMapLayer);
         myMap.map.addLayer(myMap.wmsLayer);
         myMap.map.addLayer(myMap.googleLayer);
+        myMap.map.addLayer(myMap.pathLayer);
+
 
         if (myMap.pointLayer == null) {
             myMap.pointLayer = new ol.layer.Vector({
@@ -398,6 +490,8 @@ $(function () {
      * 历史轨迹
      */
     $('#history').on('click',function () {
+
+        $('#historyOptions').show();
         // 打开历史轨迹相关选项
         var features = myMap.lineStringLayer.getSource().getFeatures();
         var coordinates = features[0].getGeometry().getCoordinates();
@@ -521,13 +615,31 @@ $(function () {
      * 路径规划
      */
     $('#pathPlanning').on('click',function () {
-        // var url = 'URL: //uri.amap.com/navigation?from=116.478346,39.997361,startpoint&to=116.3246,39.966577,endpoint&via=116.402796,39.936915,midwaypoint&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0';
-        var url = 'http://uri.amap.com/navigation?from=103.34220886230469,30.823516845703125,startpoint&to=103.568115234375,30.8990478515625,endpoint&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0';
-        // var url = 'https://lbs.amap.com/api/webservice/guide/api/georegeo';
-        // fetch(url).then(function (value) {
-        //     debugger;
-        // })
+        // 点击打开路径规划选项
+        $('#pathPlanningOps').show();
+        path.pathPlanningKey = true;
+        // 绑定三个按钮对应事件
+        $('#startPP').on('click', function () {
+            path.pathBtn = 1;
+        });
+        $('#endPP').on('click', function () {
+            path.pathBtn = 2;
+        });
+        $('#calculatePP').on('click', function () {
+            // 从高德地图api中获取路径信息并展示
+            path.getRoute(path.startPath,path.endPath);
+        });
+        $('#clearPP').on('click', function () {
+            // 清除路径
+            path.clearRoute();
+        });
 
+        //绑定地图点击事件，在地图中选择起始点
+
+
+
+
+        var url = null;
         $.ajax(url, {
             // data: {
             //     'cityname': '成都',
@@ -1615,6 +1727,8 @@ $(function () {
     myMap.map.on('singleclick', singleclickFun, this);
     function selectFea() {
         console.log($('#selectionChe').prop('checked'));
+
+
         if (!$('#selectionChe').prop('checked')) {
             return;
         }
@@ -2033,6 +2147,20 @@ $(function () {
 
         })
     })
+
+    //保存小数点后六位
+    function GetCoordate(coordate) {
+        var lng = coordate[0].toString();
+        var lat = coordate[1].toString();
+        var lngIndex = lng.indexOf(".") + 7;
+        var latIndex = lat.indexOf(".") + 7;
+        lng = lng.substring(0, lngIndex);
+        lat = lat.substring(0, latIndex);
+        var str = lng + "," + lat;
+        console.log(str.toString());
+        return [lng,lat];
+    }
+
     /**
      * 鼠标单击事件监听处理函数
      */
@@ -2040,6 +2168,31 @@ $(function () {
         var pixel = myMap.map.getEventPixel(e.originalEvent);
         var hit = myMap.map.hasFeatureAtPixel(pixel);
         myMap.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+
+        // 获取地图点击的坐标
+        var coordinate = e.coordinate;
+        coordinate = GetCoordate(coordinate);
+
+        // 路径规划开始
+        if (path.pathPlanningKey) {
+            if (path.pathBtn == 1) {//设置起点
+                path.startPath = coordinate;
+                var feature = new ol.Feature({
+                    type: "startPoint",
+                    geometry: new ol.geom.Point(coordinate)
+                })
+                myMap.pathLayer.getSource().addFeature(feature);
+                // 展示点
+            }else if (path.pathBtn == 2) {//设置终点
+                path.endPath = coordinate;
+                var feature = new ol.Feature({
+                    type: "endPoint",
+                    geometry: new ol.geom.Point(coordinate)
+                })
+                myMap.pathLayer.getSource().addFeature(feature);
+            }
+        }
+
         //当前鼠标位置选中要素
         var feature = myMap.map.forEachFeatureAtPixel(e.pixel,
             function (feature, layer) {
