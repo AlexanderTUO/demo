@@ -41,26 +41,52 @@ $(function () {
                 // dataType: 'jsonp',
                 type:'get',
                 success:function (result) {
+                    debugger;
                     var paths = result.route.paths;
+                    // var polylineAarry = [];
+                    // for (var i = 0; i < paths.length; i++) {
+                    //     var steps = paths[i].steps;
+                    //     for (var j = 0; j < steps.length; j++) {
+                    //         var polyline = steps[j].polyline;
+                    //         var polylines = polyline.split(";");
+                    //         // polylineAarry.push(polylines);
+                    //         var status = steps[j].tmcs[0]['status'];
+                    //         var polylineArray = [];
+                    //         for (var k = 0; k < polylines.length; k++) {
+                    //             var realData = polylines[k].split(",");
+                    //             var coordinate = [realData[0], realData[1]];
+                    //             polylineArray.push(coordinate);
+                    //         }
+                    //         // polylineArray.push(polylines);
+                    //         var polylineFea = new ol.Feature({
+                    //             geometry: new ol.geom.LineString(polylineArray),
+                    //             status: status
+                    //         });
+                    //         myMap.pathLineLayer.getSource().addFeature(polylineFea);
+                    //     }
+                    // }
+
 
                     for (var i = 0; i < paths.length; i++) {
                         var steps = paths[i].steps;
                         for (var j = 0; j < steps.length; j++) {
-                            var polyline = steps[j].polyline;
-                            var polylines = polyline.split(";");
-                            var status = steps[j].tmcs[0]['status'];
-                            var polylineArray = [];
-                            for (var k = 0; k < polylines.length; k++) {
-                                var realData = polylines[k].split(",");
-                                var coordinate = [realData[0], realData[1]];
-                                polylineArray.push(coordinate);
+                            var tmcs = steps[j]['tmcs'];
+                            for (var k = 0; k < tmcs.length; k++) {
+                                var polylineArray = [];//保存各路段矢量
+                                var status = tmcs[k]['status'];
+                                var polyline = tmcs[k]['polyline'].split(';');
+                                for (var l = 0; l < polyline.length; l++) {
+                                    var realData = polyline[l].split(",");
+                                    var coordinate = [realData[0], realData[1]];
+                                    polylineArray.push(coordinate);
+                                }
+
+                                var polylineFea = new ol.Feature({
+                                    geometry: new ol.geom.LineString(polylineArray),
+                                    status: status
+                                });
+                                myMap.pathLineLayer.getSource().addFeature(polylineFea);
                             }
-                            // polylineArray.push(polylines);
-                            var polylineFea = new ol.Feature({
-                                geometry: new ol.geom.LineString(polylineArray),
-                                status: status
-                            });
-                            myMap.pathLineLayer.getSource().addFeature(polylineFea);
                         }
                     }
                 }
@@ -70,7 +96,10 @@ $(function () {
         clearRoute: function () {
             path.startPath = null;
             path.endPath = null;
-            path.pathBtn = 1;
+            path.pathBtn = 0;
+
+            myMap.pathLayer.getSource().clear();
+            myMap.pathLineLayer.getSource().clear();
         }
     };
 
@@ -218,12 +247,32 @@ $(function () {
 
         myMap.pathLineLayer = new ol.layer.Vector({
             source: new ol.source.Vector(),
-            style:new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: "blue",
-                    width: 4
+            // style:new ol.style.Style({
+            //     stroke: new ol.style.Stroke({
+            //         color: "blue",
+            //         width: 4
+            //     })
+            // })
+            style:function (feature) {
+                var status = feature.get('status');
+                var color = '#8f8f8f';
+                if (status==='拥堵') {
+                    color = '#e20000';
+                }
+                else if (status==='缓行') {
+                    color = '#ff7324';
+                }
+                else if (status==='畅通') {
+                    color = '#00b514';
+                }
+                return new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: color,
+                        width: 5,
+                        lineDash:[10, 8]
+                    })
                 })
-            })
+            }
         })
 
 
@@ -258,9 +307,9 @@ $(function () {
         // myMap.map.addLayer(path.pathLayer);
         // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
-        // myMap.map.addLayer(myMap.gaodeMapLayer);
-        myMap.map.addLayer(myMap.wmsLayer);
-        myMap.map.addLayer(myMap.googleLayer);
+        myMap.map.addLayer(myMap.gaodeMapLayer);
+        // myMap.map.addLayer(myMap.wmsLayer);
+        // myMap.map.addLayer(myMap.googleLayer);
         myMap.map.addLayer(myMap.pathLayer);
         myMap.map.addLayer(myMap.pathLineLayer);
 
@@ -331,20 +380,20 @@ $(function () {
         //     }
         // })
 
-        // fetch(urls).then(function (response) {
-        //     return response.text();
-        // }).then(function (response) {
-        //     // var wms = new ol.format.WMSGetFeatureInfo();
-        //     // var features = wms.readFeatures(response);
-        //     // debugger;
-        //     var features = JSON.parse(response).features;
-        //     if (features.length > 0) {
-        //         var properties = features[0].properties;
-        //         for(var k in properties){
-        //             console.log(k + ':' + properties[k]);
-        //         }
-        //     }
-        // })
+        fetch(urls).then(function (response) {
+            return response.text();
+        }).then(function (response) {
+            // var wms = new ol.format.WMSGetFeatureInfo();
+            // var features = wms.readFeatures(response);
+            // debugger;
+            var features = JSON.parse(response).features;
+            if (features.length > 0) {
+                var properties = features[0].properties;
+                for(var k in properties){
+                    console.log(k + ':' + properties[k]);
+                }
+            }
+        })
     })
     /**
      * 单点追踪
@@ -639,6 +688,8 @@ $(function () {
         });
         $('#calculatePP').on('click', function () {
             // 从高德地图api中获取路径信息并展示
+            // myMap.pathLayer.getSource().clear();
+            myMap.pathLineLayer.getSource().clear();
             path.getRoute(path.startPath,path.endPath);
         });
         $('#clearPP').on('click', function () {
