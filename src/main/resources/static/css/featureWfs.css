@@ -196,6 +196,14 @@ fieldset {
     /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFW…RgmJoONay7mzbuWnlo4amZH5o47jHsrdEJUWpu4/+a5iPAAHPyCihdbfhJAAAAAElFTkSuQmCC);*/
     background-image: url("/images/toolbar/delete.png");
 }
+.leaflet-draw-toolbar .leaflet-draw-edit-measureLength {
+    /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFW…RgmJoONay7mzbuWnlo4amZH5o47jHsrdEJUWpu4/+a5iPAAHPyCihdbfhJAAAAAElFTkSuQmCC);*/
+    background-image: url("/images/toolbar/length.png");
+}
+.leaflet-draw-toolbar .leaflet-draw-edit-measureArea {
+    /*background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAMAAAAM7l6QAAAAGXRFW…RgmJoONay7mzbuWnlo4amZH5o47jHsrdEJUWpu4/+a5iPAAHPyCihdbfhJAAAAAElFTkSuQmCC);*/
+    background-image: url("/images/toolbar/area.png");
+}
 
 /*工具栏编辑框*/
 /*.leaflet-control {*/

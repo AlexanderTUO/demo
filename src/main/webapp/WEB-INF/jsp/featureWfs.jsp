@@ -140,6 +140,12 @@
             <a class="leaflet-draw-edit-remove" href="#" title="删除">
                 <span class="sr-only">删除</span>
             </a>
+            <a class="leaflet-draw-edit-measureLength" href="#" title="长度">
+                <span class="sr-only">长度</span>
+            </a>
+            <a class="leaflet-draw-edit-measureArea" href="#" title="面积">
+                <span class="sr-only">面积</span>
+            </a>
         </div>
         <ul class="leaflet-draw-actions" style="top: 1px; display: none;">
             <li class>

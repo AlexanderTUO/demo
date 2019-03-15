@@ -2210,6 +2210,43 @@ $(function () {
 
         })
     })
+    /**
+     * 长度测量
+     */
+    $('.leaflet-draw-edit-measureLength').on('click',function () {
+        //建立长度交互
+        myMap.lengthDraw = new ol.interaction.Draw({
+            type: "LineString",
+            style:new ol.style.Style({
+                stroke:new ol.style.Stroke({
+                    color: 'yellow',
+                    width: 4
+                })
+            })
+        })
+        myMap.map.addInteraction(myMap.lengthDraw);
+
+        // 交互勾画结束后进行测量，并在结尾显示测量结果
+        myMap.lengthDraw.on('drawend',function (e) {
+            var feature = e.feature;
+            var tooltipCoor = e.coordinate;
+
+
+            var coordinates = e.feature.getGeometry().getCoordinates();
+            console.log(coordinates);
+
+            var distance = e.feature.getGeometry().getLength();
+            // var sphere = new ol.sphere(6378137);
+            // for (var i = 0; i < coordinates.length-1; i++) {
+            //     var c1 = coordinates[i];
+            //     var c2 = coordinates[i+1];
+            //     distance += sphere.getDistance(c1, c2);
+            // }
+            console.log(distance);
+            
+        })
+    })
+    
 
     //保存小数点后六位
     function GetCoordate(coordate) {
