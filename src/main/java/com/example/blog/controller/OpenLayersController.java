@@ -142,4 +142,9 @@ public class OpenLayersController {
     public String gaodemap() {
         return "gaodemap";
     }
+
+    @RequestMapping("login")
+    public String login() {
+        return "login";
+    }
 }

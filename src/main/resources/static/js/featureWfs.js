@@ -2499,7 +2499,7 @@ $(function () {
        /**
         *判断一个点是否在多边形内部
         * @param points 多边形坐标集合
-        * @param testPoint 测试点坐标
+        * @param testPoint 测试点坐标intersectsCoordinate
         * @returns {boolean} 返回true为真，false为假
         */
        function insidePolygon(points, testPoint) {
