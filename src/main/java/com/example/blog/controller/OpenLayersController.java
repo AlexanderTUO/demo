@@ -147,4 +147,9 @@ public class OpenLayersController {
     public String login() {
         return "login";
     }
+
+    @RequestMapping("requireTest")
+    public String requireTest() {
+        return "requireTest";
+    }
 }
