@@ -93,6 +93,7 @@ $(function () {
 
             })
         },
+        // 清除路径信息
         clearRoute: function () {
             path.startPath = null;
             path.endPath = null;
@@ -117,7 +118,8 @@ $(function () {
         var view = new ol.View({
             projection: ol.proj.get('EPSG:4326'),
             zoom: 10,
-            center: [104.068, 30.664],
+            // center: [104.068, 30.664],//成都
+            center: [83.942173462338,41.7588618993607]//新疆
         });
         //绘制热区的样式
         var flashStyle = new ol.style.Style({
@@ -165,6 +167,12 @@ $(function () {
             })
         });
 
+        // 注记层标注
+        myMap.annotationLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'http://www.google.cn/maps/vt?lyrs=h@189&gl=cn&x={x}&y={y}&z={z}' //影像注记层地址
+            })
+        });
 
 
         // osm地图
@@ -307,11 +315,12 @@ $(function () {
         // myMap.map.addLayer(path.pathLayer);
         // myMap.map.addLayer(myMap.geoserverLayer);
         // myMap.map.addLayer(myMap.kmlLayer);
-        myMap.map.addLayer(myMap.gaodeMapLayer);
+        // myMap.map.addLayer(myMap.gaodeMapLayer);
         // myMap.map.addLayer(myMap.wmsLayer);
-        // myMap.map.addLayer(myMap.googleLayer);
+        myMap.map.addLayer(myMap.googleLayer);
         myMap.map.addLayer(myMap.pathLayer);
         myMap.map.addLayer(myMap.pathLineLayer);
+        myMap.map.addLayer(myMap.annotationLayer);
 
 
         if (myMap.pointLayer == null) {
@@ -749,13 +758,13 @@ $(function () {
         //     myMap.pointLayer.setStyle(style3);
         // }
 
-        if (zoom > 17) {
-            myMap.pointLayer.setVisible(false);
-            myMap.lineStringLayer.setVisible(true);
-        }else {
-            myMap.pointLayer.setVisible(true);
-            myMap.lineStringLayer.setVisible(false);
-        }
+        // if (zoom > 17) {
+        //     myMap.pointLayer.setVisible(false);
+        //     myMap.lineStringLayer.setVisible(true);
+        // }else {
+        //     myMap.pointLayer.setVisible(true);
+        //     myMap.lineStringLayer.setVisible(false);
+        // }
         // style.sets
         // myMap.pointLayer.setStyle(style);
     })
