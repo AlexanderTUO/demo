@@ -39,6 +39,8 @@ public class Gdal {
         }
         System.out.println("加载驱动成功！");
 
+
+
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC.geojson");
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC.kml");//有乱码
 
@@ -46,7 +48,7 @@ public class Gdal {
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC2.shp");
 
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\xj_jq.geojson");
-        driver.CopyDataSource(dataSource, "E:\\Tools\\GIS\\Data\\shp\\510100.shp");
+//        driver.CopyDataSource(dataSource, "E:\\Tools\\GIS\\Data\\shp\\510100.shp");
 //        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\kml\\510100.kml");
 
 
