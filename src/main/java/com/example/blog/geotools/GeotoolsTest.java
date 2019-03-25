@@ -1,4 +1,4 @@
-package com.example.blog.test;
+package com.example.blog.geotools;
 
 import org.geotools.data.CachingFeatureSource;
 import org.geotools.data.FileDataStore;

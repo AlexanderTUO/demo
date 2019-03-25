@@ -1,11 +1,14 @@
 package com.example.blog.geotools;
 
+import com.example.blog.Util.StringUtil;
 import org.gdal.gdal.gdal;
 import org.gdal.ogr.DataSource;
 import org.gdal.ogr.Driver;
 import org.gdal.ogr.ogr;
 import org.geotools.swing.data.JFileDataStoreChooser;
 
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 
 /**
@@ -27,7 +30,9 @@ public class DataConverter {
 
 //        打开选择文件对话框，获取转换文件
         String[] formats = {"shp","kml","geojson"};
-        File inputFile = JFileDataStoreChooser.showOpenFile(formats,null);
+        File inputFile = JFileDataStoreChooser.showOpenFile(formats,new File("D:\\Tools\\GIS\\Data"),null);
+        FileSystemView fileSystemView = FileSystemView.getFileSystemView();
+
 
         if (inputFile==null) {
             return;
@@ -47,22 +52,26 @@ public class DataConverter {
 //        打开关闭文件对话框，获取转换后的文件，根据后缀获取转换类型
 //        String output = input.substring(0, input.length() - 4)+".kml";
         JFileDataStoreChooser chooser = new JFileDataStoreChooser(formats);
-        chooser.setDialogTitle("Data Convent");
+        chooser.setDialogTitle("Data Convention");
         chooser.setSelectedFile(new File(input.split(",")[0]));
         int returnVal = chooser.showSaveDialog(null);
 
         if (returnVal != JFileDataStoreChooser.APPROVE_OPTION) {
             System.exit(0);
         }
+
         File outputFile = chooser.getSelectedFile();
+        FileFilter filter = chooser.getFileFilter();
+
         if (outputFile == null) {
             return;
         }
-        String output = outputFile.getAbsolutePath();
-        String type = output.split("\\.")[1];
+        String suffix = StringUtil.cutString(filter.getDescription(),'.',')');
 
+//        String type = output.split("\\.")[1];
 
-        switch (type) {
+        String type = null;
+        switch (suffix) {
             case "kml":
                 type = "KML";
                 break;
@@ -73,6 +82,13 @@ public class DataConverter {
                 type = "GeoJSON";
                 break;
         }
+
+        String path = outputFile.getAbsolutePath();
+        if (path.indexOf('.')!=-1) {
+            path = path.split("\\.")[0];
+        }
+
+        String output = path+"."+ suffix;
 
 //        if (newFile.equals(csvFile)) {
 //            System.out.println("can't replace "+csvFile);
@@ -90,21 +106,7 @@ public class DataConverter {
         System.out.println("加载驱动成功！");
         driver.CopyDataSource(dataSource, output);
 
-
-
-//
-////        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC.geojson");
-////        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC.kml");//有乱码
-//
-////        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC2.kml");//有乱码
-////        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\testSC2.shp");
-//
-////        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\test\\xj_jq.geojson");
-//        driver.CopyDataSource(dataSource, "E:\\Tools\\GIS\\Data\\shp\\510100.shp");
-////        driver.CopyDataSource(dataSource, "D:\\Tools\\GIS\\Data\\kml\\510100.kml");
-//
-//
-//        System.out.println("数据转换成功");
+        System.out.println("数据转换成功");
 
     }
 }
