@@ -232,6 +232,13 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <!-- Provides support for PostGIS. Note the different groupId -->
+        <dependency>
+            <groupId>org.geotools.jdbc</groupId>
+            <artifactId>gt-jdbc-postgis</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+
 
     </dependencies>
 
