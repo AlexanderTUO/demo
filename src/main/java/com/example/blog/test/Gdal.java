@@ -12,7 +12,7 @@ public class Gdal {
         dataTransfer();
     }
 
-    private static void dataTransfer() {
+    public static void dataTransfer() {
         ogr.RegisterAll();
         //支持中文路径
         gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8","YES");

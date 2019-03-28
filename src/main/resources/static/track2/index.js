@@ -240,6 +240,7 @@
     _bind: function() {
       var me = this;
 
+
       var fn = {
         _init: function() {
           // 

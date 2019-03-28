@@ -152,4 +152,9 @@ public class OpenLayersController {
     public String requireTest() {
         return "requireTest";
     }
+
+    @RequestMapping("plyr")
+    public String plyr() {
+        return "plyr";
+    }
 }

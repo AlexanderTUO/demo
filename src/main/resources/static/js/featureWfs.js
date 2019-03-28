@@ -105,6 +105,7 @@ $(function () {
     };
 
 
+
     var myMap = {};
     // 初始化地图
     initMap();
@@ -117,9 +118,9 @@ $(function () {
         //初始化osm地图
         var view = new ol.View({
             projection: ol.proj.get('EPSG:4326'),
-            zoom: 10,
-            // center: [104.068, 30.664],//成都
-            center: [83.942173462338,41.7588618993607]//新疆
+            zoom: 12,
+            center: [104.068, 30.664],//成都
+            // center: [83.942173462338,41.7588618993607]//新疆
         });
         //绘制热区的样式
         var flashStyle = new ol.style.Style({
@@ -2219,6 +2220,23 @@ $(function () {
 
         })
     })
+
+    var measure = {
+        helpToolMsg: "点击以继续绘图",
+        measureToolMsg: '',
+        formatLength:function (feature) {//长度测量
+            
+        },
+        formatArea: function (feature) {//面积测量
+
+        },
+        createHelpToolTip: function (position) {
+
+        },
+        createMeasureToolTip:function(position){
+
+        }
+    };
     /**
      * 长度测量
      */
@@ -2237,6 +2255,8 @@ $(function () {
 
         // 交互勾画结束后进行测量，并在结尾显示测量结果
         myMap.lengthDraw.on('drawend',function (e) {
+            debugger;
+            console.log("end");
             var feature = e.feature;
             var tooltipCoor = e.coordinate;
 
@@ -2252,10 +2272,50 @@ $(function () {
             //     distance += sphere.getDistance(c1, c2);
             // }
             console.log(distance);
-            
+        })
+        myMap.lengthDraw.on('change',function (e) {
+            debugger;
+            console.log("change");
+        })
+
+        // myMap.lengthDraw.on('change',function () {
+        //     debugger;
+        //     console.log("change");
+        // })
+
+    })
+    //建立长度交互
+    myMap.lengthDraw = new ol.interaction.Draw({
+        type: "LineString",
+        style:new ol.style.Style({
+            stroke:new ol.style.Stroke({
+                color: 'yellow',
+                width: 4
+            })
         })
     })
-    
+    myMap.map.addInteraction(myMap.lengthDraw);
+
+    /**
+     * 地图上鼠标移动事件
+     */
+    myMap.map.on('pointermove',function (evt) {
+        // 获取矢量，并绑定矢量几何改变事件
+        var sketch = evt.feature;
+        var coordinate = sketch.getGeometry();
+        // sketch.getGeometry().on('change',function (e) {
+        //     coordinate = e.feature.getGeometry();
+        // })
+        // 如果是绘图状态，且矢量点数改变时，则更新各段信息提示
+        if (true) {
+            // 在矢量末尾增加气泡提示
+            // var popup = new ol.Overlay.pop
+            measure.createHelpToolTip(coordinate);
+            measure.createMeasureToolTip(coordinate,content);
+        }
+
+
+    })
 
     //保存小数点后六位
     function GetCoordate(coordate) {
@@ -2502,6 +2562,8 @@ $(function () {
         // 打开对话框
         $("#dialog-style").dialog('open');
     });
+    
+
 
 
     /*****************************实现多边形选择功能END****************************************/
