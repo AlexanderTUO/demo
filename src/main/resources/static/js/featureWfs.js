@@ -119,8 +119,9 @@ $(function () {
         var view = new ol.View({
             projection: ol.proj.get('EPSG:4326'),
             zoom: 12,
-            center: [104.068, 30.664],//成都
+            // center: [104.068, 30.664],//成都
             // center: [83.942173462338,41.7588618993607]//新疆
+            center: [86.659895,38.712888]//巴音郭楞
         });
         //绘制热区的样式
         var flashStyle = new ol.style.Style({
@@ -2285,37 +2286,37 @@ $(function () {
 
     })
     //建立长度交互
-    myMap.lengthDraw = new ol.interaction.Draw({
-        type: "LineString",
-        style:new ol.style.Style({
-            stroke:new ol.style.Stroke({
-                color: 'yellow',
-                width: 4
-            })
-        })
-    })
-    myMap.map.addInteraction(myMap.lengthDraw);
+    // myMap.lengthDraw = new ol.interaction.Draw({
+    //     type: "LineString",
+    //     style:new ol.style.Style({
+    //         stroke:new ol.style.Stroke({
+    //             color: 'yellow',
+    //             width: 4
+    //         })
+    //     })
+    // })
+    // myMap.map.addInteraction(myMap.lengthDraw);
 
     /**
      * 地图上鼠标移动事件
      */
-    myMap.map.on('pointermove',function (evt) {
-        // 获取矢量，并绑定矢量几何改变事件
-        var sketch = evt.feature;
-        var coordinate = sketch.getGeometry();
-        // sketch.getGeometry().on('change',function (e) {
-        //     coordinate = e.feature.getGeometry();
-        // })
-        // 如果是绘图状态，且矢量点数改变时，则更新各段信息提示
-        if (true) {
-            // 在矢量末尾增加气泡提示
-            // var popup = new ol.Overlay.pop
-            measure.createHelpToolTip(coordinate);
-            measure.createMeasureToolTip(coordinate,content);
-        }
-
-
-    })
+    // myMap.map.on('pointermove',function (evt) {
+    //     // 获取矢量，并绑定矢量几何改变事件
+    //     var sketch = evt.feature;
+    //     var coordinate = sketch.getGeometry();
+    //     // sketch.getGeometry().on('change',function (e) {
+    //     //     coordinate = e.feature.getGeometry();
+    //     // })
+    //     // 如果是绘图状态，且矢量点数改变时，则更新各段信息提示
+    //     if (true) {
+    //         // 在矢量末尾增加气泡提示
+    //         // var popup = new ol.Overlay.pop
+    //         measure.createHelpToolTip(coordinate);
+    //         measure.createMeasureToolTip(coordinate,content);
+    //     }
+    //
+    //
+    // })
 
     //保存小数点后六位
     function GetCoordate(coordate) {
