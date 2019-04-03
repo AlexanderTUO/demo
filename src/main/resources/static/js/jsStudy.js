@@ -75,7 +75,7 @@ window.onload= function (ev) {
 
     console.log("------反队列效果：");
     var colors = new Array();
-    var count = colors.unshift("red", "orange");
+    var count = colors.unshift("red", "orange"); //unshift向前插入
     console.log(count);
 
     count = colors.unshift("black");
@@ -152,7 +152,7 @@ window.onload= function (ev) {
 
     // 作为值的函数
     console.log('----作为值的函数');
-    function createConparisonFunction(propertyName) {
+    function createComparisonFunction(propertyName) {
         return function (object1, object2) {
             var value1 = object1[propertyName];
             var value2 = object2[propertyName];
@@ -176,10 +176,10 @@ window.onload= function (ev) {
             age: 27
         }
     ]
-    data.sort(createConparisonFunction('name'));
+    data.sort(createComparisonFunction('name'));
     console.log(data[0].name);
 
-    data.sort(createConparisonFunction('age'));
+    data.sort(createComparisonFunction('age'));
     console.log(data[0].name);
 
     // 函数的内部属性
@@ -223,5 +223,225 @@ window.onload= function (ev) {
 
     outer();
 
+    console.log('======第六章 面向对象的程序设计======');
+    console.log('------属性类型');
+    var person = {};
+    Object.defineProperty(person, "name", {
+        writable: false,
+        value: "Nicholas"
+    });
+    console.log(person.name);
+    person.name = 'Greg';
+    console.log(person.name);
 
+    var descriptor = Object.getOwnPropertyDescriptor(person, 'name');
+    console.log(descriptor.configurable);
+    console.log(descriptor.writable);
+    console.log(descriptor.enumerable);
+    console.log(descriptor.value);
+
+    console.log('-----原型模式：');
+
+    function Person() {
+
+    }
+
+    // Person.prototype.name = 'Nicholas';
+    Person.prototype.age = 29;
+    Person.prototype.job = 'Software Engineer';
+    Person.prototype.sayName = function () {
+        console.log(this.name);
+
+    };
+    var person11 = new Person();
+    person11.sayName();
+
+    var person22 = new Person();
+    person22.sayName();
+
+    console.log(person11.sayName == person22.sayName);//true
+
+    console.log(Person.prototype.isPrototypeOf(person11));//true
+    console.log(Person.prototype.isPrototypeOf(person22));//true
+
+    console.log(Object.getPrototypeOf(person11) == Person.prototype);//true
+    console.log(Object.getPrototypeOf(person11).name);//Nicholas
+
+    console.log(person11.hasOwnProperty('name'));//false
+    person11.name = "Greg";
+    console.log(person11.hasOwnProperty('name'));//true--来自原型
+
+    console.log(person11.name);//Greg,从实例中获取
+    console.log(person22.name);//Nicholas,从原型中获取
+
+    delete person11.name;
+    console.log(person11.name);//Nicholas,从原型中获取
+
+    /**
+     * 判断是否是原型属性
+     * @param object
+     * @param name
+     * @returns {boolean}
+     */
+    function hasPrototypeProperty(object,name) {
+        return !object.hasOwnProperty(name) && (name in object);
+    }
+
+    console.log('----遍历属性：');
+    var o = {
+        toString :function () {
+            return "My Object";
+        }
+    }
+    for(var prop in o){
+        if (prop == 'toString') {
+            console.log('Found toString');
+        }
+    }
+
+    var customObj = {
+        name: "tyk",
+        birthday: '92-12'
+    };
+    var customObjKeys = Object.keys(customObj);
+    console.log(customObjKeys);
+    for(var prop1 in customObj){
+        console.log(prop1);
+    }
+    console.log(Object.getOwnPropertyNames(customObj));
+
+    console.log('------完全重写prototype对象：');
+
+
+    Person.prototype = {
+        name: 'Nicholas',
+        age: 29,
+        job: "Software Engineer",
+        birthday: "92-12",
+        friends: ['Shelby', 'Court'],
+        sayName :function () {
+            console.log(this.birthday);//undefined
+        }
+    }
+    var friend = new Person();
+    friend.sayName();
+
+    var person111 = new Person();
+    var person222 = new Person();
+
+    person111.friends.push('Van');
+
+    console.log(person111.friends);
+    console.log(person222.friends);
+    console.log(person222.friends == person111.friends);
+
+    console.log('=====构造函数模式和原型模式组合======');
+
+    function Person(name, age, job) {
+        this.name = name;
+        this.age = age;
+        this.job = job;
+        this.friends = ['Shelby', 'Court'];
+    }
+
+    Person.prototype = {
+        constructor: Person,
+        sayName: function () {
+            console.log(this.name);
+        }
+    };
+
+    console.log('========继承=======');
+
+    function SuperType(name) {
+        // this.property = true;
+        this.name = name;
+        this.colors = ['red', 'green', 'blue'];
+    }
+    SuperType.prototype.sayName = function () {
+        // return this.property;
+        console.log(this.name);
+    }
+    
+    function SubType(name,age) {
+        // this.subProperty = false;
+        SuperType.call(this, name);
+        this.age = age;
+    }
+
+    //子类的原型指向父类的实例，继承
+    // SubType.prototype = new SuperType();
+    // SubType.prototype.constructor = SubType;//没有影响？？
+
+    inheritPrototype(SubType, SuperType);
+    SubType.prototype.sayAge= function () {
+        console.log(this.age);
+    }
+
+    var instance = new SubType();
+    // console.log(instance.getSuperValue());//true
+
+    console.log('原型与实例的关系：')
+    console.log(instance instanceof Object);//true
+    console.log(instance instanceof SuperType);//true
+    console.log(instance instanceof SubType);//true
+
+    console.log('原型与实例的关系2：');
+    console.log(Object.prototype.isPrototypeOf(instance));
+    console.log(SuperType.prototype.isPrototypeOf(instance));
+    console.log(SubType.prototype.isPrototypeOf(instance));
+
+    console.log('原型的问题：实例的属性是继承类型的原型属性');
+    var subType1 = new SubType();
+    subType1.colors.push('black');
+
+    var subType2 = new SubType();
+    console.log(subType2.colors);
+
+    console.log('组合继承：')
+    var instance1 = new SubType('Nicholas', 27);
+    instance1.colors.push('black');
+    instance1.sayName();
+    instance1.sayAge();
+    console.log(instance1.colors);
+
+    var instance2 = new SubType('Greg', 29);
+    instance2.sayName();
+    instance2.sayAge();
+    console.log(instance2.colors);
+
+
+    console.log('原型式继承：');
+    var student = {
+        name: 'Nicholas',
+        num: 23
+    };
+
+    var anotherStudent = Object.create(student,{
+        name:{
+            value: 'Greg'
+        }
+    });
+    console.log(anotherStudent.name);
+
+    console.log('寄生式继承：');
+    function createAnother(original) {
+        var clone = Object.create(original);
+        clone.sayHi = function () {
+            console.log('Hi');
+        };
+        return clone;
+    }
+
+    var yetAnotherStudent = createAnother(student);
+    yetAnotherStudent.sayHi();
+
+    console.log('寄生组合式继承：');
+    function inheritPrototype(subType,superType) {
+        var prototype = Object.create(superType.prototype);//创建对象
+        prototype.constuctor = superType;//增强对象
+        subType.prototype = prototype;//指定对象
+    }
+
+    
 }
