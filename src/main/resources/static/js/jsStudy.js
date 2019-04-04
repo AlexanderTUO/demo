@@ -443,5 +443,190 @@ window.onload= function (ev) {
         subType.prototype = prototype;//指定对象
     }
 
-    
+    console.log('======函数表达式======：');
+    console.log('------递归：');
+    var factorial = (function f(num) {
+        if (num <= 1) {
+            return num;
+        } else {
+            return num * f(num - 1);
+        }
+    });
+    console.log(factorial(4));
+
+    console.log('------闭包与变量');
+
+    function createFunctions0() {
+        var result = new Array();
+        for (var i = 0; i < 10; i++) {
+            result[i] = function () {
+                return i;
+            }
+        }
+        return result;
+    }
+
+    function createFunctions() {
+        var result = new Array();
+        for (var i = 0; i < 10; i++) {
+            result[i] = function (num) {
+                return function () {
+                    return num;
+                };
+            }(i);
+        }
+        return result;
+    }
+
+    // console.log(createFunctions0);
+    // console.log(createFunctions);
+    // console.log(createFunctions());
+    // var res = createFunctions();
+
+
+    // createFunctions();
+    console.log('关于this对象：');
+    var name = "This window";
+    var obj = {
+        name: 'My object',
+        getNameFunc: function () {
+            var that = this;
+            return function () {
+                return that.name;
+            }
+
+        }
+    };
+
+    console.log(obj.getNameFunc()());
+    // alert(obj.getNameFunc()());
+
+    console.log('----模范块级作用域');
+    console.log('全局作用域：');
+    function outputNum(count) {
+        for (var i = 0; i < count; i++) {
+            console.log(i);
+        }
+        console.log(i);//执行
+    }
+    outputNum(4);
+
+    console.log('块级作用域：');
+    function outputNum1(count) {
+        (function () {
+            for (var ii = 0; ii < count; ii++) {
+                console.log(ii);
+            }
+        })();
+        // console.log(ii);//not defined
+    }
+    outputNum1(4);
+
+    console.log('------私有变量');
+    console.log('特权方法：');
+    function MyObject() {
+        var privateVariable = 10;
+
+        function privateFunction() {
+            return false;
+        }
+
+        this.publicMethod = function () {
+            privateVariable++;
+            return privateFunction();
+        }
+    }
+
+    var myObj = new MyObject();
+    myObj.publicMethod();
+
+    console.log('模拟存取器：');
+    function PersonF(name) {
+        this.getName  = function () {
+            return name;
+        }
+        this.setName = function (value) {
+            name = value;
+        }
+    }
+
+    var personf = new PersonF('Nicholas');
+    console.log(personf.getName());//Nicholas
+
+    personf.setName('Greg');
+    console.log(personf.getName());//Greg
+
+    console.log('静态私有变量：');
+    (function () {
+        var privateVariable = 10;
+        var privateFunction = function () {
+            return false;
+        }
+
+        MyObject1 = function () {
+
+        }
+        MyObject1.prototype.publicMethod = function () {
+            privateVariable++;
+            return privateFunction();
+        }
+    })();
+
+    console.log('静态私有变量例子：');
+    (function () {
+        var name;
+
+        Person1 = function (value) {
+            name = value;
+        };
+        Person1.prototype.getName = function () {
+            return name;
+        };
+        Person1.prototype.setName = function (value) {
+            name = value;
+        }
+    })();
+
+    var person5 = new Person1('Nicholas');
+    console.log(person5.getName());//Nicholas
+    person5.setName('Greg');
+    console.log(person5.getName());//Greg
+
+    var person6 = new Person1('Michael');
+    console.log(person6.getName());//Michael
+    console.log(person5.getName());//Michael
+
+    console.log('模块模式：');
+    var application = function () {
+        var components = new Array();
+        components.push('组件');
+
+        return {
+            getComponentsLength: function () {
+                return components.length;
+            },
+            registerComponent: function (component) {
+                if (typeof component == 'object') {
+                    components.push(component);
+                }
+            }
+        }
+    }();
+
+    var application2 = function () {
+        var components = new Array();
+        components.push('组件');
+
+        var app = new SuperType();
+        app.getComponentsLength = function () {
+            return components.length;
+        };
+        app.registerComponent = function (component) {
+            if (typeof component == 'Object') {
+                components.push(component);
+            }
+        }
+        return app;
+    }();
+
 }
