@@ -2554,6 +2554,7 @@ $(function () {
             }
         },
         close:function () {
+            alert("我走了")
             $("#dialog-style").removeClass("ui-state-error");
         }
     });
