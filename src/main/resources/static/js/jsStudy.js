@@ -365,7 +365,7 @@ window.onload= function (ev) {
     
     function SubType(name,age) {
         // this.subProperty = false;
-        SuperType.call(this, name);
+        SuperType.call(this, name);//调用超类构造函数
         this.age = age;
     }
 
