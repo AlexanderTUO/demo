@@ -162,4 +162,9 @@ public class OpenLayersController {
     public String jsStudy() {
         return "jsStudy";
     }
+
+    @RequestMapping("dom")
+    public String dom() {
+        return "10DOM";
+    }
 }
