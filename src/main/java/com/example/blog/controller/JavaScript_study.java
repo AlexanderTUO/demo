@@ -15,4 +15,9 @@ public class JavaScript_study {
         return "js_study/08BOM";
     }
 
+    @RequestMapping("10DOM")
+    public String js_study_10DOM() {
+        return "js_study/10DOM";
+    }
+
 }

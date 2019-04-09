@@ -158,8 +158,4 @@ public class OpenLayersController {
         return "plyr";
     }
 
-    @RequestMapping("jsStudy")
-    public String jsStudy() {
-        return "jsStudy";
-    }
 }
