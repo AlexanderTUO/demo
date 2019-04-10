@@ -119,9 +119,9 @@ $(function () {
         var view = new ol.View({
             projection: ol.proj.get('EPSG:4326'),
             zoom: 12,
-            // center: [104.068, 30.664],//成都
+            center: [104.068, 30.664],//成都
             // center: [83.942173462338,41.7588618993607]//新疆
-            center: [86.659895,38.712888]//巴音郭楞
+            // center: [86.659895,38.712888]//巴音郭楞
         });
         //绘制热区的样式
         var flashStyle = new ol.style.Style({
@@ -177,6 +177,8 @@ $(function () {
         });
 
 
+
+
         // osm地图
         myMap.OSM = new ol.layer.Tile({
             source: new ol.source.OSM()
@@ -191,6 +193,16 @@ $(function () {
         //     style: flashStyle,
         //     zIndex: 99
         // });
+
+        // kml水系图
+        myMap.riverLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                url: "data/streamfea_topo.kml",
+                format: new ol.format.KML(),
+            }),
+            style: flashStyle,
+            zIndex: 99
+        });
 
         // geoserver发布地图
         myMap.geoserverLayer = new ol.layer.Vector({
@@ -322,7 +334,8 @@ $(function () {
         myMap.map.addLayer(myMap.googleLayer);
         myMap.map.addLayer(myMap.pathLayer);
         myMap.map.addLayer(myMap.pathLineLayer);
-        myMap.map.addLayer(myMap.annotationLayer);
+        // myMap.map.addLayer(myMap.annotationLayer);
+        myMap.map.addLayer(myMap.riverLayer);
 
 
         if (myMap.pointLayer == null) {

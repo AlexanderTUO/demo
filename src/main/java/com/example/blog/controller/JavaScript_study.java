@@ -20,4 +20,9 @@ public class JavaScript_study {
         return "js_study/10DOM";
     }
 
+    @RequestMapping("15Canvas")
+    public String js_study_15Canvas() {
+        return "js_study/15Canvas";
+    }
+
 }
