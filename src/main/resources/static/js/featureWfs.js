@@ -335,7 +335,7 @@ $(function () {
         myMap.map.addLayer(myMap.pathLayer);
         myMap.map.addLayer(myMap.pathLineLayer);
         // myMap.map.addLayer(myMap.annotationLayer);
-        myMap.map.addLayer(myMap.riverLayer);
+        // myMap.map.addLayer(myMap.riverLayer);
 
 
         if (myMap.pointLayer == null) {
@@ -379,7 +379,12 @@ $(function () {
         // 从后台获取要素
         displayFeatures();
     }
-    
+
+    // myMap.map.onclick = function () {
+    //     alert(23);
+    // };
+
+
     myMap.map.on('click',function (evt) {
         console.log("准备获取features");
         var view = myMap.map.getView();

@@ -17,6 +17,10 @@
 </canvas>
 <canvas id="drawing2" width="200" height="200"style="border: 1px solid black"></canvas>
 <canvas id="drawing3" width="200" height="200"style="border: 1px solid black"></canvas>
+<canvas id="drawing4" width="200" height="200"style="border: 1px solid black"></canvas>
+<image src="/images/air.png" style="width: 10px;height: 10px;"></image>
+<canvas id="drawing5" width="200" height="200"style="border: 1px solid black"></canvas>
+
 
 </body>
 </html>

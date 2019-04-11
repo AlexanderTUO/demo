@@ -4,6 +4,17 @@ window.onload = function (ev) {
     if (drawing.getContext) {
         var context = drawing.getContext("2d");
 
+        // 设置阴影
+        context.shadowColor = 'rgba(0,0,0,0.5)';
+        context.shadowOffsetX = 5;
+        context.shadowOffsetY = 5;
+        context.shadowBlur = 0;
+
+        // 设置渐变
+        var gradient = context.createLinearGradient(10, 10, 60, 60);
+        gradient.addColorStop(0, "white");
+        gradient.addColorStop(1, "red");
+
         // // 取得图像的数据URI
         // var imgURI = drawing.toDataURL("image/png");
         //
@@ -16,13 +27,19 @@ window.onload = function (ev) {
         // context.strokeStyle = 'red';
 
         // 绘制矩形
-        context.fillStyle = "#ff0000";
+        // context.fillStyle = "#ff0000";
+        context.fillStyle = gradient;
         context.fillRect(10, 10, 50, 50);
 
-        context.fillStyle = "rgba(0,0,255,0.5)";
+        // context.fillStyle = "rgba(0,0,255,0.5)";
+        var gradient2 = context.createRadialGradient(55, 55, 5, 55, 55, 30);
+        gradient2.addColorStop(0, "white");
+        gradient2.addColorStop(1, "blue");
+        context.fillStyle = gradient2;
         context.fillRect(30, 30, 50, 50);
 
-        context.clearRect(40, 40, 10, 10);
+
+        // context.clearRect(40, 40, 10, 10);
     }
 
     /********canvas2********/
@@ -77,11 +94,62 @@ window.onload = function (ev) {
 
     /********canvas3********/
     var drawing3 = document.getElementById("drawing3");
-    var ctx3 = drawing2.getContext('2d');
+    var ctx3 = drawing3.getContext('2d');
+
     ctx3.fillStyle = '#ff0000';
     ctx3.save();
 
-    
+    ctx3.fillStyle = '#00ff00';
+    ctx3.translate(100, 100);
+    ctx3.save();
+
+    ctx3.fillStyle = '#0000ff';
+    ctx3.fillRect(0, 0, 100, 200);
+
+    ctx3.restore();
+    ctx3.fillRect(10, 10, 100, 200);
+
+    ctx3.restore();
+    ctx3.fillRect(0, 0, 100, 200);
+
+
+    /********canvas4********/
+    var drawing4 = document.getElementById("drawing4");
+    var ctx4 = drawing4.getContext('2d');
+
+    var image = document.images[0];
+    // image.width(20);
+    // image.height(20);
+    // ctx4.drawImage(image, 10, 10);
+
+    // ctx4.drawImage(image, 100, 100, 20, 20);
+
+    // ctx4.drawImage(image, 0, 0, 50, 50,100,100,50,50);
+
+    // 模式
+    var pattern = ctx4.createPattern(image, "repeat");
+
+    // 绘制矩形
+    ctx4.fillStyle = pattern;
+    ctx4.fillRect(0, 0, 150, 150);
+
+    /********canvas5********/
+    var drawing5 = document.getElementById("drawing5");
+    var gl = drawing5.getContext("experimental-webgl",{alpha:false});
+
+    if (gl) {
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        // 设置视口
+        gl.viewport(0, 0, drawing5.width/2, drawing5.height/2);
+
+        // 创建缓冲区
+        var buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0.5, 1]), gl.STATIC_DRAW);
+    }
+
 
 
 }

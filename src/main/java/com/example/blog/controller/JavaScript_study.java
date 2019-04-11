@@ -20,9 +20,25 @@ public class JavaScript_study {
         return "js_study/10DOM";
     }
 
+    @RequestMapping("13Event")
+    public String js_study_13Event() {
+        return "js_study/13Event";
+    }
+
+    @RequestMapping("14Form")
+    public String js_study_14Form() {
+        return "js_study/14Form";
+    }
+
     @RequestMapping("15Canvas")
     public String js_study_15Canvas() {
         return "js_study/15Canvas";
     }
+
+    @RequestMapping("16HTML5")
+    public String js_study_16HTML5() {
+        return "js_study/16HTML5";
+    }
+
 
 }
