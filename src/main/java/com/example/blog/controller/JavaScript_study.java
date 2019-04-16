@@ -40,5 +40,15 @@ public class JavaScript_study {
         return "js_study/16HTML5";
     }
 
+    @RequestMapping("20JSON")
+    public String js_study_20JSON() {
+        return "js_study/20JSON";
+    }
+
+    @RequestMapping("21Ajax")
+    public String js_study_21Ajax() {
+        return "js_study/21Ajax";
+    }
+
 
 }
