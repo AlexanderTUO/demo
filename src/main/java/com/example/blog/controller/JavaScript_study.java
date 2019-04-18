@@ -50,5 +50,24 @@ public class JavaScript_study {
         return "js_study/21Ajax";
     }
 
+    @RequestMapping("22Advanced")
+    public String js_study_22Advanced() {
+        return "js_study/22Advanced";
+    }
+
+    @RequestMapping("23App")
+    public String js_study_23App() {
+        return "js_study/App";
+    }
+
+    @RequestMapping("24Exercise")
+    public String js_study_24Exercise() {
+        return "js_study/24Exercise";
+    }
+
+    @RequestMapping("25Api")
+    public String js_study_25Api() {
+        return "js_study/25Api";
+    }
 
 }
