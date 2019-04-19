@@ -57,7 +57,7 @@ public class JavaScript_study {
 
     @RequestMapping("23App")
     public String js_study_23App() {
-        return "js_study/App";
+        return "js_study/23App";
     }
 
     @RequestMapping("24Exercise")
