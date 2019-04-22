@@ -158,4 +158,9 @@ public class OpenLayersController {
         return "plyr";
     }
 
+    @RequestMapping("imitation")
+    public String imitation() {
+        return "imitation";
+    }
+
 }
