@@ -35,6 +35,21 @@
     <script type="text/javascript" src="/track2/index2.js"></script>
     <script type="text/javascript">
         $(function () {
+            // -function (new_p, old_p) {
+            //
+            //     var pi = Math.atan2(new_p[1] - old_p[1], new_p[0] - old_p[0]);
+            //     debugger;
+            //     // _map_p_rotation: function(new_p, old_p) {
+            //     //     // 90度的PI值
+            //     //     var pi_90 = Math.atan2(1, 0);
+            //     //     // 当前点的PI值
+            //     //     var pi_ac = Math.atan2(new_p[1] - old_p[1], new_p[0] - old_p[0]);
+            //     //
+            //     //     return pi_90 - pi_ac;
+            //     // },
+            //
+            // }([0,0],[1,1]);
+
             new CC().init();
         })
     </script>

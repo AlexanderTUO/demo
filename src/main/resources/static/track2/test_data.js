@@ -22,7 +22,8 @@ for (var i = 0; i < 10; i++) {
 var lines_arr = [];
 
 // 添加一个点
-var lines_0 = [116.06, 39.67];
+// var lines_0 = [116.06, 39.67];
+var lines_0 = [104.068, 30.664];//成都
 lines_arr.push(lines_0);
 var new_p = null;
 for (var j = 0; j < 20; j++) {

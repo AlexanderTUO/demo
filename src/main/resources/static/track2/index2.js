@@ -22,7 +22,7 @@
             //追踪模式
             monitor: {
                 //起点坐标
-                p: [],
+                p: [104.068, 30.664],//成都
                 //波动系数
                 set_num: 0.05,
                 //线的样式
@@ -34,7 +34,7 @@
                     })
                 }),
                 //刷新时间
-                time: 200
+                time: 2000
             },
 
             //监控模式
@@ -158,7 +158,7 @@
 
             },
 
-            center: [],
+            center: [104.068, 30.664],//成都
 
             //地图相关属性
             MAP:{
@@ -182,8 +182,8 @@
                         source:new ol.source.scgisTile({
                             token: "lr5PCQfPZC5RwidnOolkLCeM-foDYCeyhh7IfyhsMLW5alYROy-ck6GU6vNenzAw",
                             // url: "http://www.scgis.net.cn/imap/iMapServer/DefaultRest/services/SCTileMap/"
-                            // url:'http://www.scgis.net.cn/iMap/iMapServer/DefaultRest/services/newtianditudlg/'
-                            url:'http://www.scgis.net.cn/iMap/iMapServer/DefaultRest/services/newtianditudom/'
+                            url:'http://www.scgis.net.cn/iMap/iMapServer/DefaultRest/services/newtianditudlg/'
+                            // url:'http://www.scgis.net.cn/iMap/iMapServer/DefaultRest/services/newtianditudom/'
                         })
                     })
 
@@ -279,24 +279,25 @@
                     me._nav();
                 },
                 _nav: function () {
+                    var key = null;
                     //给菜单绑定点击事件
                     $("#nav").on("click",".item",function (e) {
 
                         console.log("currentTarget" + e.currentTarget);
                         console.log("Target" + e.target);
                         //若上个模式为轨迹回放，则提示：等待结束
-                        if (me.conf.all_obj.key===3&&me.conf.all_obj.all_monitor.key) {
+                        if (me.all_obj.key==3&&me.conf.history.move_key) {
                             alert("请等待轨迹回放结束！");
                             return;
                         }
                         //class中含ac代表运行的菜单项
-                        if (!e.currentTarget.hasClass(".ac")) {
+                        if (!$(e.currentTarget).hasClass(".ac")) {
                             // $
                             $("#nav>.item").removeClass("ac");
                             $(e.currentTarget).addClass("ac");
                         }
 
-                        var key = $(e.currentTarget).attr("key");
+                        key = $(e.currentTarget).attr("key");
 
                         //清除上个模式
                         me._nav_mode_clear();
@@ -313,77 +314,356 @@
 
                 // 模式清除
                 _nav_mode_clear: function () {
-
+                    switch (me.all_obj.key) {
+                        case null:
+                            break;
+                        case "1":
+                            console.log('_clear_monitor');
+                            me._monitor_clear();
+                            break;
+                        case "2":
+                            console.log('_clear_all_m');
+                            me._all_m_clear();
+                            break;
+                        case "3":
+                            console.log('_clear_history');
+                            me._history_clear();
+                            break;
+                        case "4":
+                            console.log('_clear_fence');
+                            me._fence_clear();
+                            break;
+                        default:
+                            break;
+                    }
                 },
 
                 //模式选择
                 _nav_mode: function (key) {
-
+                    switch (key) {
+                        case "1":
+                            me._monitor();
+                            break;
+                        case "2":
+                            me._all_m();
+                            break;
+                        case "3":
+                            me._history();
+                            break;
+                        case "4":
+                            me._fence();
+                            break;
+                        default:
+                            break;
+                    }
+                    me.all_obj.key = key;
                 },
 
                 //============最优视角
                 //图最优
                 _map_fit: function (data_c) {
 
+                    //获取整个容器中所有元素的最大最小经纬度，存入数组
+
+                    //遍历数组，得到最大最小经纬度
+
+                    //根据所含元素类型（点线面），设置对应的视图范围
+
                 },
                 //转向角度设置
                 _map_p_rotation: function (new_p, old_p) {
+                    // return Math.atan2(old_p[1] - new_p[1], old_p[0] - new_p[0]);
 
+                    var pi_90 = Math.atan2(1, 0);
+                    // 当前点的PI值
+                    var pi_ac = Math.atan2(new_p[1] - old_p[1], new_p[0] - old_p[0]);
+
+                    return pi_90 - pi_ac;
                 },
 
                 //==============================各模式的实现
                 /****************实时监控****************/
                 _monitor: function () {
-
+                    me._monitor_set();
+                    me._monitor_layer();
+                    me._monitor_p();
+                    me._monitor_init();
                 },
                 //初始化参数
                 _monitor_set: function () {
-
+                    me.conf.monitor.key = true;
                 },
                 //层数据
                 _monitor_layer: function () {
 
+                    me.all_obj.monitor.layer = new ol.layer.Vector();
+
+                    me.all_obj.monitor.data_c = new ol.source.Vector();
+
+                    me.all_obj.monitor.layer.setSource(me.all_obj.monitor.data_c);
+
+                    me.map.addLayer(me.all_obj.monitor.layer);
                 },
                 //创建点
                 _monitor_p: function () {
+                    var p_data = new ol.Feature({
+                        geometry: new ol.geom.Point(me.conf.monitor.p)
+                    });
 
+                    p_data.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: "images/air2.png",
+                            anchor: [0.5, 0.5],
+                            rotateWithView: true,
+                            scale: 1
+
+                        }),
+                        text: new ol.style.Text({
+                            //对齐方式
+                            textAlign: "center",
+
+                            //基准线
+                            textBaseLine: "middle",
+                            offsetY: -30,
+
+                            //字体
+                            font: "normal 16px 黑体",
+                            //内容
+                            text: "name:tyk",
+
+
+                            //内容填充
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255,255,255,1)'
+                            }),
+                            padding: [5, 5, 5, 5],
+
+                            //背景填充
+                            backgroundFill: new ol.style.Fill({
+                                color: 'rgba(0,0,255,0.6)'
+                            })
+
+
+                        })
+                    }));
+
+                    me.all_obj.monitor.data_c.addFeature(p_data);
+
+                    me.all_obj.monitor.p_data = p_data;
+
+                    // 视角调优
+                    me._map_fit(me.all_obj.monitor.data_c);
                 },
 
                 //开始追踪
                 _monitor_init: function () {
+                    var old_p = null,
+                        new_p = [0, 0];
 
+                    old_p = me.all_obj.monitor.p_data.getGeometry().flatCoordinates;
+                    //造数据
+                    if (Math.random() > 0.5) {
+                        new_p[0] = old_p[0] + Math.random() * me.conf.monitor.set_num;
+                    } else {
+                        new_p[0] = old_p[0] - Math.random() * me.conf.monitor.set_num;
+                    }
+
+
+                    if (Math.random() > 0.5) {
+                        new_p[1] = old_p[1] + Math.random() * me.conf.monitor.set_num;
+                    } else {
+                        new_p[1] = old_p[1] - Math.random() * me.conf.monitor.set_num;
+                    }
+
+
+
+                    //使用定时器实时追踪数据
+                    me.all_obj.monitor.timer = setTimeout(function () {
+
+
+                        if (me.all_obj.monitor.key) {
+                            //调整图片方向
+                            me.all_obj.monitor.p_data.setGeometry(new ol.geom.Point(new_p));
+
+                            me.all_obj.monitor.p_data.getStyle().getImage().setRotation(me._map_p_rotation(new_p, old_p));
+                            //绘制路线
+                            me._monitor_init_line(new_p, old_p);
+
+                            //由于使用的是setTimeOut定时器，所以得给定条件嵌套调用
+                            me._monitor_init();
+
+                            console.log('_monitor_init');
+                        }
+
+                    }, me.conf.monitor.time);
                 },
 
                 //初始化线
                 _monitor_init_line: function (new_p, old_p) {
+                    var line_data = new ol.Feature({
+                        geometry: new ol.geom.LineString([new_p, old_p])
+                    });
+
+                    line_data.setStyle(me.conf.monitor.line_style);
+
+                    me.all_obj.monitor.data_c.addFeature(line_data);
 
                 },
 
                 //清除
                 _monitor_clear: function () {
 
+                    //清除定时器,关闭开关
+                    clearTimeout(me.all_obj.monitor.timer);
+                    me.all_obj.monitor.key = false;
+
+                    //清除source
+                    me.all_obj.monitor.data_c.clear();
+
+                    //清除layer
+                    me.map.removeLayer(me.all_obj.monitor.layer);
+
+
                 },
 
                 /****************历史轨迹****************/
                 _history: function () {
-
+                    me._history_set();
+                    me._history_layer();
+                    me._history_p();
+                    me._history_lines();
+                    me._history_set();
                 },
                 _history_set: function () {
+                    // me.all_obj.history.key = true;
+                    //添加开始按钮，并绑定开始事件
+                    $("#tool")
+                        .show()
+                        .html("<div id='his_s' class='item his_s'>开始</div>")
+                        .off()
+                        .on("click","#his_s",function (e) {
+                            $("#his_s").hide();
+                            //打开开关
+                            me.conf.history.move_key = true;
 
+                            me._history_start(1);
+                        })
                 },
                 _history_layer: function () {
+                    //添加点、线图层
+                    me.all_obj.history.layer = new ol.layer.Vector();
 
+                    me.all_obj.history.data_c = new ol.source.Vector();
+
+                    me.all_obj.history.layer.setSource(me.all_obj.history.data_c);
+
+                    me.map.addLayer(me.all_obj.history.layer);
                 },
                 _history_p: function () {
+                    // 定义点feature
+                    var p_data = new ol.Feature({
+                        geometry: new ol.geom.Point(lines_arr[0])
+                    });
+                    p_data.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: "images/air2.png",
+                            anchor: [0.5, 0.5],
+                            rotateWithView: true,
+                            scale: 1
+
+                        }),
+                        text: new ol.style.Text({
+                            //对齐方式
+                            textAlign: "center",
+
+                            //基准线
+                            textBaseLine: "middle",
+                            offsetY: -30,
+
+                            //字体
+                            font: "normal 16px 黑体",
+                            //内容
+                            text: "name:tyk",
+
+
+                            //内容填充
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255,255,255,1)'
+                            }),
+                            padding: [5, 5, 5, 5],
+
+                            //背景填充
+                            backgroundFill: new ol.style.Fill({
+                                color: 'rgba(0,0,255,0.6)'
+                            })
+
+
+                        })
+                    }));
+
+                    me.all_obj.history.data_c.addFeature(p_data);
+
+                    me.all_obj.history.p_data = p_data;
 
                 },
                 _history_lines: function () {
+                    // 定义线feature
+                    var line_data = new ol.Feature({
+                        geometry: new ol.geom.LineString(lines_arr)
+                    });
+
+                    line_data.setStyle(new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            width: 3,
+                            color: "rgba(255,0,0,0.8)",
+                            lineDash: [10, 10]
+                        })
+                    }))
+
+                    me.all_obj.history.data_c.addFeature(line_data);
 
                 },
-                _history_start: function () {
+                _history_start: function (index) {
+                    index++;
+
+                    //设置定时器，定时获取数据
+                    setTimeout(function () {
+                        //设置条件，当index自增到数组的长度时，停止
+                        if (index == lines_arr.length) {
+                            //提示用户轨迹回放完毕
+                            alert("轨迹回放完毕");
+                            //关闭运动开关
+                            me.conf.history.move_key = false;
+
+                            //打开开始按钮，以便下次开始
+                            $("#his_s").show();
+
+                            return;
+                        }
+                        var old_p = me.all_obj.history.p_data.getGeometry().flatCoordinates;
+                        var new_p = lines_arr[index];
+                        //点位随着时间不断变化
+                        me.all_obj.history.p_data.setGeometry(new ol.geom.Point(new_p));
+                        me.all_obj.history.p_data.getStyle().getImage().setRotation(me._map_p_rotation(new_p, old_p));
+
+                        me._history_start(index);
+
+
+                    }, me.conf.history.time);
 
                 },
                 _history_clear: function () {
+                    //关闭开关
+
+                    //清空source内数据
+                    me.all_obj.history.data_c.clear();
+
+                    //清除图层
+                    me.map.removeLayer(me.all_obj.history.layer);
+
+                    //隐藏工具栏
+                    $("#tool").hide();
+
 
                 },
 
@@ -437,7 +717,11 @@
                             //     })
                             // })
 
-                            me.conf.MAP.layer.tianditu_layer
+                            // me.conf.MAP.layer.google_layer,
+                            me.conf.MAP.layer.annotation_layer
+                            // me.conf.MAP.layer.tianditu_layer
+
+
 
                         ],
                         controls: me.conf.MAP.controls_extend,
