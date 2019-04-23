@@ -391,7 +391,7 @@
                 },
                 //初始化参数
                 _monitor_set: function () {
-                    me.conf.monitor.key = true;
+                    me.all_obj.monitor.key = true;
                 },
                 //层数据
                 _monitor_layer: function () {
