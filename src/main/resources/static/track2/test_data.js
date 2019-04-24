@@ -9,8 +9,8 @@ for (var i = 0; i < 10; i++) {
     ps_arr.push({
         id: i + 1,
         name: 'icon-' + i,
-        lnglat: [115.9 + Math.random() * 0.5, 39.5 + Math.random() * 0.5],
-        // lnglat: [104.068 + Math.random() * 0.5, 30.664 + Math.random() * 0.5],
+        // lnglat: [115.9 + Math.random() * 0.5, 39.5 + Math.random() * 0.5],
+        lonlat: [104.068 + Math.random() * 0.5, 30.664 + Math.random() * 0.5],
         state: (Math.random() > 0.5 ? 1 : 0)
     });
 }

@@ -19,6 +19,10 @@
 
         // 配置各种模式的属性
         me.conf = {
+
+            test: {
+
+            },
             //追踪模式
             monitor: {
                 //起点坐标
@@ -169,7 +173,8 @@
                     google_layer: new ol.layer.Tile({
                         source: new ol.source.XYZ({
                             url: 'http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}' //影像图
-                        })
+                        }),
+                        zIndex: 100
                     }),
                     //谷歌注记层
                     annotation_layer: new ol.layer.Tile({
@@ -184,8 +189,29 @@
                             // url: "http://www.scgis.net.cn/imap/iMapServer/DefaultRest/services/SCTileMap/"
                             url:'http://www.scgis.net.cn/iMap/iMapServer/DefaultRest/services/newtianditudlg/'
                             // url:'http://www.scgis.net.cn/iMap/iMapServer/DefaultRest/services/newtianditudom/'
+                        }),
+
+                    }),
+                    test_layer :new ol.layer.Vector({
+                        source:new ol.source.Vector({
+                            features:[
+                                new ol.Feature({
+                                    // geometry: ol.geom.Point(me.conf.center),
+                                    geometry: new ol.geom.Point([104.068, 30.664]),
+
+                                })
+                            ]
+                        }),
+                        zIndex: 102,
+                        style:new ol.style.Style({
+                            image:new ol.style.Icon({
+                                src: "images/air3.png",
+                                // rotation: Math.PI*1/4
+                                rotation:Math.PI*6/6-Math.atan2(0,1)
+                            })
                         })
                     })
+
 
                 },
                 controls_extend: new ol.control.defaults({
@@ -209,6 +235,11 @@
 
             //全局模式
             key:null,
+
+            test: {
+                // 方向
+                layer: null
+            },
 
             //追踪模式
             monitor: {
@@ -275,6 +306,7 @@
             var me = this;
             var fn = {
                 _init: function () {
+                    // me._test_init();
                     me._map()
                     me._nav();
                 },
@@ -361,16 +393,158 @@
 
                 //============最优视角
                 //图最优
+
                 _map_fit: function (data_c) {
 
                     //获取整个容器中所有元素的最大最小经纬度，存入数组
+                    var point_arr = [];
+                    data_c.getFeatures().forEach(function (ele) {
+                        point_arr.push(_one(ele.getGeometry()));
+                    });
+
+                    var fit_arr = point_arr[0];
+                    point_arr.forEach(function (point) {
+                        if (point[0] < fit_arr[0]) {
+                            fit_arr[0] = point[0];
+                        }
+                        if (point[1] < fit_arr[1]) {
+                            fit_arr[1] = point[1];
+                        }
+                        if (point[2] > fit_arr[2]) {
+                            fit_arr[2] = point[2];
+                        }
+                        if (point[3] > fit_arr[3]) {
+                            fit_arr[3] = point[3];
+                        }
+                    });
+
+                    if (data_c.getFeatures().length == 0) {
+                        return;
+                    }else if (data_c.getFeatures().length == 1) {//一层Feature
+                        me.map.getView().centerOn(
+                            [fit_arr[0], fit_arr[1]],
+                            me.map.getSize(),
+                            [$(document).width() / 2, $(document).height() / 2]
+                        );
+                        me.map.getView().setZoom(12);
+                    } else {//多层Feature
+                        me.map.getView().fit(
+                            fit_arr,
+                            {
+                                size: me.map.getSize(),
+                                padding: [100, 100, 100, 100],
+                                constrainResolution: false
+                            }
+                        )
+                    }
+
+                    /**
+                     * 找出要素的最大最小经纬度
+                     * @param geo
+                     * @returns {*}
+                     * @private
+                     */
+                    function _one(geo) {
+                        var coor = geo.getCoordinates(),
+                            type = geo.getType(),
+                            one_p;
+
+                        switch (type) {
+                            case "Point":
+                                one_p = [coor[0], coor[1], coor[0], coor[1]];
+                                break;
+                            case "Polygon":
+                                var line_data = coor[0];
+                                one_p = [line_data[0][0], line_data[0][1], line_data[0][0], line_data[0][1]];
+                                line_data.forEach(function (point) {
+                                    if (point[0] < one_p[0]) {
+                                        one_p[0] = point[0];
+                                    }
+                                    if (point[1] < one_p[1]) {
+                                        one_p[1] = point[1];
+                                    }
+                                    if (point[0] > one_p[2]) {
+                                        one_p[2] = point[0];
+                                    }
+                                    if (point[1] > one_p[3]) {
+                                        one_p[3] = point[1];
+                                    }
+                                });
+                                break;
+                            case "LineString":
+                                one_p = [coor[0][0], coor[0][1], coor[0][0], coor[0][1]];
+                                coor.forEach(function (point) {
+                                    if (point[0] < one_p[0]) {
+                                        one_p[0] = point[0];
+                                    }
+                                    if (point[1] < one_p[1]) {
+                                        one_p[1] = point[1];
+                                    }
+                                    if (point[0] > one_p[2]) {
+                                        one_p[2] = point[0];
+                                    }
+                                    if (point[1] > one_p[3]) {
+                                        one_p[3] = point[1];
+                                    }
+                                });
+                                break;
+                            case "Circle":
+                                var center = geo.getCenter();
+                                one_p = [center[0], center[1], center[0], center[1]];
+                                break;
+                            default:
+                                alert("包含错误的几何类型！");
+                                break;
+                        }
+
+                        // if (type === "Point") {
+                        //     one_p = [coor[0], coor[1], coor[0], coor[1]];
+                        // }else if (type === "Polygon") {
+                        //     var line_data = coor[0];
+                        //     one_p = [line_data[0][0], line_data[0][1], line_data[0][0], line_data[0][1]];
+                        //     line_data.forEach(function (point) {
+                        //         if (point[0] < one_p[0]) {
+                        //             one_p[0] = point[0];
+                        //         }
+                        //         if (point[1] < one_p[1]) {
+                        //             one_p[1] = point[1];
+                        //         }
+                        //         if (point[0] > one_p[2]) {
+                        //             one_p[2] = point[0];
+                        //         }
+                        //         if (point[0] > one_p[3]) {
+                        //             one_p[3] = point[0];
+                        //         }
+                        //     });
+                        // }else if (type === "LineString") {
+                        //     one_p = [coor[0][0], coor[0][1], coor[0][0], coor[0][1]];
+                        //     coor.forEach(function (point) {
+                        //         if (point[0] < one_p[0]) {
+                        //             one_p[0] = point[0];
+                        //         }
+                        //         if (point[1] < one_p[1]) {
+                        //             one_p[1] = point[1];
+                        //         }
+                        //         if (point[0] > one_p[2]) {
+                        //             one_p[2] = point[0];
+                        //         }
+                        //         if (point[0] > one_p[3]) {
+                        //             one_p[3] = point[0];
+                        //         }
+                        //     });
+                        // }else if (type === "Circle") {
+                        //     var center = geo.getCenter();
+                        //     one_p = [center[0], center[1], center[0], center[1]];
+                        // }
+                        return one_p;
+                    }
 
                     //遍历数组，得到最大最小经纬度
 
                     //根据所含元素类型（点线面），设置对应的视图范围
 
                 },
-                //转向角度设置
+                // 转向角度设置
                 _map_p_rotation: function (new_p, old_p) {
                     // return Math.atan2(old_p[1] - new_p[1], old_p[0] - new_p[0]);
 
@@ -533,6 +707,8 @@
                     me._history_p();
                     me._history_lines();
                     me._history_set();
+                    // 视角调优
+                    me._map_fit(me.all_obj.history.data_c);
                 },
                 _history_set: function () {
                     // me.all_obj.history.key = true;
@@ -546,7 +722,7 @@
                             //打开开关
                             me.conf.history.move_key = true;
 
-                            me._history_start(1);
+                            me._history_start(0);
                         })
                 },
                 _history_layer: function () {
@@ -624,8 +800,6 @@
 
                 },
                 _history_start: function (index) {
-                    index++;
-
                     //设置定时器，定时获取数据
                     setTimeout(function () {
                         //设置条件，当index自增到数组的长度时，停止
@@ -646,7 +820,7 @@
                         me.all_obj.history.p_data.setGeometry(new ol.geom.Point(new_p));
                         me.all_obj.history.p_data.getStyle().getImage().setRotation(me._map_p_rotation(new_p, old_p));
 
-                        me._history_start(index);
+                        me._history_start(++index);
 
 
                     }, me.conf.history.time);
@@ -682,27 +856,105 @@
 
                 /****************实时监控****************/
                 _all_m: function () {
-
+                    me._all_m_set();
+                    me._all_m_layer();
+                    me._all_m_init();
+                    me._map_fit(me.all_obj.all_monitor.data_c);
                 },
                 _all_m_set: function () {
-
+                    me.all_obj.all_monitor.key = true;
                 },
                 _all_m_layer: function () {
+                    me.all_obj.all_monitor.layer = new ol.layer.Vector();
 
+                    me.all_obj.all_monitor.data_c = new ol.source.Vector();
+
+                    me.all_obj.all_monitor.layer.setSource(me.all_obj.all_monitor.data_c);
+
+                    me.map.addLayer(me.all_obj.all_monitor.layer);
                 },
-                //所有点的初始化
+                //开始监控
                 _all_m_init: function () {
+                    //从后台获取数据
+                    // ps_arr = ps_arr;
+
+                    ps_arr.forEach(function (ele) {
+                        if (Math.random() > 0.5) {
+                            ele.state = 1;
+                        } else {
+                            ele.state = 0;
+                        }
+                    })
+
+                    ps_arr.forEach(function (ele) {
+                        me._all_m_init_marker(ele);
+                    });
+
+                    me.all_obj.all_monitor.timer = setTimeout(function () {
+
+                        //监控marker的动态变化
+                        if (me.all_obj.all_monitor.key) {
+
+                            console.log('_all_monitor');
+                            me.all_obj.all_monitor.data_c.clear();
+                            me._all_m_init();
+                        }
+
+                    }, me.conf.all_monitor.time);
 
                 },
                 //添加点
-                _all_m_init_marker: function () {
+                _all_m_init_marker: function (point) {
+
+                    var p_data = new ol.Feature({
+                        geometry: new ol.geom.Point(point.lonlat)
+                    });
+                    p_data.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: point.state==1?"track2/img/icon_1.png":"track2/img/icon_0.png",
+                            // 注意这个，竟然是比例 左上[0,0]  左下[0,1]  右下[1，1]
+                            anchor: [0.5, 1],
+                            // 这个直接就可以控制大小了
+                            scale: 0.5
+                        }),
+                        text: new ol.style.Text({
+                            // 对其方式
+                            textAlign: 'center',
+                            // 基准线
+                            textBaseline: 'middle',
+                            offsetY: -70,
+                            // 文字样式
+                            font: 'normal 16px 黑体',
+                            // 文本内容
+                            text: point.name,
+                            // 文本填充样式
+                            fill: new ol.style.Fill({
+                                color: 'rgba(255,255,255,1)'
+                            }),
+                            padding: [5, 15, 5, 15],
+                            backgroundFill: new ol.style.Fill({
+                                color: 'rgba(0,0,0,0.6)'
+                            }),
+                        })
+                    }));
+
+                    me.all_obj.all_monitor.data_c.addFeature(p_data);
+
+                    me.all_obj.all_monitor.p_data = p_data;
 
                 },
                 //添加容器
                 _all_m_clear: function () {
+                    //清除定时器，关闭开关
+                    clearTimeout(me.all_obj.all_monitor.timer);
+                    me.all_obj.all_monitor.key = false;
 
+                    //清除source
+                    me.all_obj.all_monitor.data_c.clear();
+
+                    //移除图层
+                    me.map.removeLayer(me.all_obj.all_monitor.layer);
                 },
-
 
                 /****************地图****************/
                 _map: function () {
@@ -718,9 +970,11 @@
                             // })
 
                             // me.conf.MAP.layer.google_layer,
+                            // me.conf.MAP.layer.test_layer,
                             me.conf.MAP.layer.annotation_layer
-                            // me.conf.MAP.layer.tianditu_layer
 
+                            // me.all_obj.test.layer
+                            // me.conf.MAP.layer.tianditu_layer
 
 
                         ],
