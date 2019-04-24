@@ -211,8 +211,6 @@
                             })
                         })
                     })
-
-
                 },
                 controls_extend: new ol.control.defaults({
                     attribution: true
@@ -841,7 +839,7 @@
 
                 },
 
-                /****************围栏****************/
+                /****************编辑****************/
                 _fence: function () {
 
                 },
