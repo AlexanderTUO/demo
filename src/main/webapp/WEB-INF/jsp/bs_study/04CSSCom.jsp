@@ -26,9 +26,18 @@
         <div class="btn-group">
             <a class="btn btn-default" href="#"><span class="glyphicon glyphicon-align-left">首页</span></a>
             <a class="btn btn-default" href="#"><span class="glyphicon glyphicon-align-center">私密档案</span></a>
-            <a class="btn btn-default" href="#"><span class="glyphicon glyphicon-align-right">我的书籍</span></a>
+            <div class="btn-group dropup">
+                <button class="btn btn-default" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-align-right">我的书籍</span><span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li class=""><a href="#">JavaScript高级程序设计</a></li>
+                    <li class=""><a href="#">深入理解Bootstrap</a></li>
+                    <li class=""><a href="#">Java核心思想</a></li>
+                </ul>
+            </div>
             <div class="btn-group">
-                <a class="btn btn-default " data-toggle="dropdown" href="#"><span class="glyphicon glyphicon-align-justify">GIS功能</span></a>
+                <a class="btn btn-default "href="#"><span class="glyphicon glyphicon-align-justify">GIS功能</span></a>
+                <button class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown"><span class="caret"></span>&nbsp;</button>
                 <ul class="dropdown-menu">
                     <li class=""><a href="#">单点追踪</a></li>
                     <li class=""><a href="#">实时监控</a></li>
@@ -67,6 +76,12 @@
                 <input class="col col-lg-2 form-control" type="text" id="ds">
             </div>
         </div>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon">$</span>
+        <input type="text" class="form-control">
+        <span class="input-group-addon">.00</span>
     </div>
 
     <%--引入jquery库--%>
