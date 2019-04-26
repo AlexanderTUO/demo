@@ -18,6 +18,8 @@
 </head>
 <body style="background-color: silver">
     <h1>hello world!</h1>
+    <strong class="h5"><a href="/bs/03CSSLayout">第三章 CSS布局</a></strong>
+    <strong class="h5"><a href="/bs/04CSSCom">第四章 CSS组件</a></strong>
     <div class="alert">
         <button type="button" class="close" data-dismiss="alert">X</button>
         <strong>警告！</strong>你输入的内容不合法
@@ -122,6 +124,47 @@
             <button type="submit" class="btn btn-default">登录</button>
         </formset>
     </form>
+
+    <%--表单控件--%>
+    <div  class="checkbox">
+        <label><input type="checkbox" value="">是否想赚大钱？</label>
+    </div>
+    <div class="radio">
+        <label><input type="radio" checked name="optionRadios" value="male"></option>">请确保，你喜欢女人</label>
+    </div>
+    <div class="radio">
+        <label><input type="radio" name="optionRadios" value="female">请确保，你喜欢男人</label>
+    </div>
+
+    <fieldset disabled>
+        <legend><input></legend>
+        <input type="text" placeholder="不可输入">
+        <select class="sel">
+            <option>篮球</option>
+            <option>篮球</option>
+            <option>篮球</option>
+        </select>
+        <div class="checkbox">
+            <label><input type="checkbox">来了</label>
+        </div>
+        <button type="submit" class="btn btn-default">提交</button>
+    </fieldset>
+
+    <strong class="h3">验证提示状态</strong>
+    <div class="form-control has-warning">
+        <label class="control-label" for="inputWarning">输入长度不够！</label>
+        <input type="text" class="form-control" id="inputWarning" >
+    </div>
+    <div class="form-control has-error">
+        <label class="control-label" for="inputError">输入内容不合法！！</label>
+        <input id="inputError" type="text" class="form-control">
+    </div>
+    <div class="form-control has-success has-feedback">
+        <label class="control-label" for="inputSuccess">输入内容是对嘞！</label>
+        <input id="inputSuccess" type="text" class="form-control">
+        <span class="glyphicon glyphicon-ok form-control-feedback"></span>
+    </div>
+
 
 
     <%--引入jquery库--%>
