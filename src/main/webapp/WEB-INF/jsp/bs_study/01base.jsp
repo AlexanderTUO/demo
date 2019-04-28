@@ -20,6 +20,7 @@
     <h1>hello world!</h1>
     <strong class="h5"><a href="/bs/03CSSLayout">第三章 CSS布局</a></strong>
     <strong class="h5"><a href="/bs/04CSSCom">第四章 CSS组件</a></strong>
+    <strong class="h5"><a href="/bs/exercise1">练习1</a></strong>
     <div class="alert">
         <button type="button" class="close" data-dismiss="alert">X</button>
         <strong>警告！</strong>你输入的内容不合法
