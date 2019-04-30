@@ -41,4 +41,9 @@ public class Bootstrap_study {
         return "bs_study/exercise1";
     }
 
+    @RequestMapping("exercise2")
+    public String exercise2() {
+        return "bs_study/exercise2";
+    }
+
 }

@@ -83,10 +83,6 @@
     </div>
     <%--右边内容区--%>
     <div class="col-md-9">d</div>
-
-
-
-
 <%--引入jquery库--%>
 <script type="text/javascript" src="/lib/jquery-3.3.1.min.js"></script>
 <%--引入bootstrap库--%>

@@ -1,0 +1,14 @@
+.navbar-brand img{
+    width: 30px;
+}
+
+/*.container .dropdown-menu li{*/
+    /*width: ;*/
+/*}*/
+td .btn-warning{
+    height:28px;
+}
+
+table tr>th:first-child,td:first-child{
+    text-align: center;
+}
