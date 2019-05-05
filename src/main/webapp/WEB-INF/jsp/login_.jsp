@@ -23,30 +23,30 @@
         <div id="form_div">
             <form class="form-horizontal">
                 <div class="form-group has-error">
-                    <div class="col-md-offset-4 col-md-6">
+                    <div class="col-md-offset-4 col-md-7">
                         <label id="errorMsg" class="control-label" style="display: none">请输入用户名!!!</label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="username">用户名</label>
-                    <div class="col-md-6">
-                        <input id="username" class="form-control" type="text" placeholder="请输入用户名" maxlength="30">
+                    <label class="col-md-3 col-md-offset-1 control-label" for="username">用户名</label>
+                    <div class="col-md-7">
+                        <input id="username" class="form-control" type="text" placeholder="请输入用户名" maxlength="30" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="password">密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
-                    <div class="col-md-6">
-                        <input id="password" class="form-control" type="password" placeholder="请输入密码" maxlength="20">
+                    <label class="col-md-3 col-md-offset-1  control-label" for="password">密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+                    <div class="col-md-7">
+                        <input id="password" class="form-control" type="password" placeholder="请输入密码" maxlength="20" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-4 control-label" for="kaptcha">验证码</label>
-                    <div class="col-md-6">
-                        <input id="kaptcha" class="form-control" type="text" placeholder="请输入验证码" maxlength="4">
+                    <label class="col-md-3 col-md-offset-1  control-label" for="kaptcha">验证码</label>
+                    <div class="col-md-7">
+                        <input id="kaptcha" class="form-control" type="text" placeholder="请输入验证码" maxlength="4" autocomplete="off">
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-offset-4 col-md-6 ">
+                    <div class="col-md-offset-4 col-md-8">
                         <img alt="验证码" id="imgObj" src="/kaptcha.jpg">
                         <a href="#" onclick="changeImg()">换一张</a>
                     </div>

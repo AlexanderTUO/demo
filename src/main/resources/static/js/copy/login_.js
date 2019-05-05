@@ -28,24 +28,24 @@ function form_submit() {
         return;
     }
 
-    $.ajax({
-        async: false,
-        type: "POST",
-        data:{
-            username:username,
-            password:password,
-            kaptcha: kaptcha,
-            contentType: "application/x-www-form-urlencode;charset=utf-8",
-            url: "sys/login",
-            success:function (result) {
-                
-            },
-            error:function () {
-                
-            }
-            
-        },
-    });
+    // $.ajax({
+    //     async: false,
+    //     type: "POST",
+    //     data:{
+    //         username:username,
+    //         password:password,
+    //         kaptcha: kaptcha,
+    //         contentType: "application/x-www-form-urlencode;charset=utf-8",
+    //         url: "sys/login",
+    //         success:function (result) {
+    //
+    //         },
+    //         error:function () {
+    //
+    //         }
+    //
+    //     },
+    // });
 }
 
 $("input").focus(function () {
