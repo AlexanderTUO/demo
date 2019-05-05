@@ -152,15 +152,15 @@
     </fieldset>
 
     <strong class="h3">验证提示状态</strong>
-    <div class="form-control has-warning">
+    <div class="form-group has-warning">
         <label class="control-label" for="inputWarning">输入长度不够！</label>
         <input type="text" class="form-control" id="inputWarning" >
     </div>
-    <div class="form-control has-error">
+    <div class="form-group has-error">
         <label class="control-label" for="inputError">输入内容不合法！！</label>
         <input id="inputError" type="text" class="form-control">
     </div>
-    <div class="form-control has-success has-feedback">
+    <div class="form-group has-success has-feedback">
         <label class="control-label" for="inputSuccess">输入内容是对嘞！</label>
         <input id="inputSuccess" type="text" class="form-control">
         <span class="glyphicon glyphicon-ok form-control-feedback"></span>
