@@ -47,7 +47,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-4 col-md-8">
-                        <img alt="验证码" id="imgObj" src="/kaptcha.jpg">
+                        <img alt="验证码" id="imgObj" src="/kaptcha.jpg" onclick="changeImg()">
                         <a href="#" onclick="changeImg()">换一张</a>
                     </div>
                 </div>
