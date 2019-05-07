@@ -172,7 +172,8 @@ $(function () {
         // 注记层标注
         myMap.annotationLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
-                url: 'http://www.google.cn/maps/vt?lyrs=h@189&gl=cn&x={x}&y={y}&z={z}' //影像注记层地址
+                // url: 'http://www.google.cn/maps/vt?lyrs=h@189&gl=cn&x={x}&y={y}&z={z}' //影像注记层地址
+                url: "http://www.google.cn/maps/vt?lyrs=h@189&gl=cn&x={x}&y={y}&z={z}"
             })
         });
 
@@ -334,7 +335,7 @@ $(function () {
         myMap.map.addLayer(myMap.googleLayer);
         myMap.map.addLayer(myMap.pathLayer);
         myMap.map.addLayer(myMap.pathLineLayer);
-        // myMap.map.addLayer(myMap.annotationLayer);
+        myMap.map.addLayer(myMap.annotationLayer);
         // myMap.map.addLayer(myMap.riverLayer);
 
 
@@ -415,13 +416,13 @@ $(function () {
             // var wms = new ol.format.WMSGetFeatureInfo();
             // var features = wms.readFeatures(response);
             // debugger;
-            var features = JSON.parse(response).features;
-            if (features.length > 0) {
-                var properties = features[0].properties;
-                for(var k in properties){
-                    console.log(k + ':' + properties[k]);
-                }
-            }
+            // var features = JSON.parse(response).features;
+            // if (features.length > 0) {
+            //     var properties = features[0].properties;
+            //     for(var k in properties){
+            //         console.log(k + ':' + properties[k]);
+            //     }
+            // }
         })
     })
     /**

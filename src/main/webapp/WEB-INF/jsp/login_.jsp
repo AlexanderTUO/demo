@@ -53,7 +53,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-4 col-md-6">
-                        <div class="checkbox"><label><input type="checkbox">记住密码</label></div>
+                        <div class="checkbox"><label><input type="checkbox" id="rememberMe">记住密码</label></div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -67,6 +67,9 @@
 
 <%--引入jquery库--%>
 <script type="text/javascript" src="/lib/jquery-3.3.1.min.js"></script>
+<%--引入md5加密--%>
+<script type="text/javascript" src="/lib/md5.js"></script>
+<script type="text/javascript" src="/lib/jsencrypt.js"></script>
 <%--引入bootstrap库--%>
 <script type="text/javascript" src="/lib/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 <script type="text/javascript" src="/js/copy/login_.js"></script>
